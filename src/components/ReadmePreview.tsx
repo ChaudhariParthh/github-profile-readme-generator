@@ -1,87 +1,50 @@
+import { useMemo } from "react";
 import { BookOpen } from "lucide-react";
-import {
-  SOCIAL_META,
-  langsUrl,
-  socialBadgeUrl,
-  statsUrl,
-  streakUrl,
-  techBadgeUrl,
-  type Profile,
-} from "@/lib/profile";
+import { toMarkdown, type Profile } from "@/lib/profile";
+
+/** Tiny renderer for the subset of Markdown our generator emits (HTML blocks, ## headings, bullets, bold, links). */
+function mdToHtml(md: string): string {
+  const inline = (s: string) =>
+    s
+      .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>');
+  const html: string[] = [];
+  let list = false;
+  for (const line of md.split("\n")) {
+    const t = line.trim();
+    if (t.startsWith("- ")) {
+      if (!list) html.push("<ul>"), (list = true);
+      html.push(`<li>${inline(t.slice(2))}</li>`);
+      continue;
+    }
+    if (list) html.push("</ul>"), (list = false);
+    if (!t || t.startsWith("<!--")) continue;
+    if (t.startsWith("## ")) html.push(`<h2>${inline(t.slice(3))}</h2>`);
+    else if (t.startsWith("<")) html.push(line);
+    else html.push(`<p>${inline(t)}</p>`);
+  }
+  if (list) html.push("</ul>");
+  return html.join("\n");
+}
 
 export function ReadmePreview({ p, compact = false }: { p: Profile; compact?: boolean }) {
+  const html = useMemo(() => {
+    const src = compact
+      ? toMarkdown({ ...p, addons: { ...p.addons, trophy: false, stats: false, langs: false, streak: false, blog: "none" }, support: { bmc: "", kofi: "", sponsors: false } })
+      : toMarkdown(p);
+    return mdToHtml(src);
+  }, [p, compact]);
+
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
       <div className="flex items-center gap-2 border-b border-border px-4 py-3 font-mono text-xs text-muted-foreground">
         <BookOpen className="h-4 w-4" />
         {p.username || "username"} / README.md
       </div>
-      <article className={compact ? "space-y-4 p-5" : "space-y-6 p-6 md:p-8"}>
-        <header className="text-center">
-          <h1 className={`${compact ? "text-xl" : "text-3xl"} font-bold`}>Hi 👋, I'm {p.name}</h1>
-          <p className="mt-1 text-muted-foreground">
-            {p.title}
-            {p.location && ` · ${p.location}`}
-          </p>
-        </header>
-        {p.bio && <p className="leading-relaxed">{p.bio}</p>}
-        {(p.currentlyWorking || p.learning) && (
-          <ul className="list-disc space-y-1 pl-5 text-sm">
-            {p.currentlyWorking && <li>🔭 I'm currently working on <b>{p.currentlyWorking}</b></li>}
-            {p.learning && <li>🌱 I'm currently learning <b>{p.learning}</b></li>}
-          </ul>
-        )}
-        {p.tech.length > 0 && (
-          <section>
-            <H>🛠️ Tech Stack</H>
-            <div className="flex flex-wrap gap-1.5">
-              {p.tech.map((t) => (
-                <img key={t} src={techBadgeUrl(t)} alt={t} className="h-7" loading="lazy" />
-              ))}
-            </div>
-          </section>
-        )}
-        {!compact && (p.showStats || p.showLangs || p.showStreak) && (
-          <section>
-            <H>📊 GitHub Stats</H>
-            <div className="flex flex-wrap justify-center gap-3">
-              {p.showStats && <StatCard src={statsUrl(p)} label="Stats" />}
-              {p.showLangs && <StatCard src={langsUrl(p)} label="Top languages" />}
-              {p.showStreak && <StatCard src={streakUrl(p)} label="Streak" />}
-            </div>
-          </section>
-        )}
-        {p.socials.some((s) => s.handle) && (
-          <section>
-            <H>🤝 Connect with me</H>
-            <div className="flex flex-wrap gap-1.5">
-              {p.socials
-                .filter((s) => s.handle)
-                .map((s) => (
-                  <a key={s.platform} href={SOCIAL_META[s.platform]?.url(s.handle)} target="_blank" rel="noreferrer">
-                    <img src={socialBadgeUrl(s.platform)} alt={s.platform} className="h-7" loading="lazy" />
-                  </a>
-                ))}
-            </div>
-          </section>
-        )}
-      </article>
+      <article
+        className={`readme ${compact ? "p-5 text-sm" : "p-6 md:p-8"}`}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
     </div>
-  );
-}
-
-function H({ children }: { children: React.ReactNode }) {
-  return <h2 className="mb-3 border-b border-border pb-2 text-lg font-semibold">{children}</h2>;
-}
-
-function StatCard({ src, label }: { src: string; label: string }) {
-  return (
-    <img
-      src={src}
-      alt={label}
-      loading="lazy"
-      className="h-40 max-w-full rounded-md bg-secondary"
-      onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = "none")}
-    />
   );
 }
