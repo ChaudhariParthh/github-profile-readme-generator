@@ -243,7 +243,7 @@ export function toMarkdown(p: Profile): string {
   if (socials.length) {
     out.push("## 🤝 Connect with me", "", `<p align="left">`);
     socials.forEach(([k, v]) =>
-      out.push(`  <a href="${SOCIAL_META[k].url(v)}" target="_blank"><img src="${socialBadgeUrl(k, p.badgeStyle)}" alt="${k}" /></a>`),
+      out.push(`  <a href="${SOCIAL_META[k]!.url(v)}" target="_blank"><img src="${socialBadgeUrl(k, p.badgeStyle)}" alt="${k}" /></a>`),
     );
     out.push(`</p>`, "");
   }

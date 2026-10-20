@@ -150,7 +150,7 @@ function Builder() {
             <p className="mb-2 font-mono text-xs uppercase tracking-wider text-accent">Start from a template</p>
             <div className="flex flex-wrap gap-2">
               {Object.keys(PRESETS).map((name) => (
-                <Button key={name} size="sm" variant="secondary" onClick={() => { setP(PRESETS[name]); toast(`Loaded "${name}"`); }}>
+                <Button key={name} size="sm" variant="secondary" onClick={() => { setP(PRESETS[name] ?? seedProfile); toast(`Loaded "${name}"`); }}>
                   {name}
                 </Button>
               ))}
