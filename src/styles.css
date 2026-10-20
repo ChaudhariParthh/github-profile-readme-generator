@@ -101,40 +101,6 @@
   --shadow-glow: 0 20px 60px -20px color-mix(in oklab, var(--primary) 55%, transparent);
 }
 
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
-}
 
 @layer base {
   * {
@@ -160,3 +126,17 @@
     linear-gradient(90deg, color-mix(in oklab, var(--border) 60%, transparent) 1px, transparent 1px);
   background-size: 48px 48px;
 }
+
+/* GitHub-like README rendering */
+.readme { line-height: 1.6; }
+.readme h1 { font-size: 1.875rem; font-weight: 700; margin: 0 0 .25rem; }
+.readme h3 { font-size: 1.05rem; color: var(--muted-foreground); margin: 0 0 1rem; font-weight: 500; }
+.readme h2 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 .75rem; padding-bottom: .4rem; border-bottom: 1px solid var(--border); }
+.readme p { margin: 0 0 .9rem; }
+.readme p img { display: inline-block; margin: 2px; max-width: 100%; vertical-align: middle; }
+.readme a img { display: inline-block; }
+.readme ul { list-style: disc; padding-left: 1.25rem; margin: 0 0 1rem; }
+.readme li { margin: .2rem 0; }
+.readme a { color: var(--accent); }
+.readme [align="center"] { text-align: center; }
+.readme.text-sm h1 { font-size: 1.25rem; }
