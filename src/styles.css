@@ -140,3 +140,4 @@
 .readme a { color: var(--accent); }
 .readme [align="center"] { text-align: center; }
 .readme.text-sm h1 { font-size: 1.25rem; }
+.readme-broken { display: inline-block; margin: 2px; padding: 2px 8px; border: 1px dashed var(--border); border-radius: 6px; font-size: .75rem; color: var(--muted-foreground); font-family: var(--font-mono, monospace); }
