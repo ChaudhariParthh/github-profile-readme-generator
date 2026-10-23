@@ -54,16 +54,20 @@ export function ReadmePreview({ p, compact = false }: { p: Profile; compact?: bo
 
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
-      <div className="flex items-center gap-2 border-b border-border px-4 py-3 font-mono text-xs text-muted-foreground">
-        <BookOpen className="h-4 w-4" />
-        {p.username || "username"} / README.md
-      </div>
-      <article
-        key={html}
-        onErrorCapture={onImgError}
-        className={`readme ${compact ? "p-5 text-sm" : "p-6 md:p-8"}`}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      {!compact && (
+        <div className="flex items-center gap-2 border-b border-border px-4 py-3 font-mono text-xs text-muted-foreground">
+          <BookOpen className="h-4 w-4" />
+          {p.username || "username"} / README.md
+        </div>
+      )}
+      {!compact && (
+        <article
+          key={html}
+          onErrorCapture={onImgError}
+          className="readme p-6 md:p-8"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      )}
     </div>
   );
 }
