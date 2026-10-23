@@ -2,7 +2,7 @@
 @source "../src";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(:root:not(.light), :root:not(.light) *));
 
 /*
  * Design system definition.
@@ -99,6 +99,35 @@
   --sidebar-ring: oklch(0.606 0.219 292.7);
   --gradient-brand: linear-gradient(135deg, var(--primary), var(--accent));
   --shadow-glow: 0 20px 60px -20px color-mix(in oklab, var(--primary) 55%, transparent);
+  --gradient-brand: linear-gradient(135deg, oklch(0.6 0.24 295), oklch(0.62 0.2 262), oklch(0.78 0.15 215));
+  color-scheme: dark;
+}
+
+/* Day mode: applied by adding .light to <html>; dark stays the default in :root. */
+.light {
+  color-scheme: light;
+  --background: oklch(0.985 0.004 265);
+  --foreground: oklch(0.2 0.02 265);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.02 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.02 265);
+  --primary: oklch(0.55 0.23 292);
+  --secondary: oklch(0.95 0.008 265);
+  --secondary-foreground: oklch(0.25 0.02 265);
+  --muted: oklch(0.95 0.008 265);
+  --muted-foreground: oklch(0.5 0.02 265);
+  --accent: oklch(0.62 0.14 220);
+  --accent-foreground: oklch(0.985 0 0);
+  --border: oklch(0.9 0.01 265);
+  --input: oklch(0.9 0.01 265);
+  --ring: oklch(0.55 0.23 292);
+  --sidebar: oklch(0.97 0.006 265);
+  --sidebar-foreground: oklch(0.2 0.02 265);
+  --sidebar-accent: oklch(0.94 0.01 265);
+  --sidebar-accent-foreground: oklch(0.2 0.02 265);
+  --sidebar-border: oklch(0.9 0.01 265);
+  --shadow-glow: 0 20px 50px -24px color-mix(in oklab, var(--primary) 40%, transparent);
 }
 
 
