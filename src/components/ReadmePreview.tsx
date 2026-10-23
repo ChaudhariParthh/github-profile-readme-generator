@@ -43,8 +43,8 @@ export function ReadmePreview({ p, compact = false }: { p: Profile; compact?: bo
   // Broken external images (rate limits, service outages, bad URLs) become a small label instead of a broken icon.
   const onImgError = (e: React.SyntheticEvent<HTMLElement>) => {
     const img = e.target as HTMLImageElement;
-    if (img.tagName !== "IMG" || img.dataset.failed) return;
-    img.dataset.failed = "1";
+    if (img.tagName !== "IMG" || img.dataset['failed']) return;
+    img.dataset['failed'] = "1";
     const span = document.createElement("span");
     span.className = "readme-broken";
     span.textContent = `⚠ ${img.alt || "image"} unavailable`;
