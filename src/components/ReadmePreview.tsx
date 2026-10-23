@@ -47,7 +47,7 @@ export function ReadmePreview({ p, compact = false }: { p: Profile; compact?: bo
     img.dataset['failed'] = "1";
     const span = document.createElement("span");
     span.className = "readme-broken";
-    span.textContent = `⚠ ${img.alt || "image"} unavailable`;
+    span.textContent = `${img.alt || "image"} unavailable`;
     img.replaceWith(span);
   };
 

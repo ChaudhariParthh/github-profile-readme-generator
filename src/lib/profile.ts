@@ -159,7 +159,7 @@ export const seedProfile: Profile = {
   work: {
     ...emptyWork,
     working: "GitProfile Studio", learning: "Rust and distributed systems", askMe: "React, Node.js and TypeScript",
-    reach: "hello@parth.dev", funFact: "I debug best after midnight ☕",
+    reach: "hello@parth.dev", funFact: "I enjoy building fast, reliable developer tools",
   },
   skills: ["TypeScript", "JavaScript", "React", "Next.js", "Node.js", "Tailwind CSS", "PostgreSQL", "Docker", "Git"],
   techDisplay: "badges",
@@ -322,7 +322,7 @@ function renderSection(p: Profile, id: string): string[] {
     case "header": {
       const banner = safeUrl(p.bannerUrl);
       if (banner) out.push(`<p align="center"><img src="${banner}" alt="banner" width="100%" /></p>`, "");
-      out.push(`<h1 align="center">Hi 👋, I'm ${esc(p.name)}</h1>`);
+      out.push(`<h1 align="center">Hi, I'm ${esc(p.name)}</h1>`);
       if (p.title || p.location) out.push(`<h3 align="center">${esc(p.title)}${p.location ? ` · ${esc(p.location)}` : ""}</h3>`);
       break;
     }
@@ -334,23 +334,23 @@ function renderSection(p: Profile, id: string): string[] {
       out.push(`<p align="left"><img src="${visitorsUrl(p)}" alt="profile views" /></p>`);
       break;
     case "about":
-      if (p.bio.trim()) out.push("## 🙋 About me", "", esc(p.bio.trim()).replace(/\n+/g, " "));
+      if (p.bio.trim()) out.push("## About Me", "", esc(p.bio.trim()).replace(/\n+/g, " "));
       break;
     case "work": {
-      if (w.working) out.push(`- 🔭 I'm currently working on ${mdLink(w.working, w.workingLink)}`);
-      if (w.collab) out.push(`- 👯 I'm looking to collaborate on ${mdLink(w.collab, w.collabLink)}`);
-      if (w.learning) out.push(`- 🌱 I'm currently learning **${esc(w.learning)}**`);
-      if (w.askMe) out.push(`- 💬 Ask me about **${esc(w.askMe)}**`);
-      if (w.reach) out.push(`- 📫 How to reach me **${esc(w.reach)}**`);
-      if (safeUrl(w.blog)) out.push(`- 📝 I regularly write articles on ${mdLink(w.blog, w.blog)}`);
-      if (safeUrl(w.resume)) out.push(`- 📄 Know about my experiences ${mdLink("my resume", w.resume)}`);
-      if (w.funFact) out.push(`- ⚡ Fun fact **${esc(w.funFact)}**`);
+      if (w.working) out.push(`- I'm currently working on ${mdLink(w.working, w.workingLink)}`);
+      if (w.collab) out.push(`- I'm looking to collaborate on ${mdLink(w.collab, w.collabLink)}`);
+      if (w.learning) out.push(`- I'm currently learning **${esc(w.learning)}**`);
+      if (w.askMe) out.push(`- Ask me about **${esc(w.askMe)}**`);
+      if (w.reach) out.push(`- How to reach me **${esc(w.reach)}**`);
+      if (safeUrl(w.blog)) out.push(`- I regularly write articles on ${mdLink(w.blog, w.blog)}`);
+      if (safeUrl(w.resume)) out.push(`- Know about my experiences ${mdLink("my resume", w.resume)}`);
+      if (w.funFact) out.push(`- Fun fact: **${esc(w.funFact)}**`);
       break;
     }
     case "skills": {
       const skills = p.skills.filter((s) => SKILL_INDEX[s]);
       if (!skills.length) break;
-      out.push("## 🛠️ Tech Stack", "", `<p align="left">`);
+      out.push("## Tech Stack", "", `<p align="left">`);
       if (p.techDisplay === "badges") {
         skills.forEach((t) => out.push(`  <img src="${skillBadgeUrl(t, p.badgeStyle)}" alt="${esc(t)}" />`));
       } else {
@@ -363,7 +363,7 @@ function renderSection(p: Profile, id: string): string[] {
     case "projects": {
       const list = p.projects.filter((x) => x.name.trim());
       if (!list.length) break;
-      out.push("## 🚀 Featured Projects", "");
+      out.push("## Featured Projects", "");
       const pins = list.map((x) => ({ x, gh: ghRepo(x.url) }));
       const cards = pins.filter((q) => q.gh);
       if (cards.length) {
@@ -377,27 +377,27 @@ function renderSection(p: Profile, id: string): string[] {
       break;
     }
     case "trophies":
-      out.push("## 🏆 GitHub Trophies", "", `<p align="left"><img src="${trophyUrl(p)}" alt="GitHub trophies" /></p>`);
+      out.push("## GitHub Achievements", "", `<p align="left"><img src="${trophyUrl(p)}" alt="GitHub trophies" /></p>`);
       break;
     case "stats":
       if (!(p.addons.stats || p.addons.langs || p.addons.streak)) break;
-      out.push("## 📊 GitHub Stats", "", `<p align="center">`);
+      out.push("## GitHub Stats", "", `<p align="center">`);
       if (p.addons.stats) out.push(`  <img src="${statsUrl(p)}" alt="GitHub stats" />`);
       if (p.addons.langs) out.push(`  <img src="${langsUrl(p)}" alt="Top languages" />`);
       if (p.addons.streak) out.push(`  <img src="${streakUrl(p)}" alt="GitHub streak" />`);
       out.push(`</p>`);
       break;
     case "graph":
-      out.push("## 📈 Contribution Graph", "", `<p align="center"><img src="${graphUrl(p)}" alt="Contribution graph" width="100%" /></p>`);
+      out.push("## Contribution Graph", "", `<p align="center"><img src="${graphUrl(p)}" alt="Contribution graph" width="100%" /></p>`);
       break;
     case "blog":
       if (p.addons.blog === "none") break;
-      out.push("## ✍️ Latest Blog Posts", "", "<!-- BLOG-POST-LIST:START -->", "<!-- BLOG-POST-LIST:END -->");
+      out.push("## Latest Blog Posts", "", "<!-- BLOG-POST-LIST:START -->", "<!-- BLOG-POST-LIST:END -->");
       break;
     case "socials": {
       const socials = Object.entries(p.socials).filter(([k, v]) => v.trim() && SOCIAL_META[k]);
       if (!socials.length) break;
-      out.push("## 🤝 Connect with me", "", `<p align="left">`);
+      out.push("## Connect with me", "", `<p align="left">`);
       socials.forEach(([k, v]) => {
         const href = safeUrl(SOCIAL_META[k]!.url(v));
         const img = `<img src="${socialBadgeUrl(k, p.badgeStyle)}" alt="${esc(k)}" />`;
@@ -409,7 +409,7 @@ function renderSection(p: Profile, id: string): string[] {
     case "support": {
       const s = p.support;
       if (!(s.bmc || s.kofi || s.sponsors)) break;
-      out.push("## ☕ Support", "", `<p align="left">`);
+      out.push("## Support", "", `<p align="left">`);
       if (s.bmc) out.push(`  <a href="https://www.buymeacoffee.com/${enc(s.bmc)}"><img src="${badge("Buy Me a Coffee", "FFDD00", "buymeacoffee", p.badgeStyle)}" alt="Buy me a coffee" /></a>`);
       if (s.kofi) out.push(`  <a href="https://ko-fi.com/${enc(s.kofi)}"><img src="${badge("Ko-fi", "FF5E5B", "kofi", p.badgeStyle)}" alt="Ko-fi" /></a>`);
       if (s.sponsors) out.push(`  <a href="https://github.com/sponsors/${u(p)}"><img src="${badge("Sponsor", "EA4AAA", "githubsponsors", p.badgeStyle)}" alt="GitHub Sponsors" /></a>`);
