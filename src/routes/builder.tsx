@@ -56,16 +56,16 @@ function downloadFile(name: string, content: string, type: string) {
 }
 
 const WORK_FIELDS: { key: keyof Work; label: string; placeholder: string }[] = [
-  { key: "working", label: "🔭 Currently working on", placeholder: "project name" },
+  { key: "working", label: "Currently working on", placeholder: "project name" },
   { key: "workingLink", label: "Project link", placeholder: "https://..." },
-  { key: "collab", label: "👯 Looking to collaborate on", placeholder: "project or idea" },
+  { key: "collab", label: "Looking to collaborate on", placeholder: "project or idea" },
   { key: "collabLink", label: "Collaboration link", placeholder: "https://..." },
-  { key: "learning", label: "🌱 Currently learning", placeholder: "frameworks, courses etc." },
-  { key: "askMe", label: "💬 Ask me about", placeholder: "react, vue and gsap" },
-  { key: "reach", label: "📫 How to reach me", placeholder: "you@example.com" },
-  { key: "blog", label: "📝 Blog link", placeholder: "https://blog..." },
-  { key: "resume", label: "📄 Resume link", placeholder: "https://..." },
-  { key: "funFact", label: "⚡ Fun fact", placeholder: "I think I am funny" },
+  { key: "learning", label: "Currently learning", placeholder: "frameworks, courses etc." },
+  { key: "askMe", label: "Ask me about", placeholder: "react, vue and gsap" },
+  { key: "reach", label: "How to reach me", placeholder: "you@example.com" },
+  { key: "blog", label: "Blog link", placeholder: "https://blog..." },
+  { key: "resume", label: "Resume link", placeholder: "https://..." },
+  { key: "funFact", label: "Fun fact", placeholder: "I think I am funny" },
 ];
 
 const sectionLabel = (p: Profile, id: string) =>
@@ -448,9 +448,9 @@ function Builder() {
               <>
                 {active === "stats" && (
                   <>
-                    <Toggle label="📊 Stats card" checked={p.addons.stats} onChange={(v) => setAddon("stats", v)} />
-                    <Toggle label="📈 Top languages" checked={p.addons.langs} onChange={(v) => setAddon("langs", v)} />
-                    <Toggle label="🔥 Contribution streak" checked={p.addons.streak} onChange={(v) => setAddon("streak", v)} />
+                    <Toggle label="Stats card" checked={p.addons.stats} onChange={(v) => setAddon("stats", v)} />
+                    <Toggle label="Top languages" checked={p.addons.langs} onChange={(v) => setAddon("langs", v)} />
+                    <Toggle label="Contribution streak" checked={p.addons.streak} onChange={(v) => setAddon("streak", v)} />
                   </>
                 )}
                 <Field label="Widget theme (shared by all stats widgets)">
