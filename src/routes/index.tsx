@@ -61,7 +61,6 @@ function Index() {
             </div>
           </div>
           <div className="relative">
-            <div className="absolute -inset-6 rounded-3xl bg-gradient-brand opacity-20 blur-3xl" />
             <div className="relative shadow-glow transition-transform duration-500 hover:-translate-y-1 hover:rotate-0 lg:rotate-1">
               <ReadmePreview p={seedProfile} compact />
             </div>
