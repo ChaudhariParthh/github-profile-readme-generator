@@ -1,9 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Copy, Palette, UserRound, Sparkles } from "lucide-react";
+import { ArrowRight, Copy, Palette, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
-import { ReadmePreview } from "@/components/ReadmePreview";
-import { seedProfile } from "@/lib/profile";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -42,9 +40,6 @@ function Index() {
         <div className="absolute inset-0 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 md:px-6 lg:grid-cols-2 lg:py-28">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 font-mono text-xs text-muted-foreground">
-              <Sparkles className="h-3.5 w-3.5 text-accent" /> README.md, but beautiful
-            </span>
             <h1 className="mt-6 text-4xl font-bold tracking-tight md:text-6xl">
               Your GitHub profile, <span className="text-gradient">designed in minutes.</span>
             </h1>
@@ -61,9 +56,7 @@ function Index() {
             </div>
           </div>
           <div className="relative">
-            <div className="relative shadow-glow transition-transform duration-500 hover:-translate-y-1 hover:rotate-0 lg:rotate-1">
-              <ReadmePreview p={seedProfile} compact />
-            </div>
+            <div className="relative shadow-glow transition-transform duration-500 hover:-translate-y-1 hover:rotate-0 lg:rotate-1" />
           </div>
         </div>
       </section>
