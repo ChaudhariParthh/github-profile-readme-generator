@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parseConfig, safeUrl, seedProfile, toMarkdown } from "@/lib/profile";
+import { applyAppearance, applyStatsLayout, BACKGROUND_THEMES, STATS_LAYOUTS } from "@/lib/appearance";
 import { moveItem } from "@/lib/reorder";
 
 describe("safeUrl", () => {
@@ -36,6 +37,40 @@ describe("parseConfig", () => {
   it("drops unknown section ids", () => {
     const p = parseConfig({ name: "X", sections: [{ id: "evil", hidden: false }, { id: "skills", hidden: false }] });
     expect(p.sections.map((s) => s.id)).toEqual(["skills"]);
+  });
+  it("falls back to seed appearance and stats layout", () => {
+    const p = parseConfig({ name: "X", appearanceId: "not-a-theme", statsLayout: "nope" });
+    expect(p.appearanceId).toBe(seedProfile.appearanceId);
+    expect(p.statsLayout).toBe(seedProfile.statsLayout);
+  });
+});
+
+describe("appearance and stats layouts", () => {
+  it("ships exactly 10 background themes and 10 stats layouts", () => {
+    expect(BACKGROUND_THEMES).toHaveLength(10);
+    expect(STATS_LAYOUTS).toHaveLength(10);
+    expect(new Set(BACKGROUND_THEMES.map((t) => t.id)).size).toBe(10);
+    expect(new Set(STATS_LAYOUTS.map((t) => t.id)).size).toBe(10);
+  });
+  it("applies a background theme without resetting profile content", () => {
+    const next = applyAppearance({ ...seedProfile, name: "Ada", skills: ["Rust"] }, "neon-cyber");
+    expect(next.name).toBe("Ada");
+    expect(next.skills).toEqual(["Rust"]);
+    expect(next.appearanceId).toBe("neon-cyber");
+    expect(next.bannerUrl).toBe(BACKGROUND_THEMES.find((t) => t.id === "neon-cyber")?.bannerUrl);
+    expect(toMarkdown(next)).toContain(next.bannerUrl);
+  });
+  it("emits a distinct stats heading/layout per design", () => {
+    const headings = STATS_LAYOUTS.map((layout) => {
+      const md = toMarkdown(applyStatsLayout(seedProfile, layout.id));
+      expect(md).toMatch(/github-readme-stats|img\.shields\.io|streak-stats|activity-graph/);
+      return md;
+    });
+    expect(new Set(headings).size).toBe(10);
+  });
+  it("keeps stats visibility toggles", () => {
+    const md = toMarkdown({ ...seedProfile, addons: { ...seedProfile.addons, stats: false, langs: false, streak: false } });
+    expect(md).not.toContain("github-readme-stats.vercel.app/api?");
   });
 });
 

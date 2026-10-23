@@ -8,6 +8,7 @@ function mdToHtml(md: string): string {
   const inline = (s: string) =>
     s
       .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
       .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>');
   const html: string[] = [];
   let list = false;

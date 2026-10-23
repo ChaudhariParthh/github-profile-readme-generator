@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowDown, ArrowUp, Check, Code2, Copy, Download, Eye, FileJson, GithubIcon, GripVertical,
-  Loader2, Plus, RotateCcw, Save, Trash2, Upload,
+  ArrowDown, ArrowUp, Check, Code2, Copy, Eye, FileJson, GithubIcon, GripVertical,
+  Loader2, Plus, RotateCcw, Trash2, Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ReadmePreview } from "@/components/ReadmePreview";
 import { SkillPicker } from "@/components/builder/SkillPicker";
+import { BackgroundGallery, StatsGallery } from "@/components/builder/ThemeGalleries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,10 +22,11 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  BADGE_STYLES, BUILTIN_SECTIONS, PRESETS, SOCIAL_META, STATS_THEMES, TECH_DISPLAYS, TYPING_FONTS,
+  BADGE_STYLES, BUILTIN_SECTIONS, PRESETS, SOCIAL_META, TECH_DISPLAYS, TYPING_FONTS,
   blogWorkflow, parseConfig, safeUrl, seedProfile, toMarkdown,
   type BlogSource, type BuiltinId, type Profile, type Work,
 } from "@/lib/profile";
+import { applyAppearance, applyStatsLayout, appearanceById, resolvedAvatar } from "@/lib/appearance";
 import { fetchGitHubProfile } from "@/lib/github";
 import { moveItem } from "@/lib/reorder";
 
@@ -184,10 +186,27 @@ function Builder() {
   const missing = (Object.keys(BUILTIN_SECTIONS) as BuiltinId[]).filter((id) => !p.sections.some((s) => s.id === id));
   const activeEntry = p.sections.find((s) => s.id === active);
 
+  const exportJson = () => downloadFile("gitprofile-config.json", JSON.stringify(p, null, 2), "application/json");
+  const downloadReadme = () => {
+    downloadFile("README.md", md, "text/markdown;charset=utf-8");
+    toast.success("README.md downloaded");
+  };
+  const jumpPreview = () => {
+    setTab("preview");
+    requestAnimationFrame(() => document.getElementById("readme-preview")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
+
   return (
     <div className="min-h-screen">
-      <SiteHeader />
-      <div className="sticky top-16 z-20 flex border-b border-border bg-background xl:hidden">
+      <SiteHeader
+        builder={{
+          onSave: saveDraft,
+          onDownload: downloadReadme,
+          onExport: exportJson,
+          onPreview: jumpPreview,
+        }}
+      />
+      <div className="sticky top-14 z-20 flex border-b border-border bg-background xl:hidden">
         {(["editor", "preview"] as const).map((t) => (
           <button
             key={t}
@@ -199,78 +218,23 @@ function Builder() {
         ))}
       </div>
 
-      {/* Toolbar */}
-      <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-2 px-4 pt-5 md:px-6">
-        <h1 className="mr-auto text-lg font-semibold">Builder</h1>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="secondary" size="sm">Presets</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {Object.keys(PRESETS).map((name) => (
-              <DropdownMenuItem
-                key={name}
-                onClick={() => {
-                  setP((s) => ({ ...(PRESETS[name] ?? seedProfile), name: s.name, username: s.username, location: s.location }));
-                  toast(`Applied "${name}" preset`);
-                }}
-              >
-                {name}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <Button variant="ghost" size="sm" onClick={saveDraft}><Save className="h-4 w-4" /> Save draft</Button>
-        <Button variant="ghost" size="sm" onClick={() => downloadFile("gitprofile-config.json", JSON.stringify(p, null, 2), "application/json")}>
-          <FileJson className="h-4 w-4" /> Export
-        </Button>
-        <Button variant="ghost" size="sm" onClick={() => fileRef.current?.click()}><Upload className="h-4 w-4" /> Restore</Button>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="application/json,.json"
-          className="hidden"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) importJson(f);
-            e.target.value = "";
-          }}
-        />
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="ghost" size="sm"><RotateCcw className="h-4 w-4" /> Reset</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Reset everything?</AlertDialogTitle>
-              <AlertDialogDescription>Your changes and saved draft will be replaced with the sample profile. Export first if you want to keep them.</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  setP(seedProfile);
-                  setActive("header");
-                  setGhInfo(null);
-                  try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
-                  toast("Reset to the sample profile");
-                }}
-              >
-                Reset
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <Button size="sm" onClick={() => { downloadFile("README.md", md, "text/markdown;charset=utf-8"); toast.success("README.md downloaded"); }}>
-          <Download className="h-4 w-4" /> Download README.md
-        </Button>
-      </div>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="application/json,.json"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) importJson(f);
+          e.target.value = "";
+        }}
+      />
 
-      <main className="mx-auto grid max-w-[1600px] gap-5 px-4 py-5 md:px-6 xl:grid-cols-[240px_minmax(0,1fr)_minmax(0,1.1fr)]">
+      <main className="mx-auto grid max-w-[1680px] gap-3 p-3 md:p-4 xl:grid-cols-[220px_minmax(0,1fr)_minmax(0,1.15fr)]">
         {/* Section manager */}
         <nav className={`${tab === "editor" ? "" : "hidden"} xl:block`}>
-          <div className="space-y-1 rounded-xl border border-border bg-card p-2 xl:sticky xl:top-20">
-            <p className="px-2 py-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Sections · drag to reorder</p>
+          <div className="space-y-1 rounded-xl border border-border bg-card p-2 xl:sticky xl:top-[4.25rem]">
+            <p className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Customize Sections</p>
             {p.sections.map((s, i) => (
               <div
                 key={s.id}
@@ -309,9 +273,55 @@ function Builder() {
 
         {/* Section editor */}
         <section className={`${tab === "editor" ? "" : "hidden"} xl:block`}>
-          <div className="space-y-4 rounded-xl border border-border bg-card p-5">
+          <div className="space-y-4 rounded-xl border border-border bg-card p-4">
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="mr-auto text-base font-semibold">{sectionLabel(p, active)}</h2>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">Presets</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {Object.keys(PRESETS).map((name) => (
+                    <DropdownMenuItem
+                      key={name}
+                      onClick={() => {
+                        setP((s) => ({ ...(PRESETS[name] ?? seedProfile), name: s.name, username: s.username, location: s.location }));
+                        toast(`Applied "${name}" preset`);
+                      }}
+                    >
+                      {name}
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => fileRef.current?.click()}><Upload className="h-4 w-4" /> Restore config</DropdownMenuItem>
+                  <DropdownMenuItem onClick={exportJson}><FileJson className="h-4 w-4" /> Export JSON</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost" size="sm"><RotateCcw className="h-4 w-4" /> Reset</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Reset everything?</AlertDialogTitle>
+                    <AlertDialogDescription>Your changes and saved draft will be replaced with the sample profile. Export first if you want to keep them.</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => {
+                        setP(seedProfile);
+                        setActive("header");
+                        setGhInfo(null);
+                        try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+                        toast("Reset to the sample profile");
+                      }}
+                    >
+                      Reset
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
               {activeEntry && (
                 <>
                   <Button size="icon" variant="ghost" aria-label="Move up" onClick={() => { const i = p.sections.indexOf(activeEntry); set("sections", moveItem(p.sections, i, i - 1)); }}>
@@ -333,6 +343,7 @@ function Builder() {
 
             {active === "header" && (
               <>
+                <p className="text-xs text-muted-foreground">Set your basic information and profile style.</p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field label="Name"><Input value={p.name} maxLength={80} onChange={(e) => set("name", e.target.value)} /></Field>
                   <Field label="GitHub username">
@@ -343,19 +354,63 @@ function Builder() {
                       </Button>
                     </div>
                   </Field>
-                  <Field label="Role / title"><Input value={p.title} maxLength={120} onChange={(e) => set("title", e.target.value)} /></Field>
+                  <Field label="Role / Title"><Input value={p.title} maxLength={120} onChange={(e) => set("title", e.target.value)} /></Field>
                   <Field label="Location"><Input value={p.location} maxLength={60} onChange={(e) => set("location", e.target.value)} /></Field>
                 </div>
                 <p className="text-xs text-muted-foreground">
                   Tap the GitHub button to fill in your real public name, bio, location and top repositories.
                   {ghInfo && ` Found ${ghInfo.repos} public repositories.`}
                 </p>
-                <UrlField
-                  label="Banner image or GIF URL (optional)"
-                  value={p.bannerUrl}
-                  onChange={(v) => set("bannerUrl", v)}
-                  hint="Tip: try capsule-render.vercel.app for animated wave banners."
-                />
+                <Field label={`About Me (${p.bio.length}/500)`}>
+                  <Textarea rows={3} maxLength={500} value={p.bio} onChange={(e) => set("bio", e.target.value)} />
+                </Field>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field label="Profile Photo">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={safeUrl(resolvedAvatar(p)) || undefined}
+                        alt=""
+                        className="h-16 w-16 rounded-full border border-border object-cover bg-secondary"
+                      />
+                      <div className="space-y-1.5">
+                        <UrlField label="" value={p.avatarUrl} onChange={(v) => set("avatarUrl", v)} hint="Leave blank to use your GitHub avatar." />
+                        <Button size="sm" variant="ghost" onClick={() => set("avatarUrl", "")}>Remove</Button>
+                      </div>
+                    </div>
+                  </Field>
+                  <Field label="Banner / Cover">
+                    {safeUrl(p.bannerUrl) && (
+                      <img src={safeUrl(p.bannerUrl)} alt="" className="mb-2 h-16 w-full rounded-lg object-cover" />
+                    )}
+                    <UrlField
+                      label=""
+                      value={p.bannerUrl}
+                      onChange={(v) => setP((s) => ({ ...s, bannerUrl: v, customBanner: true }))}
+                      hint="https image URL. Theme banners are GitHub-compatible images, not CSS."
+                    />
+                    <div className="mt-1.5 flex gap-2">
+                      <Button size="sm" variant="secondary" onClick={() => setP((s) => {
+                        const theme = appearanceById(s.appearanceId);
+                        return { ...s, bannerUrl: theme.bannerUrl, customBanner: false };
+                      })}>
+                        Use theme banner
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => setP((s) => ({ ...s, bannerUrl: "", customBanner: true }))}>Remove</Button>
+                    </div>
+                  </Field>
+                </div>
+                <Field label="Custom accent color">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      aria-label="Accent color"
+                      value={`#${/^[0-9a-f]{6}$/i.test(p.accentColor) ? p.accentColor : "8B5CF6"}`}
+                      onChange={(e) => set("accentColor", e.target.value.slice(1).toUpperCase())}
+                      className="h-9 w-12 cursor-pointer rounded border border-border bg-transparent"
+                    />
+                    <Input className="font-mono" value={p.accentColor} maxLength={6} onChange={(e) => set("accentColor", e.target.value.replace(/[^0-9a-f]/gi, ""))} />
+                  </div>
+                </Field>
               </>
             )}
 
@@ -451,12 +506,10 @@ function Builder() {
                     <Toggle label="Stats card" checked={p.addons.stats} onChange={(v) => setAddon("stats", v)} />
                     <Toggle label="Top languages" checked={p.addons.langs} onChange={(v) => setAddon("langs", v)} />
                     <Toggle label="Contribution streak" checked={p.addons.streak} onChange={(v) => setAddon("streak", v)} />
+                    <p className="text-xs text-muted-foreground">Stats design is independent of the background theme. Pick a layout below — it changes the generated Markdown, not just this editor.</p>
                   </>
                 )}
-                <Field label="Widget theme (shared by all stats widgets)">
-                  <Chips options={STATS_THEMES} value={p.statsTheme} onChange={(v) => set("statsTheme", v)} />
-                </Field>
-                <p className="text-xs text-muted-foreground">These cards are drawn live from your real GitHub activity by free public services. If a service is busy, the preview shows a placeholder.</p>
+                <p className="text-xs text-muted-foreground">Widgets are live images from public GitHub stats services. If a service is busy, the preview shows a placeholder. Numbers are never invented.</p>
               </>
             )}
 
@@ -528,19 +581,22 @@ function Builder() {
         </section>
 
         {/* Preview */}
-        <section className={`${tab === "preview" ? "" : "hidden"} xl:block`}>
-          <div className="space-y-3 xl:sticky xl:top-20">
+        <section id="readme-preview" className={`${tab === "preview" ? "" : "hidden"} xl:block`}>
+          <div className="space-y-3 xl:sticky xl:top-[4.25rem]">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="inline-flex rounded-lg border border-border bg-card p-1">
-                <Button size="sm" variant={raw ? "ghost" : "secondary"} onClick={() => setRaw(false)}><Eye className="h-4 w-4" /> Preview</Button>
-                <Button size="sm" variant={raw ? "secondary" : "ghost"} onClick={() => setRaw(true)}><Code2 className="h-4 w-4" /> Markdown</Button>
+              <h2 className="text-sm font-semibold">Live GitHub README Preview</h2>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="inline-flex rounded-lg border border-border bg-card p-1">
+                  <Button size="sm" variant={raw ? "ghost" : "secondary"} onClick={() => setRaw(false)}><Eye className="h-4 w-4" /> Preview</Button>
+                  <Button size="sm" variant={raw ? "secondary" : "ghost"} onClick={() => setRaw(true)}><Code2 className="h-4 w-4" /> Markdown</Button>
+                </div>
+                <Button size="sm" onClick={copyMd}>
+                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  {copied ? "Copied" : "Copy Markdown"}
+                </Button>
               </div>
-              <Button size="sm" onClick={copyMd}>
-                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                {copied ? "Copied" : "Copy Markdown"}
-              </Button>
             </div>
-            <div className="max-h-[calc(100vh-9rem)] overflow-auto rounded-xl">
+            <div className="max-h-[calc(100vh-8.5rem)] overflow-auto rounded-xl">
               {raw ? (
                 <pre className="whitespace-pre-wrap break-all rounded-xl border border-border bg-card p-5 font-mono text-xs leading-relaxed text-muted-foreground">{md}</pre>
               ) : (
@@ -550,6 +606,17 @@ function Builder() {
           </div>
         </section>
       </main>
+
+      <div className={`${tab === "editor" ? "" : "hidden"} xl:block mx-auto max-w-[1680px] space-y-6 px-3 pb-8 md:px-4`}>
+        <BackgroundGallery
+          value={p.appearanceId}
+          onChange={(id) => setP((s) => applyAppearance(s, id))}
+        />
+        <StatsGallery
+          value={p.statsLayout}
+          onChange={(id) => setP((s) => applyStatsLayout(s, id))}
+        />
+      </div>
     </div>
   );
 }

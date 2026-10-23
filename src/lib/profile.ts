@@ -1,3 +1,17 @@
+import {
+  appearanceById,
+  DEFAULT_APPEARANCE_ID,
+  DEFAULT_STATS_LAYOUT_ID,
+  graphCardUrl,
+  pinCardUrl,
+  renderStatsSection,
+  resolvedAccent,
+  resolvedAvatar,
+  resolvedBanner,
+  statsLayoutById,
+  trophyCardUrl,
+} from "./appearance";
+
 // ---------- Technology catalog ----------
 // [label, simple-icons slug, hex color, optional devicon path for logos simple-icons doesn't ship]
 export type SkillDef = [string, string, string, string?];
@@ -98,18 +112,18 @@ export const TYPING_FONTS = ["Fira Code", "JetBrains Mono", "Roboto Mono", "Pres
 export type BlogSource = "none" | "devto" | "medium" | "rss";
 
 export const BUILTIN_SECTIONS = {
-  header: "Header",
-  typing: "Typing animation",
-  visitors: "Visitor counter",
-  about: "About me",
-  work: "Work & activity",
-  skills: "Tech stack",
-  projects: "Featured projects",
-  trophies: "GitHub trophies",
-  stats: "GitHub stats",
-  graph: "Contribution graph",
-  blog: "Latest blog posts",
-  socials: "Connect with me",
+  header: "Header & Intro",
+  typing: "Animated Typing",
+  visitors: "Visitor Counter",
+  about: "About Me",
+  work: "Work & Experience",
+  skills: "Technologies & Tools",
+  projects: "Featured Projects",
+  trophies: "GitHub Trophies",
+  stats: "GitHub Stats",
+  graph: "Contribution Graph",
+  blog: "Latest Blog Posts",
+  socials: "Social Links",
   support: "Support",
 } as const;
 export type BuiltinId = keyof typeof BUILTIN_SECTIONS;
@@ -129,6 +143,11 @@ export type Profile = {
   location: string;
   bio: string;
   bannerUrl: string; // static image or GIF
+  avatarUrl: string; // optional; empty uses GitHub avatar
+  appearanceId: string;
+  statsLayout: string;
+  accentColor: string;
+  customBanner: boolean;
   typing: { lines: string; font: string; size: number; color: string; center: boolean };
   work: Work;
   skills: string[];
@@ -154,7 +173,12 @@ export const seedProfile: Profile = {
   title: "Full-Stack Developer",
   location: "India",
   bio: "I build fast, accessible web apps with TypeScript end to end. I love clean APIs, thoughtful UI, and shipping things people actually use.",
-  bannerUrl: "",
+  bannerUrl: appearanceById(DEFAULT_APPEARANCE_ID).bannerUrl,
+  avatarUrl: "",
+  appearanceId: DEFAULT_APPEARANCE_ID,
+  statsLayout: DEFAULT_STATS_LAYOUT_ID,
+  accentColor: appearanceById(DEFAULT_APPEARANCE_ID).accent,
+  customBanner: false,
   typing: { lines: "Full-Stack Developer\nTypeScript · React · Node.js\nBuilding GitProfile Studio", font: "Fira Code", size: 22, color: "22D3EE", center: true },
   work: {
     ...emptyWork,
@@ -167,7 +191,7 @@ export const seedProfile: Profile = {
   socials: { LinkedIn: "parthchaudhari", X: "parthcodes", Portfolio: "parth.dev", Email: "hello@parth.dev" },
   projects: [],
   addons: { stats: true, langs: true, streak: true, blog: "none", blogHandle: "" },
-  statsTheme: "tokyonight",
+  statsTheme: statsLayoutById(DEFAULT_STATS_LAYOUT_ID).widgetTheme,
   support: { bmc: "", kofi: "", sponsors: false },
   sections: ALL_SECTIONS(["trophies", "graph", "blog", "support", "projects"]),
   custom: {},
@@ -286,19 +310,16 @@ export const socialBadgeUrl = (p: string, style: BadgeStyle = "for-the-badge") =
 
 const u = (p: Profile) => enc(p.username || "github");
 export const statsUrl = (p: Profile) =>
-  `https://github-readme-stats.vercel.app/api?username=${u(p)}&show_icons=true&theme=${p.statsTheme}&hide_border=true`;
+  `https://github-readme-stats.vercel.app/api?username=${u(p)}&show_icons=true&theme=${statsLayoutById(p.statsLayout).widgetTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`;
 export const langsUrl = (p: Profile) =>
-  `https://github-readme-stats.vercel.app/api/top-langs/?username=${u(p)}&layout=compact&theme=${p.statsTheme}&hide_border=true`;
+  `https://github-readme-stats.vercel.app/api/top-langs/?username=${u(p)}&layout=${statsLayoutById(p.statsLayout).langsLayout}&theme=${statsLayoutById(p.statsLayout).widgetTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`;
 export const streakUrl = (p: Profile) =>
-  `https://streak-stats.demolab.com?user=${u(p)}&theme=${p.statsTheme}&hide_border=true`;
-export const trophyUrl = (p: Profile) =>
-  `https://github-profile-trophy.vercel.app/?username=${u(p)}&theme=${p.statsTheme === "github_dark" ? "darkhub" : p.statsTheme}&no-frame=true&row=1&column=7`;
+  `https://streak-stats.demolab.com?user=${u(p)}&theme=${statsLayoutById(p.statsLayout).streakTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`;
+export const trophyUrl = (p: Profile) => trophyCardUrl(p);
 export const visitorsUrl = (p: Profile) =>
-  `https://komarev.com/ghpvc/?username=${u(p)}&label=Profile%20views&color=8B5CF6&style=flat`;
-export const graphUrl = (p: Profile) =>
-  `https://github-readme-activity-graph.vercel.app/graph?username=${u(p)}&theme=${p.statsTheme === "tokyonight" ? "tokyo-night" : p.statsTheme === "dracula" ? "dracula" : "github-compact"}&hide_border=true`;
-export const pinUrl = (p: Profile, owner: string, repo: string) =>
-  `https://github-readme-stats.vercel.app/api/pin/?username=${enc(owner)}&repo=${enc(repo)}&theme=${p.statsTheme}&hide_border=true`;
+  `https://komarev.com/ghpvc/?username=${u(p)}&label=Profile%20views&color=${resolvedAccent(p)}&style=flat`;
+export const graphUrl = (p: Profile) => graphCardUrl(p);
+export const pinUrl = (p: Profile, owner: string, repo: string) => pinCardUrl(p, owner, repo);
 export const typingUrl = (p: Profile) => {
   const lines = p.typing.lines.split("\n").map((l) => l.replace(/;/g, ",").trim()).filter(Boolean);
   const size = Math.min(40, Math.max(12, Number(p.typing.size) || 22));
@@ -320,8 +341,10 @@ function renderSection(p: Profile, id: string): string[] {
   const out: string[] = [];
   switch (id) {
     case "header": {
-      const banner = safeUrl(p.bannerUrl);
+      const banner = safeUrl(resolvedBanner(p));
       if (banner) out.push(`<p align="center"><img src="${banner}" alt="banner" width="100%" /></p>`, "");
+      const avatar = safeUrl(resolvedAvatar(p));
+      if (avatar) out.push(`<p align="center"><img src="${avatar}" alt="${esc(p.name || p.username)} avatar" width="110" height="110" /></p>`);
       out.push(`<h1 align="center">Hi, I'm ${esc(p.name)}</h1>`);
       if (p.title || p.location) out.push(`<h3 align="center">${esc(p.title)}${p.location ? ` · ${esc(p.location)}` : ""}</h3>`);
       break;
@@ -380,12 +403,7 @@ function renderSection(p: Profile, id: string): string[] {
       out.push("## GitHub Achievements", "", `<p align="left"><img src="${trophyUrl(p)}" alt="GitHub trophies" /></p>`);
       break;
     case "stats":
-      if (!(p.addons.stats || p.addons.langs || p.addons.streak)) break;
-      out.push("## GitHub Stats", "", `<p align="center">`);
-      if (p.addons.stats) out.push(`  <img src="${statsUrl(p)}" alt="GitHub stats" />`);
-      if (p.addons.langs) out.push(`  <img src="${langsUrl(p)}" alt="Top languages" />`);
-      if (p.addons.streak) out.push(`  <img src="${streakUrl(p)}" alt="GitHub streak" />`);
-      out.push(`</p>`);
+      out.push(...renderStatsSection(p));
       break;
     case "graph":
       out.push("## Contribution Graph", "", `<p align="center"><img src="${graphUrl(p)}" alt="Contribution graph" width="100%" /></p>`);
@@ -479,5 +497,10 @@ export function parseConfig(raw: unknown): Profile {
     techDisplay: TECH_DISPLAYS.includes(r.techDisplay as TechDisplay) ? (r.techDisplay as TechDisplay) : "badges",
     sections,
     custom,
+    appearanceId: appearanceById(typeof r.appearanceId === "string" ? r.appearanceId : seedProfile.appearanceId).id,
+    statsLayout: statsLayoutById(typeof r.statsLayout === "string" ? r.statsLayout : seedProfile.statsLayout).id,
+    accentColor: hexOk(typeof r.accentColor === "string" ? r.accentColor : seedProfile.accentColor),
+    customBanner: !!r.customBanner,
+    avatarUrl: typeof r.avatarUrl === "string" ? r.avatarUrl : "",
   };
 }

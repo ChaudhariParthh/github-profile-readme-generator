@@ -1,8 +1,8 @@
 import { safeUrl } from "@/lib/profile";
 
-const ALLOWED_TAGS = new Set(["H1", "H2", "H3", "P", "IMG", "A", "B", "STRONG", "EM", "I", "UL", "OL", "LI", "BR", "CODE", "PRE", "DIV", "SPAN", "PICTURE", "SOURCE"]);
+const ALLOWED_TAGS = new Set(["H1", "H2", "H3", "P", "IMG", "A", "B", "STRONG", "EM", "I", "UL", "OL", "LI", "BR", "CODE", "PRE", "DIV", "SPAN", "PICTURE", "SOURCE", "TABLE", "THEAD", "TBODY", "TFOOT", "TR", "TD", "TH"]);
 const DROP_WITH_CONTENT = new Set(["SCRIPT", "STYLE", "IFRAME", "OBJECT", "EMBED", "NOSCRIPT", "TEMPLATE", "SVG", "MATH", "FORM"]);
-const ALLOWED_ATTRS = new Set(["align", "alt", "title", "width", "height", "src", "href", "srcset", "media"]);
+const ALLOWED_ATTRS = new Set(["align", "alt", "title", "width", "height", "src", "href", "srcset", "media", "valign", "colspan", "rowspan"]);
 
 /** Browser-only allow-list sanitizer: keeps GitHub-README-safe tags, strips every event handler and unsafe URL. */
 export function sanitizeHtml(html: string): string {
