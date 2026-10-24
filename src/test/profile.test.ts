@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseConfig, safeUrl, seedProfile, toMarkdown } from "@/lib/profile";
+import { bmcUrl, parseConfig, PRESETS, safeUrl, seedProfile, statsFallbackUrl, toMarkdown } from "@/lib/profile";
 import { applyAppearance, applyStatsLayout, BACKGROUND_THEMES, STATS_LAYOUTS } from "@/lib/appearance";
 import { moveItem } from "@/lib/reorder";
 
@@ -76,4 +76,31 @@ describe("appearance and stats layouts", () => {
 
 describe("moveItem", () => {
   it("moves an item to a new index", () => expect(moveItem(["a", "b", "c"], 0, 2)).toEqual(["b", "c", "a"]));
+});
+
+describe("phase 1 correctness", () => {
+  it("banner is off by default", () => {
+    expect(seedProfile.showBanner).toBe(false);
+    expect(toMarkdown(seedProfile)).not.toContain('alt="banner"');
+  });
+  it("banner toggle updates Markdown", () => {
+    expect(toMarkdown({ ...seedProfile, showBanner: true })).toContain('alt="banner"');
+  });
+  it("each preset resolves by name for ?preset=", () => {
+    expect(Object.keys(PRESETS)).toEqual(["Minimal", "Professional", "Animated Developer", "AI Engineer", "Cybersecurity", "Student Portfolio"]);
+    expect(PRESETS["Cybersecurity"]!.title).toBe("Security Engineer");
+  });
+  it("stats widget has a fallback mirror", () => {
+    expect(statsFallbackUrl("https://github-readme-stats.vercel.app/api?username=a")).toBe("https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api?username=a");
+    expect(statsFallbackUrl("https://example.com/x")).toBe("");
+  });
+  it("preserves a valid Buy Me a Coffee URL and rejects other hosts", () => {
+    expect(bmcUrl("https://www.buymeacoffee.com/parth")).toBe("https://www.buymeacoffee.com/parth");
+    expect(toMarkdown({ ...seedProfile, support: { ...seedProfile.support, bmc: "https://www.buymeacoffee.com/parth" } })).toContain('href="https://www.buymeacoffee.com/parth"');
+    expect(bmcUrl("https://evil.com/parth")).toBe("");
+    expect(bmcUrl("parth")).toBe("https://buymeacoffee.com/parth");
+  });
+  it("ships no Unsplash banners", () => {
+    expect(BACKGROUND_THEMES.some((t) => t.bannerUrl.includes("unsplash"))).toBe(false);
+  });
 });
