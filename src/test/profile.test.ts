@@ -58,7 +58,7 @@ describe("appearance and stats layouts", () => {
     expect(next.skills).toEqual(["Rust"]);
     expect(next.appearanceId).toBe("neon-cyber");
     expect(next.bannerUrl).toBe(BACKGROUND_THEMES.find((t) => t.id === "neon-cyber")?.bannerUrl);
-    expect(toMarkdown(next)).toContain(next.bannerUrl);
+    expect(toMarkdown({ ...next, showBanner: true })).toContain(next.bannerUrl);
   });
   it("emits a distinct stats heading/layout per design", () => {
     const headings = STATS_LAYOUTS.map((layout) => {
