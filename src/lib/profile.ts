@@ -143,6 +143,7 @@ export type Profile = {
   location: string;
   bio: string;
   bannerUrl: string; // static image or GIF
+  showBanner: boolean; // banner is opt-in
   avatarUrl: string; // optional; empty uses GitHub avatar
   appearanceId: string;
   statsLayout: string;
@@ -174,6 +175,7 @@ export const seedProfile: Profile = {
   location: "India",
   bio: "I build fast, accessible web apps with TypeScript end to end. I love clean APIs, thoughtful UI, and shipping things people actually use.",
   bannerUrl: appearanceById(DEFAULT_APPEARANCE_ID).bannerUrl,
+  showBanner: false,
   avatarUrl: "",
   appearanceId: DEFAULT_APPEARANCE_ID,
   statsLayout: DEFAULT_STATS_LAYOUT_ID,
@@ -219,6 +221,7 @@ export const PRESETS: Record<string, Profile> = {
   },
   "Animated Developer": {
     ...seedProfile,
+    showBanner: true,
     bannerUrl: "https://capsule-render.vercel.app/api?type=waving&color=0:8B5CF6,100:22D3EE&height=160&section=header&text=Hello%20World&fontColor=ffffff&animation=fadeIn",
     typing: { ...seedProfile.typing, font: "Press Start 2P", size: 18, color: "8B5CF6" },
     techDisplay: "icons",
@@ -335,13 +338,42 @@ const ghRepo = (url: string) => {
   return m ? { owner: m[1]!, repo: m[2]! } : null;
 };
 
+const BMC_HOSTS = new Set(["buymeacoffee.com", "www.buymeacoffee.com"]);
+/** Accepts a Buy Me a Coffee username or full URL; returns the full https URL only for allow-listed hosts. */
+export function bmcUrl(raw: string): string {
+  const v = (raw || "").trim();
+  if (!v) return "";
+  if (/^[\w.-]+$/.test(v)) return `https://buymeacoffee.com/${v}`;
+  const ok = safeUrl(/^https?:\/\//i.test(v) ? v : `https://${v}`);
+  try {
+    const u = new URL(ok);
+    return u.protocol === "https:" && BMC_HOSTS.has(u.hostname.toLowerCase()) && u.pathname.length > 1 ? u.href : "";
+  } catch {
+    return "";
+  }
+}
+
+export const STATS_PRIMARY_HOST = "github-readme-stats.vercel.app";
+export const STATS_FALLBACK_HOST = "github-readme-stats-git-masterrstaa-rickstaa.vercel.app";
+/** Fallback mirror for a stats-widget URL (used by the preview when the primary is down or rate limited). */
+export function statsFallbackUrl(src: string): string {
+  try {
+    const u = new URL(src);
+    if (u.hostname !== STATS_PRIMARY_HOST) return "";
+    u.hostname = STATS_FALLBACK_HOST;
+    return u.href;
+  } catch {
+    return "";
+  }
+}
+
 // ---------- Markdown ----------
 function renderSection(p: Profile, id: string): string[] {
   const w = p.work;
   const out: string[] = [];
   switch (id) {
     case "header": {
-      const banner = safeUrl(resolvedBanner(p));
+      const banner = p.showBanner ? safeUrl(resolvedBanner(p)) : "";
       if (banner) out.push(`<p align="center"><img src="${banner}" alt="banner" width="100%" /></p>`, "");
       const avatar = safeUrl(resolvedAvatar(p));
       if (avatar) out.push(`<p align="center"><img src="${avatar}" alt="${esc(p.name || p.username)} avatar" width="110" height="110" /></p>`);
@@ -426,9 +458,10 @@ function renderSection(p: Profile, id: string): string[] {
     }
     case "support": {
       const s = p.support;
-      if (!(s.bmc || s.kofi || s.sponsors)) break;
+      if (!(bmcUrl(s.bmc) || s.kofi || s.sponsors)) break;
       out.push("## Support", "", `<p align="left">`);
-      if (s.bmc) out.push(`  <a href="https://www.buymeacoffee.com/${enc(s.bmc)}"><img src="${badge("Buy Me a Coffee", "FFDD00", "buymeacoffee", p.badgeStyle)}" alt="Buy me a coffee" /></a>`);
+      const bmc = bmcUrl(s.bmc);
+      if (bmc) out.push(`  <a href="${bmc}"><img src="${badge("Buy Me a Coffee", "FFDD00", "buymeacoffee", p.badgeStyle)}" alt="Buy me a coffee" /></a>`);
       if (s.kofi) out.push(`  <a href="https://ko-fi.com/${enc(s.kofi)}"><img src="${badge("Ko-fi", "FF5E5B", "kofi", p.badgeStyle)}" alt="Ko-fi" /></a>`);
       if (s.sponsors) out.push(`  <a href="https://github.com/sponsors/${u(p)}"><img src="${badge("Sponsor", "EA4AAA", "githubsponsors", p.badgeStyle)}" alt="GitHub Sponsors" /></a>`);
       out.push(`</p>`);
@@ -501,6 +534,7 @@ export function parseConfig(raw: unknown): Profile {
     statsLayout: statsLayoutById(typeof r.statsLayout === "string" ? r.statsLayout : seedProfile.statsLayout).id,
     accentColor: hexOk(typeof r.accentColor === "string" ? r.accentColor : seedProfile.accentColor),
     customBanner: !!r.customBanner,
+    showBanner: r.showBanner === true,
     avatarUrl: typeof r.avatarUrl === "string" ? r.avatarUrl : "",
   };
 }

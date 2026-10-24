@@ -2,6 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Copy, Palette, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
+import { ReadmePreview } from "@/components/ReadmePreview";
+import { PRESETS, seedProfile } from "@/lib/profile";
+import { resolvedBanner } from "@/lib/appearance";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,14 +26,6 @@ const steps = [
   { icon: Copy, title: "Copy Markdown", text: "Grab clean Markdown and paste into your profile repo." },
 ];
 
-const themes = [
-  { name: "Minimal", desc: "Quiet, text-first, zero noise.", swatch: "from-muted to-secondary" },
-  { name: "Modern Dev", desc: "Badges, stats and a crisp header.", swatch: "from-primary to-accent" },
-  { name: "Neon Dark", desc: "High-contrast glow for night owls.", swatch: "from-accent to-primary" },
-  { name: "Gradient", desc: "Bold gradient banner and accents.", swatch: "from-primary via-accent to-primary" },
-  { name: "Contributor", desc: "Open-source streaks front and center.", swatch: "from-chart-3 to-accent" },
-  { name: "Portfolio", desc: "Projects and links that convert.", swatch: "from-chart-4 to-chart-5" },
-];
 
 function Index() {
   return (
@@ -56,7 +51,9 @@ function Index() {
             </div>
           </div>
           <div className="relative">
-            <div className="relative shadow-glow transition-transform duration-500 hover:-translate-y-1 hover:rotate-0 lg:rotate-1" />
+            <div className="relative max-h-[560px] overflow-hidden rounded-xl shadow-glow transition-transform duration-500 hover:-translate-y-1 hover:rotate-0 lg:rotate-1">
+              <ReadmePreview p={seedProfile} compact />
+            </div>
           </div>
         </div>
       </section>
@@ -82,26 +79,33 @@ function Index() {
         <p className="font-mono text-sm text-accent">// presets</p>
         <h2 className="mt-2 text-3xl font-bold">Start from a theme</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {themes.map((t) => (
-            <Link
-              key={t.name}
-              to="/builder"
-              className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary"
-            >
-              <div className={`h-28 rounded-lg bg-gradient-to-br ${t.swatch} p-4`}>
-                <div className="h-2 w-1/2 rounded bg-background/60" />
-                <div className="mt-2 h-2 w-1/3 rounded bg-background/40" />
-                <div className="mt-6 flex gap-1.5">
-                  {[0, 1, 2, 3].map((i) => <div key={i} className="h-4 w-10 rounded bg-background/50" />)}
+          {Object.keys(PRESETS).map((name) => {
+            const pr = PRESETS[name]!;
+            return (
+              <Link
+                key={name}
+                to="/builder"
+                search={{ preset: name }}
+                className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary"
+              >
+                <div className="h-28 overflow-hidden rounded-lg bg-secondary">
+                  {pr.showBanner ? (
+                    <img src={resolvedBanner(pr)} alt={`${name} banner`} loading="lazy" className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full flex-col justify-center gap-2 p-4 font-mono text-xs text-muted-foreground">
+                      <span className="text-foreground">{pr.title}</span>
+                      <span>{pr.skills.slice(0, 4).join(" · ")}</span>
+                    </div>
+                  )}
                 </div>
-              </div>
-              <div className="mt-4 flex items-center justify-between">
-                <h3 className="font-semibold">{t.name}</h3>
-                <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">{t.desc}</p>
-            </Link>
-          ))}
+                <div className="mt-4 flex items-center justify-between">
+                  <h3 className="font-semibold">{name}</h3>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">{pr.title} · {pr.skills.length} technologies</p>
+              </Link>
+            );
+          })}
         </div>
       </section>
       <footer className="border-t border-border py-8 text-center font-mono text-xs text-muted-foreground">
