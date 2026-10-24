@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { BookOpen } from "lucide-react";
-import { toMarkdown, type Profile } from "@/lib/profile";
+import { statsFallbackUrl, toMarkdown, type Profile } from "@/lib/profile";
 import { sanitizeHtml } from "@/lib/sanitize";
 
 /** Renders the subset of Markdown our generator emits (HTML blocks, ## headings, bullets, bold, links). */
@@ -45,6 +45,8 @@ export function ReadmePreview({ p, compact = false }: { p: Profile; compact?: bo
   const onImgError = (e: React.SyntheticEvent<HTMLElement>) => {
     const img = e.target as HTMLImageElement;
     if (img.tagName !== "IMG" || img.dataset['failed']) return;
+    const fallback = img.dataset['fellBack'] ? "" : statsFallbackUrl(img.src);
+    if (fallback) { img.dataset['fellBack'] = "1"; img.src = fallback; return; }
     img.dataset['failed'] = "1";
     const span = document.createElement("span");
     span.className = "readme-broken";
@@ -60,14 +62,12 @@ export function ReadmePreview({ p, compact = false }: { p: Profile; compact?: bo
           {p.username || "username"} / README.md
         </div>
       )}
-      {!compact && (
-        <article
-          key={html}
-          onErrorCapture={onImgError}
-          className="readme p-6 md:p-8"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      )}
+      <article
+        key={html}
+        onErrorCapture={onImgError}
+        className={compact ? "readme p-4" : "readme p-6 md:p-8"}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
     </div>
   );
 }

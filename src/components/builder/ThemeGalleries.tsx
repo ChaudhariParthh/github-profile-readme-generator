@@ -54,7 +54,8 @@ function ThemeCard({ theme, active, onSelect }: { theme: AppearanceTheme; active
       aria-pressed={active}
       className={`overflow-hidden rounded-xl border text-left transition-colors ${active ? "border-primary ring-2 ring-primary/40" : "border-border hover:border-primary/50"}`}
     >
-      <div className="relative h-24 w-full" style={{ background: theme.thumb }}>
+      <div className="relative h-24 w-full overflow-hidden" style={{ background: theme.thumb }}>
+        <img src={theme.bannerUrl} alt={`${theme.name} banner`} loading="lazy" referrerPolicy="no-referrer" className="absolute inset-0 h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
         <span className="absolute left-2 top-2 font-mono text-[10px] text-white/90 drop-shadow">{theme.n}</span>
         <span className="absolute bottom-2 right-2 flex gap-1">
           {theme.palette.map((c) => (
