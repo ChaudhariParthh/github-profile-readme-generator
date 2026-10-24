@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   BADGE_STYLES, BUILTIN_SECTIONS, PRESETS, SOCIAL_META, TECH_DISPLAYS, TYPING_FONTS,
-  blogWorkflow, parseConfig, safeUrl, seedProfile, toMarkdown,
+  blogWorkflow, bmcUrl, parseConfig, safeUrl, seedProfile, toMarkdown,
   type BlogSource, type BuiltinId, type Profile, type Work,
 } from "@/lib/profile";
 import { applyAppearance, applyStatsLayout, appearanceById, resolvedAvatar } from "@/lib/appearance";
@@ -41,6 +41,8 @@ export const Route = createFileRoute("/builder")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { preset?: string } =>
+    typeof s['preset'] === "string" ? { preset: s['preset'] } : {},
   component: Builder,
 });
 
@@ -86,7 +88,14 @@ function Builder() {
   const md = useMemo(() => toMarkdown(p), [p]);
 
   // Restore a saved draft after mount (browser storage isn't available during server render).
+  const { preset } = Route.useSearch();
   useEffect(() => {
+    // A valid ?preset= wins over a restored draft.
+    if (preset && Object.prototype.hasOwnProperty.call(PRESETS, preset)) {
+      setP(PRESETS[preset]!);
+      toast(`Loaded the ${preset} preset`);
+      return;
+    }
     try {
       const saved = localStorage.getItem(DRAFT_KEY);
       if (saved) {
@@ -96,7 +105,7 @@ function Builder() {
     } catch {
       /* ignore corrupt drafts */
     }
-  }, []);
+  }, [preset]);
 
   const set = <K extends keyof Profile>(k: K, v: Profile[K]) => setP((s) => ({ ...s, [k]: v }));
   const setWork = (k: keyof Work, v: string) => setP((s) => ({ ...s, work: { ...s.work, [k]: v } }));
@@ -379,6 +388,10 @@ function Builder() {
                     </div>
                   </Field>
                   <Field label="Banner / Cover">
+                    <div className="mb-2 flex items-center justify-between rounded-lg border border-border px-3 py-2">
+                      <Label htmlFor="show-banner" className="text-sm">Include banner in README</Label>
+                      <Switch id="show-banner" checked={p.showBanner} onCheckedChange={(v) => set("showBanner", v)} />
+                    </div>
                     {safeUrl(p.bannerUrl) && (
                       <img src={safeUrl(p.bannerUrl)} alt="" className="mb-2 h-16 w-full rounded-lg object-cover" />
                     )}
@@ -558,7 +571,10 @@ function Builder() {
             {active === "support" && (
               <>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <Field label="Buy Me a Coffee username"><Input className="font-mono" value={p.support.bmc} onChange={(e) => set("support", { ...p.support, bmc: e.target.value })} /></Field>
+                  <Field label="Buy Me a Coffee link">
+                    <Input className="font-mono" placeholder="https://buymeacoffee.com/yourname" value={p.support.bmc} onChange={(e) => set("support", { ...p.support, bmc: e.target.value })} />
+                    {p.support.bmc.trim() && !bmcUrl(p.support.bmc) && <p className="mt-1 text-xs text-destructive">Use a buymeacoffee.com link or username.</p>}
+                  </Field>
                   <Field label="Ko-fi username"><Input className="font-mono" value={p.support.kofi} onChange={(e) => set("support", { ...p.support, kofi: e.target.value })} /></Field>
                 </div>
                 <Toggle label="GitHub Sponsors button" checked={p.support.sponsors} onChange={(v) => set("support", { ...p.support, sponsors: v })} />

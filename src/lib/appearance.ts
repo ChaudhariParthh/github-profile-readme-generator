@@ -56,7 +56,7 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Deep space theme with planets and nebula. Creative and eye-catching.",
     accent: "C084FC",
     palette: ["#0F172A", "#6D28D9", "#38BDF8"],
-    bannerUrl: "https://images.unsplash.com/photo-1462331947965-a138e25ca8de?auto=format&fit=crop&w=1400&h=360&q=80",
+    bannerUrl: cap("type=venom&color=0:020617,50:7C3AED,100:0EA5E9&fontColor=E0E7FF&animation=twinkling"),
     thumb: "radial-gradient(circle at 20% 30%,#7c3aed 0%,transparent 40%),radial-gradient(circle at 80% 70%,#0ea5e9 0%,transparent 35%),linear-gradient(135deg,#020617,#1e1b4b)",
   },
   {
@@ -66,7 +66,7 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Minimal illustrated mountains with moon. Clean and aesthetic.",
     accent: "818CF8",
     palette: ["#0B1220", "#312E81", "#F9A8D4"],
-    bannerUrl: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&h=360&q=80",
+    bannerUrl: cap("type=waving&color=0:0F172A,50:312E81,100:BE185D&fontColor=F8FAFC&animation=fadeIn"),
     thumb: "linear-gradient(180deg,#0f172a 0%,#312e81 40%,#be185d 78%,#0f172a 100%)",
   },
   {
@@ -76,7 +76,7 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Dark ocean inspired theme with smooth gradients.",
     accent: "22D3EE",
     palette: ["#042F2E", "#0F766E", "#67E8F9"],
-    bannerUrl: "https://images.unsplash.com/photo-1682687982501-1e58ab814714?auto=format&fit=crop&w=1400&h=360&q=80",
+    bannerUrl: cap("type=waving&color=0:022C22,50:0F766E,100:22D3EE&fontColor=ECFEFF&animation=fadeIn"),
     thumb: "linear-gradient(180deg,#022c22 0%,#0f766e 50%,#22d3ee 100%)",
   },
   {
@@ -86,7 +86,7 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Warm sunset gradients with city skyline. Modern and vibrant.",
     accent: "F97316",
     palette: ["#4C0519", "#DB2777", "#F59E0B"],
-    bannerUrl: "https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?auto=format&fit=crop&w=1400&h=360&q=80",
+    bannerUrl: cap("type=egg&color=0:4C1D95,50:DB2777,100:FB923C&fontColor=FFF7ED"),
     thumb: "linear-gradient(180deg,#4c1d95 0%,#db2777 48%,#fb923c 100%)",
   },
   {
