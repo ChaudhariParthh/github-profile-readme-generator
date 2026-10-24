@@ -6,7 +6,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
 [![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-181717?style=for-the-badge&logo=github)](https://pages.github.com/)
 
-GitProfile Studio is a front-end application for creating polished GitHub profile README files. It allows users to customize layout, typography, badges, social links, and generated Markdown content in a streamlined browser-based workflow.
+GitProfile Studio is a front-end application for creating polished GitHub profile README files. It allows users to tailor layout, typography, badges, stats, social links, and generated Markdown content in a streamlined, browser-based workflow.
 
 ## Live links
 
@@ -16,13 +16,22 @@ GitProfile Studio is a front-end application for creating polished GitHub profil
 
 ## Overview
 
-GitProfile Studio is designed as a lightweight, client-side tool for generating README content without requiring a backend service. The application focuses on a clean user experience, template-driven customization, and static deployment compatibility.
+GitProfile Studio is designed as a lightweight, client-side tool for generating README content without requiring a backend service. The application prioritizes a clean user experience, template-driven customization, and static deployment compatibility.
+
+## Tools used
+
+This project was developed using a combination of modern AI-assisted design and development tools:
+
+- Lovable for rapid application prototyping and UI generation
+- Cursor for code implementation, editing, and refinement
+- Bolt.new for additional experimentation and development acceleration
+- Deployment and publishing were handled through the Lovable workflow, with the final project deployed to GitHub Pages
 
 ## Features
 
 - GitHub profile README generation
 - Customizable banner and layout styling
-- Badge, stats, and social link configuration
+- Badge, stat, and social link configuration
 - Template-based design system
 - Markdown preview of generated output
 - Responsive browser interface
