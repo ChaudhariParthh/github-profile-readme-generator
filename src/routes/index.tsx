@@ -7,9 +7,16 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "GitProfile Studio — GitHub Profile README Generator" },
-      { name: "description", content: "Design a standout GitHub profile README in minutes. Pick a theme, add badges and stats, copy Markdown." },
+      {
+        name: "description",
+        content:
+          "Design a standout GitHub profile README in minutes. Pick a theme, add badges and stats, copy Markdown.",
+      },
       { property: "og:title", content: "GitProfile Studio — GitHub Profile README Generator" },
-      { property: "og:description", content: "Design a standout GitHub profile README in minutes." },
+      {
+        property: "og:description",
+        content: "Design a standout GitHub profile README in minutes.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -18,18 +25,50 @@ export const Route = createFileRoute("/")({
 });
 
 const steps = [
-  { icon: UserRound, title: "Configure profile", text: "Name, role, bio, what you're building and learning." },
-  { icon: Palette, title: "Pick theme & badges", text: "Choose a preset, tech stack badges, socials and stats cards." },
-  { icon: Copy, title: "Copy Markdown", text: "Grab clean Markdown and paste into your profile repo." },
+  {
+    icon: UserRound,
+    title: "Configure profile",
+    text: "Name, role, bio, what you're building and learning.",
+  },
+  {
+    icon: Palette,
+    title: "Pick theme & badges",
+    text: "Choose a preset, tech stack badges, socials and stats cards.",
+  },
+  {
+    icon: Copy,
+    title: "Copy Markdown",
+    text: "Grab clean Markdown and paste into your profile repo.",
+  },
 ];
 
 const themes = [
   { name: "Minimal", desc: "Quiet, text-first, zero noise.", swatch: "from-muted to-secondary" },
-  { name: "Modern Dev", desc: "Badges, stats and a crisp header.", swatch: "from-primary to-accent" },
-  { name: "Neon Dark", desc: "High-contrast glow for night owls.", swatch: "from-accent to-primary" },
-  { name: "Gradient", desc: "Bold gradient banner and accents.", swatch: "from-primary via-accent to-primary" },
-  { name: "Contributor", desc: "Open-source streaks front and center.", swatch: "from-chart-3 to-accent" },
-  { name: "Portfolio", desc: "Projects and links that convert.", swatch: "from-chart-4 to-chart-5" },
+  {
+    name: "Modern Dev",
+    desc: "Badges, stats and a crisp header.",
+    swatch: "from-primary to-accent",
+  },
+  {
+    name: "Neon Dark",
+    desc: "High-contrast glow for night owls.",
+    swatch: "from-accent to-primary",
+  },
+  {
+    name: "Gradient",
+    desc: "Bold gradient banner and accents.",
+    swatch: "from-primary via-accent to-primary",
+  },
+  {
+    name: "Contributor",
+    desc: "Open-source streaks front and center.",
+    swatch: "from-chart-3 to-accent",
+  },
+  {
+    name: "Portfolio",
+    desc: "Projects and links that convert.",
+    swatch: "from-chart-4 to-chart-5",
+  },
 ];
 
 function Index() {
@@ -44,11 +83,14 @@ function Index() {
               Your GitHub profile, <span className="text-gradient">designed in minutes.</span>
             </h1>
             <p className="mt-5 max-w-lg text-lg text-muted-foreground">
-              Build a polished profile README with live preview, tech badges, stats cards and socials — then copy the Markdown.
+              Build a polished profile README with live preview, tech badges, stats cards and
+              socials — then copy the Markdown.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">
-                <Link to="/builder">Open Builder <ArrowRight className="h-4 w-4" /></Link>
+                <Link to="/builder">
+                  Open Builder <ArrowRight className="h-4 w-4" />
+                </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
                 <a href="#themes">Browse themes</a>
@@ -92,7 +134,9 @@ function Index() {
                 <div className="h-2 w-1/2 rounded bg-background/60" />
                 <div className="mt-2 h-2 w-1/3 rounded bg-background/40" />
                 <div className="mt-6 flex gap-1.5">
-                  {[0, 1, 2, 3].map((i) => <div key={i} className="h-4 w-10 rounded bg-background/50" />)}
+                  {[0, 1, 2, 3].map((i) => (
+                    <div key={i} className="h-4 w-10 rounded bg-background/50" />
+                  ))}
                 </div>
               </div>
               <div className="mt-4 flex items-center justify-between">

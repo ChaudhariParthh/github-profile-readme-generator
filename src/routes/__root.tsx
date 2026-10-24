@@ -86,6 +86,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Generate a polished GitHub profile README." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      {
+        httpEquiv: "Content-Security-Policy",
+        content:
+          "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://capsule-render.vercel.app https://github.com https://cdn.jsdelivr.net https://cdn.simpleicons.org https://img.shields.io https://github-readme-stats.vercel.app https://streak-stats.demolab.com https://github-profile-trophy.vercel.app https://github-readme-activity-graph.vercel.app https://komarev.com https://readme-typing-svg.demolab.com https://api.github.com; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none';",
+      },
     ],
     links: [
       {
@@ -93,7 +98,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
   }),
@@ -107,7 +115,12 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: "try{if(localStorage.getItem('gps-theme')==='light')document.documentElement.classList.add('light')}catch(e){}" }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(localStorage.getItem('gps-theme')==='light')document.documentElement.classList.add('light')}catch(e){}",
+          }}
+        />
         <HeadContent />
       </head>
       <body>

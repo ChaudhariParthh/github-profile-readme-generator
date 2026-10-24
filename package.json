@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "templates:render": "node --experimental-strip-types scripts/render-template-previews.ts"
   },
   "overrides": {
     "rolldown": "1.2.1"

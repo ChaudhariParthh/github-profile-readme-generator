@@ -99,7 +99,12 @@
   --sidebar-ring: oklch(0.606 0.219 292.7);
   --gradient-brand: linear-gradient(135deg, var(--primary), var(--accent));
   --shadow-glow: 0 20px 60px -20px color-mix(in oklab, var(--primary) 55%, transparent);
-  --gradient-brand: linear-gradient(135deg, oklch(0.6 0.24 295), oklch(0.62 0.2 262), oklch(0.78 0.15 215));
+  --gradient-brand: linear-gradient(
+    135deg,
+    oklch(0.6 0.24 295),
+    oklch(0.62 0.2 262),
+    oklch(0.78 0.15 215)
+  );
   color-scheme: dark;
 }
 
@@ -130,7 +135,6 @@
   --shadow-glow: 0 20px 50px -24px color-mix(in oklab, var(--primary) 40%, transparent);
 }
 
-
 @layer base {
   * {
     border-color: var(--color-border);
@@ -148,31 +152,125 @@
   background-clip: text;
   color: transparent;
 }
-@utility bg-gradient-brand { background: var(--gradient-brand); }
-@utility shadow-glow { box-shadow: var(--shadow-glow); }
+@utility bg-gradient-brand {
+  background: var(--gradient-brand);
+}
+@utility shadow-glow {
+  box-shadow: var(--shadow-glow);
+}
 @utility bg-grid {
-  background-image: linear-gradient(color-mix(in oklab, var(--border) 60%, transparent) 1px, transparent 1px),
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--border) 60%, transparent) 1px, transparent 1px),
     linear-gradient(90deg, color-mix(in oklab, var(--border) 60%, transparent) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
+@keyframes theme-motion {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.theme-motion {
+  background-size: 180% 180%;
+  animation: theme-motion 8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-motion {
+    animation: none;
+  }
+}
+
 /* GitHub-like README rendering */
-.readme { line-height: 1.6; }
-.readme h1 { font-size: 1.875rem; font-weight: 700; margin: 0 0 .25rem; }
-.readme h3 { font-size: 1.05rem; color: var(--muted-foreground); margin: 0 0 1rem; font-weight: 500; }
-.readme h2 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 .75rem; padding-bottom: .4rem; border-bottom: 1px solid var(--border); }
-.readme p { margin: 0 0 .9rem; }
-.readme p img { display: inline-block; margin: 2px; max-width: 100%; vertical-align: middle; }
-.readme img[alt="banner"] { display: block; width: 100%; border-radius: 12px; margin: 0 0 .75rem; }
-.readme img[alt$="avatar"] { border-radius: 999px; margin: .25rem; }
-.readme a img { display: inline-block; }
-.readme ul { list-style: disc; padding-left: 1.25rem; margin: 0 0 1rem; }
-.readme li { margin: .2rem 0; }
-.readme a { color: var(--accent); }
-.readme [align="center"] { text-align: center; }
-.readme [align="left"] { text-align: left; }
-.readme table { width: 100%; border-collapse: collapse; margin: 0 0 .9rem; }
-.readme td, .readme th { vertical-align: top; padding: 4px; }
-.readme code { font-family: var(--font-mono, monospace); font-size: .92em; }
-.readme.text-sm h1 { font-size: 1.25rem; }
-.readme-broken { display: inline-block; margin: 2px; padding: 2px 8px; border: 1px dashed var(--border); border-radius: 6px; font-size: .75rem; color: var(--muted-foreground); font-family: var(--font-mono, monospace); }
+.readme {
+  line-height: 1.6;
+}
+.readme h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+}
+.readme h3 {
+  font-size: 1.05rem;
+  color: var(--muted-foreground);
+  margin: 0 0 1rem;
+  font-weight: 500;
+}
+.readme h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+.readme p {
+  margin: 0 0 0.9rem;
+}
+.readme p img {
+  display: inline-block;
+  margin: 2px;
+  max-width: 100%;
+  vertical-align: middle;
+}
+.readme img[alt="banner"] {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+  margin: 0 0 0.75rem;
+}
+.readme img[alt$="avatar"] {
+  border-radius: 999px;
+  margin: 0.25rem;
+}
+.readme a img {
+  display: inline-block;
+}
+.readme ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 0 0 1rem;
+}
+.readme li {
+  margin: 0.2rem 0;
+}
+.readme a {
+  color: var(--accent);
+}
+.readme [align="center"] {
+  text-align: center;
+}
+.readme [align="left"] {
+  text-align: left;
+}
+.readme table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 0.9rem;
+}
+.readme td,
+.readme th {
+  vertical-align: top;
+  padding: 4px;
+}
+.readme code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.92em;
+}
+.readme.text-sm h1 {
+  font-size: 1.25rem;
+}
+.readme-broken {
+  display: inline-block;
+  margin: 2px;
+  padding: 2px 8px;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono, monospace);
+}

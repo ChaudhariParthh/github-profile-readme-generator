@@ -18,7 +18,13 @@ export function ThemeToggle() {
   };
 
   return (
-    <Button variant="ghost" size="icon" onClick={toggle} aria-label={light ? "Switch to night mode" : "Switch to day mode"} title={light ? "Night mode" : "Day mode"}>
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={toggle}
+      aria-label={light ? "Switch to night mode" : "Switch to day mode"}
+      title={light ? "Night mode" : "Day mode"}
+    >
       {light ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
     </Button>
   );

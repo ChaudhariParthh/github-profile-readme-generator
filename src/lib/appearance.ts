@@ -12,11 +12,13 @@ export type AppearanceTheme = {
   accent: string;
   palette: string[];
   bannerUrl: string;
+  bannerMotion: "none" | "svg-anim";
   /** CSS background for editor thumbnails only — not exported to GitHub. */
   thumb: string;
 };
 
-const cap = (q: string) => `https://capsule-render.vercel.app/api?${q}&height=240&section=header`;
+const cap = (q: string, motion: AppearanceTheme["bannerMotion"] = "none") =>
+  `https://capsule-render.vercel.app/api?${q}&height=240&section=header${motion === "svg-anim" ? "&animation=twinkling" : ""}`;
 
 export const BACKGROUND_THEMES: AppearanceTheme[] = [
   {
@@ -26,7 +28,8 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Deep navy with violet-cyan aurora landscape. Professional and modern.",
     accent: "8B5CF6",
     palette: ["#0B1224", "#6D28D9", "#22D3EE"],
-    bannerUrl: cap("type=waving&color=0:0B1224,40:5B21B6,100:0E7490&fontColor=E0E7FF&animation=fadeIn"),
+    bannerUrl: cap("type=waving&color=0:0B1224,40:164E63,100:0E7490&fontColor=E0E7FF", "svg-anim"),
+    bannerMotion: "svg-anim",
     thumb: "linear-gradient(135deg,#060918 0%,#3b0764 42%,#0e7490 100%)",
   },
   {
@@ -36,7 +39,8 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Futuristic grid with neon glow. Great for tech and cybersecurity.",
     accent: "22D3EE",
     palette: ["#020617", "#7C3AED", "#06B6D4"],
-    bannerUrl: cap("type=rect&color=0:020617,50:4C1D95,100:0891B2&fontColor=67E8F9"),
+    bannerUrl: cap("type=rect&color=0:020617,50:164E63,100:0891B2&fontColor=67E8F9", "svg-anim"),
+    bannerMotion: "svg-anim",
     thumb: "linear-gradient(160deg,#020617 0%,#1e1b4b 45%,#0e7490 78%,#22d3ee 100%)",
   },
   {
@@ -46,7 +50,8 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Matrix-style terminal inspired background. Perfect for security and systems profiles.",
     accent: "4ADE80",
     palette: ["#020202", "#14532D", "#4ADE80"],
-    bannerUrl: cap("type=soft&color=0:020202,100:052e16&fontColor=86EFAC"),
+    bannerUrl: cap("type=soft&color=0:020202,100:052e16&fontColor=86EFAC", "svg-anim"),
+    bannerMotion: "svg-anim",
     thumb: "linear-gradient(180deg,#000000 0%,#052e16 55%,#14532d 100%)",
   },
   {
@@ -56,8 +61,10 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Deep space theme with planets and nebula. Creative and eye-catching.",
     accent: "C084FC",
     palette: ["#0F172A", "#6D28D9", "#38BDF8"],
-    bannerUrl: "https://images.unsplash.com/photo-1462331947965-a138e25ca8de?auto=format&fit=crop&w=1400&h=360&q=80",
-    thumb: "radial-gradient(circle at 20% 30%,#7c3aed 0%,transparent 40%),radial-gradient(circle at 80% 70%,#0ea5e9 0%,transparent 35%),linear-gradient(135deg,#020617,#1e1b4b)",
+    bannerUrl: cap("type=venom&color=0:0F172A,55:075985,100:0EA5E9&fontColor=BAE6FD", "svg-anim"),
+    bannerMotion: "svg-anim",
+    thumb:
+      "radial-gradient(circle at 20% 30%,#7c3aed 0%,transparent 40%),radial-gradient(circle at 80% 70%,#0ea5e9 0%,transparent 35%),linear-gradient(135deg,#020617,#1e1b4b)",
   },
   {
     id: "mountain-night",
@@ -66,7 +73,8 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Minimal illustrated mountains with moon. Clean and aesthetic.",
     accent: "818CF8",
     palette: ["#0B1220", "#312E81", "#F9A8D4"],
-    bannerUrl: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&h=360&q=80",
+    bannerUrl: cap("type=mountains&color=0:0F172A,55:312E81,100:7C3AED&fontColor=E0E7FF"),
+    bannerMotion: "none",
     thumb: "linear-gradient(180deg,#0f172a 0%,#312e81 40%,#be185d 78%,#0f172a 100%)",
   },
   {
@@ -76,7 +84,8 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Dark ocean inspired theme with smooth gradients.",
     accent: "22D3EE",
     palette: ["#042F2E", "#0F766E", "#67E8F9"],
-    bannerUrl: "https://images.unsplash.com/photo-1682687982501-1e58ab814714?auto=format&fit=crop&w=1400&h=360&q=80",
+    bannerUrl: cap("type=wave&color=0:042F2E,55:0F766E,100:06B6D4&fontColor=CFFAFE", "svg-anim"),
+    bannerMotion: "svg-anim",
     thumb: "linear-gradient(180deg,#022c22 0%,#0f766e 50%,#22d3ee 100%)",
   },
   {
@@ -86,7 +95,8 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Warm sunset gradients with city skyline. Modern and vibrant.",
     accent: "F97316",
     palette: ["#4C0519", "#DB2777", "#F59E0B"],
-    bannerUrl: "https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?auto=format&fit=crop&w=1400&h=360&q=80",
+    bannerUrl: cap("type=shark&color=0:4C0519,55:BE185D,100:F97316&fontColor=FFF7ED", "svg-anim"),
+    bannerMotion: "svg-anim",
     thumb: "linear-gradient(180deg,#4c1d95 0%,#db2777 48%,#fb923c 100%)",
   },
   {
@@ -97,6 +107,7 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     accent: "A1A1AA",
     palette: ["#18181B", "#71717A", "#E4E4E7"],
     bannerUrl: cap("type=rect&color=0:18181B,100:52525B&fontColor=E4E4E7"),
+    bannerMotion: "none",
     thumb: "linear-gradient(135deg,#18181b 0%,#3f3f46 50%,#d4d4d8 100%)",
   },
   {
@@ -106,7 +117,11 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Abstract prism shapes with glass effect. Modern and premium look.",
     accent: "A78BFA",
     palette: ["#1E1B4B", "#8B5CF6", "#67E8F9"],
-    bannerUrl: cap("type=cylinder&color=0:1E1B4B,50:7C3AED,100:22D3EE&fontColor=F5F3FF"),
+    bannerUrl: cap(
+      "type=cylinder&color=0:1E1B4B,50:0F766E,100:22D3EE&fontColor=F5F3FF",
+      "svg-anim",
+    ),
+    bannerMotion: "svg-anim",
     thumb: "linear-gradient(120deg,#1e1b4b 0%,#8b5cf6 40%,#22d3ee 70%,#f5f3ff 100%)",
   },
   {
@@ -117,6 +132,7 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     accent: "57534E",
     palette: ["#FAFAF9", "#D6D3D1", "#44403C"],
     bannerUrl: cap("type=waving&color=0:FAFAF9,100:E7E5E4&fontColor=44403C"),
+    bannerMotion: "none",
     thumb: "linear-gradient(180deg,#fafaf9 0%,#e7e5e4 55%,#a8a29e 100%)",
   },
 ];
@@ -309,21 +325,105 @@ export const STATS_LAYOUTS: StatsLayout[] = [
     kind: "pixel",
     thumb: "linear-gradient(180deg,#052e16,#14532d)",
   },
+  {
+    id: "signal-radar",
+    n: "11",
+    name: "Signal Radar",
+    blurb: "A focused activity readout with a clear visual hierarchy.",
+    heading: "Signal Radar",
+    widgetTheme: "github_dark",
+    langsLayout: "donut-vertical",
+    graphTheme: "github-compact",
+    streakTheme: "dark",
+    trophyTheme: "darkhub",
+    hideBorder: true,
+    showIcons: true,
+    kind: "command-center",
+    thumb: "linear-gradient(135deg,#082f49,#0e7490)",
+  },
+  {
+    id: "aurora-metrics",
+    n: "12",
+    name: "Aurora Metrics",
+    blurb: "Bright metric cards for a high-energy developer profile.",
+    heading: "Aurora Metrics",
+    widgetTheme: "react",
+    langsLayout: "pie",
+    graphTheme: "react-dark",
+    streakTheme: "react",
+    trophyTheme: "discord",
+    hideBorder: true,
+    showIcons: true,
+    kind: "neon",
+    thumb: "linear-gradient(135deg,#064e3b,#0891b2,#2563eb)",
+  },
+  {
+    id: "ship-log",
+    n: "13",
+    name: "Ship Log",
+    blurb: "A compact release-oriented layout for builders who ship often.",
+    heading: "SHIP LOG",
+    widgetTheme: "transparent",
+    langsLayout: "compact",
+    graphTheme: "github-compact",
+    streakTheme: "transparent",
+    trophyTheme: "flat",
+    hideBorder: true,
+    showIcons: false,
+    kind: "strip",
+    thumb: "linear-gradient(90deg,#172554,#1d4ed8,#0f172a)",
+  },
+  {
+    id: "deep-space",
+    n: "14",
+    name: "Deep Space",
+    blurb: "Layered stats for a cinematic, dark-space README design.",
+    heading: "Deep Space Telemetry",
+    widgetTheme: "dracula",
+    langsLayout: "donut",
+    graphTheme: "dracula",
+    streakTheme: "dracula",
+    trophyTheme: "dracula",
+    hideBorder: false,
+    showIcons: true,
+    kind: "glass",
+    thumb: "linear-gradient(135deg,#172554,#4338ca,#0f172a)",
+  },
+  {
+    id: "green-room",
+    n: "15",
+    name: "Green Room",
+    blurb: "Terminal-inspired contribution metrics with a calm green palette.",
+    heading: "GREEN ROOM // ACTIVITY",
+    widgetTheme: "chartreuse",
+    langsLayout: "default",
+    graphTheme: "chartreuse-dark",
+    streakTheme: "chartreuse-dark",
+    trophyTheme: "matrix",
+    hideBorder: false,
+    showIcons: true,
+    kind: "terminal",
+    thumb: "linear-gradient(180deg,#052e16,#166534,#65a30d)",
+  },
 ];
 
 export const DEFAULT_APPEARANCE_ID = "mountain-night";
 export const DEFAULT_STATS_LAYOUT_ID = "command-center";
 
 export function appearanceById(id: string | undefined): AppearanceTheme {
-  return BACKGROUND_THEMES.find((t) => t.id === id)
-    ?? BACKGROUND_THEMES.find((t) => t.id === DEFAULT_APPEARANCE_ID)
-    ?? BACKGROUND_THEMES[0]!;
+  return (
+    BACKGROUND_THEMES.find((t) => t.id === id) ??
+    BACKGROUND_THEMES.find((t) => t.id === DEFAULT_APPEARANCE_ID) ??
+    BACKGROUND_THEMES[0]!
+  );
 }
 
 export function statsLayoutById(id: string | undefined): StatsLayout {
-  return STATS_LAYOUTS.find((t) => t.id === id)
-    ?? STATS_LAYOUTS.find((t) => t.id === DEFAULT_STATS_LAYOUT_ID)
-    ?? STATS_LAYOUTS[0]!;
+  return (
+    STATS_LAYOUTS.find((t) => t.id === id) ??
+    STATS_LAYOUTS.find((t) => t.id === DEFAULT_STATS_LAYOUT_ID) ??
+    STATS_LAYOUTS[0]!
+  );
 }
 
 export function resolvedBanner(p: Profile): string {
@@ -403,7 +503,15 @@ export function renderStatsSection(p: Profile): string[] {
 
   const accent = resolvedAccent(p);
   const out: string[] = [];
-  const statsImg = stats ? img(statsCardUrl(p, layout.kind === "impact" ? "&include_all_commits=true&count_private=false" : ""), "GitHub stats") : "";
+  const statsImg = stats
+    ? img(
+        statsCardUrl(
+          p,
+          layout.kind === "impact" ? "&include_all_commits=true&count_private=false" : "",
+        ),
+        "GitHub stats",
+      )
+    : "";
   const langsImg = langs ? img(langsCardUrl(p), "Top languages") : "";
   const streakImg = streak ? img(streakCardUrl(p), "GitHub streak") : "";
   const graphImg = img(graphCardUrl(p), "Contribution graph", "100%");
@@ -469,7 +577,9 @@ export function renderStatsSection(p: Profile): string[] {
       break;
     case "strip":
       if (layout.heading) title(layout.heading);
-      out.push(`<p align="left">${badges || [statsImg, langsImg, streakImg].filter(Boolean).join(" ")}</p>`);
+      out.push(
+        `<p align="left">${badges || [statsImg, langsImg, streakImg].filter(Boolean).join(" ")}</p>`,
+      );
       break;
     case "pixel":
       out.push(`## \`${layout.heading}\``, "");
@@ -489,6 +599,7 @@ export function applyAppearance(p: Profile, id: string): Profile {
     appearanceId: theme.id,
     accentColor: theme.accent,
     bannerUrl: theme.bannerUrl,
+    bannerMotion: theme.bannerMotion,
     customBanner: false,
   };
 }

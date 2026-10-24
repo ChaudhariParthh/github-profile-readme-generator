@@ -15,11 +15,17 @@ function mdToHtml(md: string): string {
   for (const line of md.split("\n")) {
     const t = line.trim();
     if (t.startsWith("- ")) {
-      if (!list) html.push("<ul>"), (list = true);
+      if (!list) {
+        html.push("<ul>");
+        list = true;
+      }
       html.push(`<li>${inline(t.slice(2))}</li>`);
       continue;
     }
-    if (list) html.push("</ul>"), (list = false);
+    if (list) {
+      html.push("</ul>");
+      list = false;
+    }
     if (!t || t.startsWith("<!--")) continue;
     if (t.startsWith("## ")) html.push(`<h2>${inline(t.slice(3))}</h2>`);
     else if (t.startsWith("<")) html.push(line);
@@ -29,7 +35,15 @@ function mdToHtml(md: string): string {
   return html.join("\n");
 }
 
-const COMPACT_HIDE = new Set(["trophies", "stats", "graph", "blog", "support", "projects", "visitors"]);
+const COMPACT_HIDE = new Set([
+  "trophies",
+  "stats",
+  "graph",
+  "blog",
+  "support",
+  "projects",
+  "visitors",
+]);
 
 export function ReadmePreview({ p, compact = false }: { p: Profile; compact?: boolean }) {
   const raw = useMemo(() => {
@@ -44,8 +58,8 @@ export function ReadmePreview({ p, compact = false }: { p: Profile; compact?: bo
   // Broken external images (rate limits, service outages, bad URLs) become a small label instead of a broken icon.
   const onImgError = (e: React.SyntheticEvent<HTMLElement>) => {
     const img = e.target as HTMLImageElement;
-    if (img.tagName !== "IMG" || img.dataset['failed']) return;
-    img.dataset['failed'] = "1";
+    if (img.tagName !== "IMG" || img.dataset["failed"]) return;
+    img.dataset["failed"] = "1";
     const span = document.createElement("span");
     span.className = "readme-broken";
     span.textContent = `${img.alt || "image"} unavailable`;

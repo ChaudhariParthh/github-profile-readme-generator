@@ -37,10 +37,18 @@ export function SiteHeader({ builder }: { builder?: BuilderActions }) {
                   {item.label}
                 </Link>
               ))}
-              <button type="button" onClick={builder.onPreview} className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground">
+              <button
+                type="button"
+                onClick={builder.onPreview}
+                className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+              >
                 Preview
               </button>
-              <button type="button" onClick={builder.onExport} className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground">
+              <button
+                type="button"
+                onClick={builder.onExport}
+                className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+              >
                 Export
               </button>
             </nav>
