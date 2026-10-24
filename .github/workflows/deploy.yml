@@ -1,0 +1,70 @@
+
+name: Deploy GitProfile Studio to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build website
+        run: npm run build -- --config vite.config.github.ts
+
+      - name: Prepare GitHub Pages files
+        run: |
+          mkdir -p deploy
+          if [ -f dist/client/_shell.html ]; then
+            cp -r dist/client/. deploy/
+            cp deploy/_shell.html deploy/index.html
+            cp deploy/_shell.html deploy/404.html
+          elif [ -f dist/client/index.html ]; then
+            cp -r dist/client/. deploy/
+            cp deploy/index.html deploy/404.html
+          else
+            echo "Could not find the built HTML shell in dist/client."
+            find dist -maxdepth 3 -type f -name '*.html'
+            exit 1
+          fi
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: deploy
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
