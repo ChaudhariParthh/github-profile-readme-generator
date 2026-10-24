@@ -42,7 +42,7 @@ export const Route = createFileRoute("/builder")({
     ],
   }),
   validateSearch: (s: Record<string, unknown>): { preset?: string } =>
-    typeof s.preset === "string" ? { preset: s.preset } : {},
+    typeof s['preset'] === "string" ? { preset: s['preset'] } : {},
   component: Builder,
 });
 

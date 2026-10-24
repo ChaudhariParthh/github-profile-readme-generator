@@ -96,7 +96,7 @@ describe("phase 1 correctness", () => {
   });
   it("preserves a valid Buy Me a Coffee URL and rejects other hosts", () => {
     expect(bmcUrl("https://www.buymeacoffee.com/parth")).toBe("https://www.buymeacoffee.com/parth");
-    expect(toMarkdown({ ...seedProfile, support: { ...seedProfile.support, bmc: "https://www.buymeacoffee.com/parth" } })).toContain('href="https://www.buymeacoffee.com/parth"');
+    expect(toMarkdown({ ...seedProfile, sections: [{ id: "support", hidden: false }], support: { ...seedProfile.support, bmc: "https://www.buymeacoffee.com/parth" } })).toContain('href="https://www.buymeacoffee.com/parth"');
     expect(bmcUrl("https://evil.com/parth")).toBe("");
     expect(bmcUrl("parth")).toBe("https://buymeacoffee.com/parth");
   });
