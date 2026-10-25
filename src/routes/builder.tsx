@@ -69,7 +69,6 @@ import {
   applyAppearance,
   applyStatsLayout,
   appearanceById,
-  resolvedAvatar,
 } from "@/lib/appearance";
 import { applyTemplate } from "@/lib/templates";
 import { fetchGitHubProfile } from "@/lib/github";
@@ -537,27 +536,7 @@ function Builder() {
                     onChange={(e) => set("bio", e.target.value)}
                   />
                 </Field>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Field label="Profile Photo">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={safeUrl(resolvedAvatar(p)) || undefined}
-                        alt=""
-                        className="h-16 w-16 rounded-full border border-border object-cover bg-secondary"
-                      />
-                      <div className="space-y-1.5">
-                        <UrlField
-                          label=""
-                          value={p.avatarUrl}
-                          onChange={(v) => set("avatarUrl", v)}
-                          hint="Leave blank to use your GitHub avatar."
-                        />
-                        <Button size="sm" variant="ghost" onClick={() => set("avatarUrl", "")}>
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
-                  </Field>
+                <div>
                   <Field label="Banner / Cover">
                     {safeUrl(p.bannerUrl) && (
                       <img

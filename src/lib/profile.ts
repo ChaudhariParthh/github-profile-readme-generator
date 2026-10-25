@@ -6,7 +6,6 @@ import {
   pinCardUrl,
   renderStatsSection,
   resolvedAccent,
-  resolvedAvatar,
   resolvedBanner,
   statsLayoutById,
   trophyCardUrl,
@@ -325,7 +324,6 @@ export type Profile = {
   location: string;
   bio: string;
   bannerUrl: string; // static image or GIF
-  avatarUrl: string; // optional; empty uses GitHub avatar
   appearanceId: string;
   statsLayout: string;
   accentColor: string;
@@ -369,7 +367,6 @@ export const seedProfile: Profile = {
   location: "",
   bio: "",
   bannerUrl: appearanceById(DEFAULT_APPEARANCE_ID).bannerUrl,
-  avatarUrl: "",
   appearanceId: DEFAULT_APPEARANCE_ID,
   statsLayout: DEFAULT_STATS_LAYOUT_ID,
   accentColor: appearanceById(DEFAULT_APPEARANCE_ID).accent,
@@ -613,11 +610,6 @@ function renderSection(p: Profile, id: string): string[] {
       const banner = safeUrl(resolvedBanner(p));
       if (banner)
         out.push(`<p align="center"><img src="${banner}" alt="banner" width="100%" /></p>`, "");
-      const avatar = safeUrl(resolvedAvatar(p));
-      if (avatar)
-        out.push(
-          `<p align="center"><img src="${avatar}" alt="${esc(p.name || p.username)} avatar" width="110" height="110" /></p>`,
-        );
       out.push(`<h1 align="center">Hi, I'm ${esc(p.name)}</h1>`);
       if (p.title || p.location)
         out.push(
@@ -872,7 +864,6 @@ export function parseConfig(raw: unknown): Profile {
     location: text(input["location"], seedProfile.location, 60),
     bio: text(input["bio"], seedProfile.bio, 500),
     bannerUrl: text(input["bannerUrl"], seedProfile.bannerUrl, 500),
-    avatarUrl: text(input["avatarUrl"], "", 500),
     appearanceId: appearanceById(
       typeof input["appearanceId"] === "string" ? input["appearanceId"] : seedProfile.appearanceId,
     ).id,

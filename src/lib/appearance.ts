@@ -436,11 +436,6 @@ export function resolvedAccent(p: Profile): string {
   return hexOk(p.accentColor || appearanceById(p.appearanceId).accent);
 }
 
-export function resolvedAvatar(p: Profile): string {
-  if (p.avatarUrl.trim()) return p.avatarUrl.trim();
-  return p.username.trim() ? `https://github.com/${p.username.trim()}.png?size=240` : "";
-}
-
 function qs(layout: StatsLayout): string {
   return `theme=${enc(layout.widgetTheme)}&hide_border=${layout.hideBorder}&show_icons=${layout.showIcons}`;
 }
