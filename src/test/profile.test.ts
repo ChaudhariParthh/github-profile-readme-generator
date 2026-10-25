@@ -34,7 +34,7 @@ describe("toMarkdown", () => {
   });
   it("follows section order", () => {
     const ids = ["socials", "skills"];
-    const md = toMarkdown({ ...seedProfile, sections: ids.map((id) => ({ id, hidden: false })) });
+    const md = toMarkdown({ ...seedProfile, skills: ["React"], socials: { GitHub: "octocat" }, sections: ids.map((id) => ({ id, hidden: false })) });
     expect(md.indexOf("Connect with me")).toBeLessThan(md.indexOf("Tech Stack"));
   });
   it("URL-encodes the username in widget links", () => {
@@ -143,4 +143,13 @@ describe("appearance and stats layouts", () => {
 describe("moveItem", () => {
   it("moves an item to a new index", () =>
     expect(moveItem(["a", "b", "c"], 0, 2)).toEqual(["b", "c", "a"]));
+});
+
+describe("new visitor profile", () => {
+  it("starts with blank profile fields", () => {
+    expect([seedProfile.name, seedProfile.username, seedProfile.title, seedProfile.location, seedProfile.bio]).toEqual(["", "", "", "", ""]);
+    expect(seedProfile.skills).toEqual([]);
+    expect(seedProfile.socials).toEqual({});
+    expect(Object.values(seedProfile.work).every((v) => v === "")).toBe(true);
+  });
 });

@@ -817,13 +817,13 @@ export function parseConfig(raw: unknown): Profile {
     const valueText = text(value, "", max).trim();
     return /^[a-z0-9][a-z0-9._-]*$/i.test(valueText) ? valueText : "";
   };
-  if (typeof input.name !== "string") throw new Error("Missing name");
+  if (typeof input["name"] !== "string") throw new Error("Missing name");
 
-  const typingInput = source(input.typing);
-  const workInput = source(input.work);
-  const addonsInput = source(input.addons);
-  const supportInput = source(input.support);
-  const customInput = source(input.custom);
+  const typingInput = source(input["typing"]);
+  const workInput = source(input["work"]);
+  const addonsInput = source(input["addons"]);
+  const supportInput = source(input["support"]);
+  const customInput = source(input["custom"]);
   const custom: Record<string, CustomSection> = {};
   for (const id of Object.keys(customInput).slice(0, 20)) {
     const value = source(customInput[id]);
