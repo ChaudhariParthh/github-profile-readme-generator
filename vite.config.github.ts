@@ -9,6 +9,6 @@ export default defineConfig({
   },
   nitro: false,
   vite: {
-    base: "/gitprofile-studio/",
+    base: "/github-profile-readme-generator/",
   },
 });
