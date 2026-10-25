@@ -515,6 +515,7 @@ export function safeUrl(raw: string | undefined | null): string {
   const s = (raw ?? "").trim();
   if (!s) return "";
   if (/^mailto:[^\s<>"]+$/i.test(s)) return s;
+  if (/^data:image\/(?:png|jpeg|gif|webp);base64,[a-z0-9+/]+=*$/i.test(s)) return s;
   try {
     const u = new URL(s);
     if (u.protocol !== "https:" && u.protocol !== "http:") return "";

@@ -109,6 +109,38 @@ function downloadFile(name: string, content: string, type: string) {
   setTimeout(() => URL.revokeObjectURL(url), 30_000);
 }
 
+async function prepareBannerImage(file: File): Promise<string> {
+  if (!file.type.startsWith("image/") || file.size > 10 * 1024 * 1024) {
+    throw new Error("Choose an image smaller than 10 MB.");
+  }
+
+  const sourceUrl = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    image.src = sourceUrl;
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error("That image could not be read."));
+    });
+
+    const width = 1600;
+    const height = 600;
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Your browser could not prepare that image.");
+
+    const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight);
+    const drawnWidth = image.naturalWidth * scale;
+    const drawnHeight = image.naturalHeight * scale;
+    context.drawImage(image, (width - drawnWidth) / 2, (height - drawnHeight) / 2, drawnWidth, drawnHeight);
+    return canvas.toDataURL("image/jpeg", 0.88);
+  } finally {
+    URL.revokeObjectURL(sourceUrl);
+  }
+}
+
 const WORK_FIELDS: { key: keyof Work; label: string; placeholder: string }[] = [
   { key: "working", label: "Currently working on", placeholder: "project name" },
   { key: "workingLink", label: "Project link", placeholder: "https://..." },
@@ -136,6 +168,7 @@ function Builder() {
   const [ghLoading, setGhLoading] = useState(false);
   const [ghInfo, setGhInfo] = useState<{ repos: number } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const bannerFileRef = useRef<HTMLInputElement>(null);
   const md = useMemo(() => toMarkdown(p), [p]);
 
   // Restore a saved draft after mount (browser storage isn't available during server render).
@@ -186,6 +219,15 @@ function Builder() {
       toast.success("Config restored");
     } catch {
       toast.error("That file isn't a valid GitProfile Studio config");
+    }
+  };
+  const importBannerImage = async (file: File) => {
+    try {
+      const bannerUrl = await prepareBannerImage(file);
+      setP((s) => ({ ...s, bannerUrl, customBanner: true }));
+      toast.success("Banner image added");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "That image could not be used.");
     }
   };
   const importGitHub = async () => {
@@ -296,6 +338,17 @@ function Builder() {
         onChange={(e) => {
           const f = e.target.files?.[0];
           if (f) importJson(f);
+          e.target.value = "";
+        }}
+      />
+      <input
+        ref={bannerFileRef}
+        type="file"
+        accept="image/png,image/jpeg,image/gif,image/webp"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) importBannerImage(f);
           e.target.value = "";
         }}
       />
@@ -545,11 +598,16 @@ function Builder() {
                         className="mb-2 h-16 w-full rounded-lg object-cover"
                       />
                     )}
+                    <div className="flex flex-wrap gap-2">
+                      <Button size="sm" variant="secondary" onClick={() => bannerFileRef.current?.click()}>
+                        <Upload className="h-4 w-4" /> Choose photo
+                      </Button>
+                    </div>
                     <UrlField
-                      label="Paste a custom banner image URL"
+                      label="Or paste a custom banner image URL"
                       value={p.bannerUrl}
                       onChange={(v) => setP((s) => ({ ...s, bannerUrl: v, customBanner: true }))}
-                      hint="Paste a direct image link from any site. The image will appear in the preview and generated README."
+                      hint="Photos are center-cropped to a 1600 × 600 banner and kept in this browser."
                       placeholder="https://example.com/banner.jpg"
                     />
                     <div className="mt-1.5 flex gap-2">

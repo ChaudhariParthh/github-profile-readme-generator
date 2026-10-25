@@ -14,6 +14,10 @@ describe("safeUrl", () => {
   it("rejects data: URLs", () => expect(safeUrl("data:text/html,<script>")).toBe(""));
   it("keeps https URLs", () =>
     expect(safeUrl("https://example.com/a")).toBe("https://example.com/a"));
+  it("allows browser-prepared image data URLs", () =>
+    expect(safeUrl("data:image/jpeg;base64,ZmFrZQ==")).toBe(
+      "data:image/jpeg;base64,ZmFrZQ==",
+    ));
 });
 
 describe("toMarkdown", () => {
