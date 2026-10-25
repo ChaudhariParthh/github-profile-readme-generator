@@ -546,10 +546,11 @@ function Builder() {
                       />
                     )}
                     <UrlField
-                      label=""
+                      label="Paste a custom banner image URL"
                       value={p.bannerUrl}
                       onChange={(v) => setP((s) => ({ ...s, bannerUrl: v, customBanner: true }))}
-                      hint="https image URL. Theme banners are GitHub-compatible images, not CSS."
+                      hint="Paste a direct image link from any site. The image will appear in the preview and generated README."
+                      placeholder="https://example.com/banner.jpg"
                     />
                     <div className="mt-1.5 flex gap-2">
                       <Button
@@ -1049,18 +1050,21 @@ function UrlField({
   value,
   onChange,
   hint,
+  placeholder = "https://...",
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   hint?: string;
+  placeholder?: string;
 }) {
   const bad = value.trim() !== "" && !safeUrl(value);
   return (
     <Field label={label}>
       <Input
         className={`font-mono ${bad ? "border-destructive" : ""}`}
-        placeholder="https://..."
+        type="url"
+        placeholder={placeholder}
         maxLength={500}
         value={value}
         onChange={(e) => onChange(e.target.value)}

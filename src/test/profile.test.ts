@@ -22,6 +22,16 @@ describe("toMarkdown", () => {
     expect(md).not.toContain("<script>");
     expect(md).toContain("&lt;script&gt;");
   });
+  it("includes a custom image URL as the banner", () => {
+    const md = toMarkdown({
+      ...seedProfile,
+      bannerUrl: "https://images.example.com/banner.jpg",
+      customBanner: true,
+    });
+    expect(md).toContain(
+      '<img src="https://images.example.com/banner.jpg" alt="banner" width="100%" />',
+    );
+  });
   it("drops an unsafe banner URL", () => {
     const md = toMarkdown({ ...seedProfile, bannerUrl: "javascript:alert(1)" });
     expect(md).not.toContain("javascript:");
