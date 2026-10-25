@@ -362,11 +362,12 @@ const emptyWork: Work = {
 };
 
 export const seedProfile: Profile = {
-  name: "Parth Chaudhari",
-  username: "parthchaudhari",
-  title: "Full-Stack Developer",
-  location: "India",
-  bio: "I build fast, accessible web apps with TypeScript end to end. I love clean APIs, thoughtful UI, and shipping things people actually use.",
+  // New visitors start blank: no personal data ships with the app.
+  name: "",
+  username: "",
+  title: "",
+  location: "",
+  bio: "",
   bannerUrl: appearanceById(DEFAULT_APPEARANCE_ID).bannerUrl,
   avatarUrl: "",
   appearanceId: DEFAULT_APPEARANCE_ID,
@@ -375,39 +376,17 @@ export const seedProfile: Profile = {
   customBanner: false,
   bannerMotion: "svg-anim",
   typing: {
-    lines: "Full-Stack Developer\nTypeScript · React · Node.js\nBuilding GitProfile Studio",
+    lines: "",
     font: "Fira Code",
     size: 22,
     color: "22D3EE",
     center: true,
   },
-  work: {
-    ...emptyWork,
-    working: "GitProfile Studio",
-    learning: "Rust and distributed systems",
-    askMe: "React, Node.js and TypeScript",
-    reach: "hello@parth.dev",
-    funFact: "I enjoy building fast, reliable developer tools",
-  },
-  skills: [
-    "TypeScript",
-    "JavaScript",
-    "React",
-    "Next.js",
-    "Node.js",
-    "Tailwind CSS",
-    "PostgreSQL",
-    "Docker",
-    "Git",
-  ],
+  work: { ...emptyWork },
+  skills: [],
   techDisplay: "badges",
   badgeStyle: "for-the-badge",
-  socials: {
-    LinkedIn: "parthchaudhari",
-    X: "parthcodes",
-    Portfolio: "parth.dev",
-    Email: "hello@parth.dev",
-  },
+  socials: {},
   projects: [],
   addons: { stats: true, langs: true, streak: true, blog: "none", blogHandle: "" },
   statsTheme: statsLayoutById(DEFAULT_STATS_LAYOUT_ID).widgetTheme,
@@ -424,7 +403,7 @@ export const PRESETS: Record<string, Profile> = {
     skills: ["TypeScript", "React", "Node.js"],
     techDisplay: "compact",
     badgeStyle: "flat-square",
-    socials: { GitHub: seedProfile.username, Email: "hello@parth.dev" },
+    socials: { GitHub: "", Email: "" },
     addons: { ...seedProfile.addons, langs: false, streak: false },
     statsTheme: "transparent",
     sections: ALL_SECTIONS([
@@ -518,11 +497,10 @@ export const PRESETS: Record<string, Profile> = {
       ...emptyWork,
       learning: "Data Structures & Algorithms",
       collab: "beginner-friendly open source",
-      reach: "hello@parth.dev",
     },
     skills: ["C", "C++", "Java", "Python", "JavaScript", "React", "Git", "GitHub"],
     techDisplay: "icons",
-    socials: { GitHub: seedProfile.username, LinkedIn: "parthchaudhari", LeetCode: "" },
+    socials: { GitHub: "", LinkedIn: "", LeetCode: "" },
     projects: [
       { name: "My first project", url: "", description: "Describe a project you're proud of" },
     ],
@@ -839,83 +817,83 @@ export function parseConfig(raw: unknown): Profile {
     const valueText = text(value, "", max).trim();
     return /^[a-z0-9][a-z0-9._-]*$/i.test(valueText) ? valueText : "";
   };
-  if (typeof input.name !== "string") throw new Error("Missing name");
+  if (typeof input["name"] !== "string") throw new Error("Missing name");
 
-  const typingInput = source(input.typing);
-  const workInput = source(input.work);
-  const addonsInput = source(input.addons);
-  const supportInput = source(input.support);
-  const customInput = source(input.custom);
+  const typingInput = source(input["typing"]);
+  const workInput = source(input["work"]);
+  const addonsInput = source(input["addons"]);
+  const supportInput = source(input["support"]);
+  const customInput = source(input["custom"]);
   const custom: Record<string, CustomSection> = {};
   for (const id of Object.keys(customInput).slice(0, 20)) {
     const value = source(customInput[id]);
-    custom[id] = { title: text(value.title, "New section", 80), body: text(value.body, "", 2000) };
+    custom[id] = { title: text(value["title"], "New section", 80), body: text(value["body"], "", 2000) };
   }
   const validIds = new Set<string>([...Object.keys(BUILTIN_SECTIONS), ...Object.keys(custom)]);
-  const sectionInput = Array.isArray(input.sections) ? input.sections : [];
+  const sectionInput = Array.isArray(input["sections"]) ? input["sections"] : [];
   const sections = sectionInput
     .filter(
       (section): section is Record<string, unknown> =>
         !!section && typeof section === "object" && !Array.isArray(section),
     )
-    .filter((section) => typeof section.id === "string" && validIds.has(section.id))
-    .map((section) => ({ id: section.id as string, hidden: section.hidden === true }));
-  const projects = Array.isArray(input.projects)
-    ? input.projects
+    .filter((section) => typeof section["id"] === "string" && validIds.has(section["id"]))
+    .map((section) => ({ id: section["id"] as string, hidden: section["hidden"] === true }));
+  const projects = Array.isArray(input["projects"])
+    ? input["projects"]
         .filter(
           (project): project is Record<string, unknown> =>
             !!project && typeof project === "object" && !Array.isArray(project),
         )
-        .filter((project) => typeof project.name === "string")
+        .filter((project) => typeof project["name"] === "string")
         .slice(0, 8)
         .map((project) => ({
-          name: text(project.name, "", 80),
-          url: text(project.url, "", 500),
-          description: text(project.description, "", 160),
+          name: text(project["name"], "", 80),
+          url: text(project["url"], "", 500),
+          description: text(project["description"], "", 160),
         }))
     : [];
   const socials: Record<string, string> = {};
-  const socialInput = source(input.socials);
+  const socialInput = source(input["socials"]);
   for (const key of Object.keys(SOCIAL_META)) socials[key] = text(socialInput[key], "", 120);
-  const skills = Array.isArray(input.skills)
-    ? input.skills
+  const skills = Array.isArray(input["skills"])
+    ? input["skills"]
         .filter((skill): skill is string => typeof skill === "string" && !!SKILL_INDEX[skill])
         .slice(0, 30)
     : [];
   const blog =
-    addonsInput.blog === "devto" || addonsInput.blog === "medium" || addonsInput.blog === "rss"
-      ? addonsInput.blog
+    addonsInput["blog"] === "devto" || addonsInput["blog"] === "medium" || addonsInput["blog"] === "rss"
+      ? addonsInput["blog"]
       : "none";
   return {
     ...seedProfile,
-    name: text(input.name, seedProfile.name, 80),
-    username: validHandle(input.username, 39),
-    title: text(input.title, seedProfile.title, 120),
-    location: text(input.location, seedProfile.location, 60),
-    bio: text(input.bio, seedProfile.bio, 500),
-    bannerUrl: text(input.bannerUrl, seedProfile.bannerUrl, 500),
-    avatarUrl: text(input.avatarUrl, "", 500),
+    name: text(input["name"], seedProfile.name, 80),
+    username: validHandle(input["username"], 39),
+    title: text(input["title"], seedProfile.title, 120),
+    location: text(input["location"], seedProfile.location, 60),
+    bio: text(input["bio"], seedProfile.bio, 500),
+    bannerUrl: text(input["bannerUrl"], seedProfile.bannerUrl, 500),
+    avatarUrl: text(input["avatarUrl"], "", 500),
     appearanceId: appearanceById(
-      typeof input.appearanceId === "string" ? input.appearanceId : seedProfile.appearanceId,
+      typeof input["appearanceId"] === "string" ? input["appearanceId"] : seedProfile.appearanceId,
     ).id,
     statsLayout: statsLayoutById(
-      typeof input.statsLayout === "string" ? input.statsLayout : seedProfile.statsLayout,
+      typeof input["statsLayout"] === "string" ? input["statsLayout"] : seedProfile.statsLayout,
     ).id,
     accentColor: hexOk(
-      typeof input.accentColor === "string" ? input.accentColor : seedProfile.accentColor,
+      typeof input["accentColor"] === "string" ? input["accentColor"] : seedProfile.accentColor,
     ),
-    customBanner: input.customBanner === true,
-    bannerMotion: input.bannerMotion === "none" ? "none" : "svg-anim",
+    customBanner: input["customBanner"] === true,
+    bannerMotion: input["bannerMotion"] === "none" ? "none" : "svg-anim",
     typing: {
-      lines: text(typingInput.lines, seedProfile.typing.lines, 1000),
-      font: TYPING_FONTS.includes(typingInput.font as TypingFont)
-        ? (typingInput.font as TypingFont)
+      lines: text(typingInput["lines"], seedProfile.typing.lines, 1000),
+      font: TYPING_FONTS.includes(typingInput["font"] as TypingFont)
+        ? (typingInput["font"] as TypingFont)
         : seedProfile.typing.font,
-      size: Math.min(40, Math.max(12, Number(typingInput.size) || seedProfile.typing.size)),
+      size: Math.min(40, Math.max(12, Number(typingInput["size"]) || seedProfile.typing.size)),
       color: hexOk(
-        typeof typingInput.color === "string" ? typingInput.color : seedProfile.typing.color,
+        typeof typingInput["color"] === "string" ? typingInput["color"] : seedProfile.typing.color,
       ),
-      center: typingInput.center !== false,
+      center: typingInput["center"] !== false,
     },
     work: Object.fromEntries(
       Object.keys(emptyWork).map((key) => [key, text(workInput[key], "", 120)]),
@@ -924,24 +902,24 @@ export function parseConfig(raw: unknown): Profile {
     socials,
     projects,
     addons: {
-      stats: addonsInput.stats !== false,
-      langs: addonsInput.langs !== false,
-      streak: addonsInput.streak !== false,
+      stats: addonsInput["stats"] !== false,
+      langs: addonsInput["langs"] !== false,
+      streak: addonsInput["streak"] !== false,
       blog,
-      blogHandle: text(addonsInput.blogHandle, "", 500),
+      blogHandle: text(addonsInput["blogHandle"], "", 500),
     },
-    statsTheme: text(input.statsTheme, seedProfile.statsTheme, 40),
+    statsTheme: text(input["statsTheme"], seedProfile.statsTheme, 40),
     support: {
-      bmc: validHandle(supportInput.bmc),
-      kofi: validHandle(supportInput.kofi),
-      chai: safeChaiUrl(text(supportInput.chai, "", 500)),
-      sponsors: supportInput.sponsors === true,
+      bmc: validHandle(supportInput["bmc"]),
+      kofi: validHandle(supportInput["kofi"]),
+      chai: safeChaiUrl(text(supportInput["chai"], "", 500)),
+      sponsors: supportInput["sponsors"] === true,
     },
-    techDisplay: TECH_DISPLAYS.includes(input.techDisplay as TechDisplay)
-      ? (input.techDisplay as TechDisplay)
+    techDisplay: TECH_DISPLAYS.includes(input["techDisplay"] as TechDisplay)
+      ? (input["techDisplay"] as TechDisplay)
       : seedProfile.techDisplay,
-    badgeStyle: BADGE_STYLES.includes(input.badgeStyle as BadgeStyle)
-      ? (input.badgeStyle as BadgeStyle)
+    badgeStyle: BADGE_STYLES.includes(input["badgeStyle"] as BadgeStyle)
+      ? (input["badgeStyle"] as BadgeStyle)
       : seedProfile.badgeStyle,
     sections: sections.length ? sections : seedProfile.sections,
     custom,

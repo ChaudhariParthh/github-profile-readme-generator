@@ -1,3 +1,4 @@
+import { seedProfile } from "./profile";
 import { PRESETS, type Profile } from "@/lib/profile";
 import { applyAppearance } from "@/lib/appearance";
 
@@ -87,7 +88,7 @@ export function applyTemplate(profile: Profile, templateId: string): Profile {
   if (!template) return profile;
   return applyAppearance(
     {
-      ...PRESETS[template.presetId],
+      ...(PRESETS[template.presetId] ?? seedProfile),
       name: profile.name,
       username: profile.username,
       location: profile.location,
