@@ -54,11 +54,11 @@ export function SiteHeader({ builder }: { builder?: BuilderActions }) {
             </nav>
             <div className="ml-auto flex items-center gap-2">
               <ThemeToggle />
-              <Button variant="outline" size="sm" onClick={builder.onSave}>
-                <Save className="h-4 w-4" /> Save
+              <Button variant="outline" size="sm" onClick={builder.onSave} aria-label="Save draft">
+                <Save className="h-4 w-4" /> <span className="hidden sm:inline">Save</span>
               </Button>
               <Button size="sm" onClick={builder.onDownload}>
-                <Download className="h-4 w-4" /> Download README.md
+                <Download className="h-4 w-4" /> <span className="hidden sm:inline">Download README.md</span><span className="sm:hidden">README</span>
               </Button>
             </div>
           </>
