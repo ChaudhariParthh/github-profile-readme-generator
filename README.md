@@ -17,6 +17,7 @@ GitProfile Studio is a front-end application for creating polished GitHub profil
 ## Overview
 
 GitProfile Studio is designed as a lightweight, client-side tool for generating README content without requiring a backend service. The application prioritizes a clean user experience, template-driven customization, and static deployment compatibility.
+<img width="1892" height="896" alt="image" src="https://github.com/user-attachments/assets/ef2727aa-0dc8-44f2-8747-b8dc1d768d08" />
 
 ## Tools used
 
