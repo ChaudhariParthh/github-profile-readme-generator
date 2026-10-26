@@ -10,7 +10,7 @@ GitProfile Studio is a front-end application for creating polished GitHub profil
 
 ## Live links
 
-- [Live Demo](https://chaudhariparthh.github.io/gitprofile-studio/)
+- [Live Demo](https://chaudhariparthh.github.io/github-profile-readme-generator/)
 - [Lovable App](https://gitprofilestudio.lovable.app/)
 - [GitHub Repository](https://github.com/ChaudhariParthh/gitprofile-studio)
 
