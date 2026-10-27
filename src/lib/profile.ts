@@ -323,6 +323,7 @@ export type Profile = {
   title: string;
   location: string;
   bio: string;
+  avatarUrl: string;
   bannerUrl: string; // static image or GIF
   appearanceId: string;
   statsLayout: string;
@@ -366,6 +367,7 @@ export const seedProfile: Profile = {
   title: "",
   location: "",
   bio: "",
+  avatarUrl: "",
   bannerUrl: appearanceById(DEFAULT_APPEARANCE_ID).bannerUrl,
   appearanceId: DEFAULT_APPEARANCE_ID,
   statsLayout: DEFAULT_STATS_LAYOUT_ID,
@@ -539,8 +541,6 @@ const safeChaiUrl = (raw: string): string => {
 const hexOk = (h: string) => (/^[0-9a-f]{6}$/i.test(h) ? h.toUpperCase() : "22D3EE");
 const validBadgeStyle = (style: string): BadgeStyle =>
   BADGE_STYLES.includes(style as BadgeStyle) ? (style as BadgeStyle) : "for-the-badge";
-const validUsername = (value: string) =>
-  /^[a-z\d](?:[a-z\d-]{0,38})$/i.test(value) ? value : "github";
 const validHandle = (value: string) => (/^[a-z\d][a-z\d._-]{0,79}$/i.test(value) ? value : "");
 
 // ---------- URL builders ----------
@@ -551,33 +551,46 @@ export const skillBadgeUrl = (t: string, style: BadgeStyle = "for-the-badge") =>
   const s = SKILL_INDEX[t];
   return badge(t, s?.[2] ?? "555555", s?.[1] ?? "", validBadgeStyle(style));
 };
-const isDark = (hex: string) => {
-  const n = parseInt(hex, 16);
-  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b < 60;
+const relativeLuminance = (hex: string) => {
+  const channels = [0, 2, 4].map((index) => {
+    const value = parseInt(hex.slice(index, index + 2), 16) / 255;
+    return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * channels[0]! + 0.7152 * channels[1]! + 0.0722 * channels[2]!;
 };
-/** Authentic logo URL: devicon when simple-icons lacks it, otherwise the simple-icons CDN in brand color. */
+/** Branded, contrast-safe image assets stay legible in GitHub's light and dark themes. */
 export const skillIconUrl = (t: string) => {
   const s = SKILL_INDEX[t];
   if (!s) return "";
-  if (s[3]) return DEV + s[3];
-  return `https://cdn.simpleicons.org/${s[1]}/${isDark(s[2]) ? "white" : s[2]}`;
+  const logoColor = relativeLuminance(s[2]) > 0.179 ? "111827" : "FFFFFF";
+  return `https://img.shields.io/badge/%20-${s[2]}?style=for-the-badge&logo=${encodeURIComponent(s[1])}&logoColor=${logoColor}`;
 };
 export const socialBadgeUrl = (p: string, style: BadgeStyle = "for-the-badge") => {
   const m = SOCIAL_META[p];
   return badge(p, m?.color ?? "555555", m?.logo ?? "", validBadgeStyle(style));
 };
 
-const u = (p: Profile) => enc(validUsername((p.username || "github").trim()));
+const u = (p: Profile) => {
+  const username = p.username.trim();
+  return /^[a-z\d](?:[a-z\d-]{0,38})$/i.test(username) ? enc(username) : "";
+};
 export const statsUrl = (p: Profile) =>
-  `https://github-readme-stats.vercel.app/api?username=${u(p)}&show_icons=true&theme=${statsLayoutById(p.statsLayout).widgetTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`;
+  u(p)
+    ? `https://github-readme-stats.vercel.app/api?username=${u(p)}&show_icons=true&theme=${statsLayoutById(p.statsLayout).widgetTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`
+    : "";
 export const langsUrl = (p: Profile) =>
-  `https://github-readme-stats.vercel.app/api/top-langs/?username=${u(p)}&layout=${statsLayoutById(p.statsLayout).langsLayout}&theme=${statsLayoutById(p.statsLayout).widgetTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`;
+  u(p)
+    ? `https://github-readme-stats.vercel.app/api/top-langs/?username=${u(p)}&layout=${statsLayoutById(p.statsLayout).langsLayout}&theme=${statsLayoutById(p.statsLayout).widgetTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`
+    : "";
 export const streakUrl = (p: Profile) =>
-  `https://streak-stats.demolab.com?user=${u(p)}&theme=${statsLayoutById(p.statsLayout).streakTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`;
+  u(p)
+    ? `https://streak-stats.demolab.com?user=${u(p)}&theme=${statsLayoutById(p.statsLayout).streakTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`
+    : "";
 export const trophyUrl = (p: Profile) => trophyCardUrl(p);
 export const visitorsUrl = (p: Profile) =>
-  `https://komarev.com/ghpvc/?username=${u(p)}&label=Profile%20views&color=${resolvedAccent(p)}&style=flat`;
+  u(p)
+    ? `https://komarev.com/ghpvc/?username=${u(p)}&label=Profile%20views&color=${resolvedAccent(p)}&style=flat`
+    : "";
 export const graphUrl = (p: Profile) => graphCardUrl(p);
 export const pinUrl = (p: Profile, owner: string, repo: string) => pinCardUrl(p, owner, repo);
 export const typingUrl = (p: Profile) => {
@@ -611,6 +624,12 @@ function renderSection(p: Profile, id: string): string[] {
       const banner = safeUrl(resolvedBanner(p));
       if (banner)
         out.push(`<p align="center"><img src="${banner}" alt="banner" width="100%" /></p>`, "");
+      const avatar = safeUrl(p.avatarUrl);
+      if (avatar)
+        out.push(
+          `<p align="center"><img src="${avatar}" alt="${esc(p.name || p.username)} avatar" width="112" height="112" /></p>`,
+          "",
+        );
       out.push(`<h1 align="center">Hi, I'm ${esc(p.name)}</h1>`);
       if (p.title || p.location)
         out.push(
@@ -625,7 +644,11 @@ function renderSection(p: Profile, id: string): string[] {
         );
       break;
     case "visitors":
-      out.push(`<p align="left"><img src="${visitorsUrl(p)}" alt="profile views" /></p>`);
+      out.push(
+        u(p)
+          ? `<p align="left"><img src="${visitorsUrl(p)}" alt="profile views" /></p>`
+          : `> Enter your GitHub username, then click the GitHub icon to import your profile.`,
+      );
       break;
     case "about":
       if (p.bio.trim()) out.push("## About Me", "", esc(p.bio.trim()).replace(/\n+/g, " "));
@@ -651,10 +674,10 @@ function renderSection(p: Profile, id: string): string[] {
           out.push(`  <img src="${skillBadgeUrl(t, p.badgeStyle)}" alt="${esc(t)}" />`),
         );
       } else {
-        const size = p.techDisplay === "icons" ? 40 : 28;
+        const size = p.techDisplay === "icons" ? 32 : 24;
         skills.forEach((t) =>
           out.push(
-            `  <img src="${skillIconUrl(t)}" alt="${esc(t)}" title="${esc(t)}" width="${size}" height="${size}" />&nbsp;`,
+            `  <img src="${skillIconUrl(t)}" alt="${esc(t)}" title="${esc(t)}" height="${size}" />&nbsp;`,
           ),
         );
       }
@@ -864,6 +887,7 @@ export function parseConfig(raw: unknown): Profile {
     title: text(input["title"], seedProfile.title, 120),
     location: text(input["location"], seedProfile.location, 60),
     bio: text(input["bio"], seedProfile.bio, 500),
+    avatarUrl: safeUrl(text(input["avatarUrl"], "", 500)),
     bannerUrl: text(input["bannerUrl"], seedProfile.bannerUrl, 500),
     appearanceId: appearanceById(
       typeof input["appearanceId"] === "string" ? input["appearanceId"] : seedProfile.appearanceId,

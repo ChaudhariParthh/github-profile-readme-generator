@@ -42,7 +42,7 @@ export function SkillPicker({
                 className={`flex cursor-grab items-center gap-1 rounded-md border border-primary/40 bg-primary/10 py-1 pl-1 pr-1.5 text-xs ${drag === i ? "opacity-40" : ""}`}
               >
                 <GripVertical className="h-3 w-3 text-muted-foreground" />
-                <img src={skillIconUrl(n)} alt="" className="h-4 w-4" loading="lazy" />
+                <SkillIcon name={n} size="small" />
                 <span className="font-mono">{n}</span>
                 <button
                   aria-label={`Remove ${n}`}
@@ -89,13 +89,7 @@ export function SkillPicker({
               {on && (
                 <Check className="absolute right-1 top-1 h-3.5 w-3.5 rounded-full bg-primary p-0.5 text-primary-foreground" />
               )}
-              <img
-                src={skillIconUrl(n)}
-                alt=""
-                className="h-7 w-7"
-                loading="lazy"
-                onError={(e) => (e.currentTarget.style.visibility = "hidden")}
-              />
+              <SkillIcon name={n} size="large" />
               <span className="line-clamp-1">{n}</span>
             </button>
           );
@@ -107,5 +101,26 @@ export function SkillPicker({
         )}
       </div>
     </div>
+  );
+}
+
+function SkillIcon({ name, size }: { name: string; size: "small" | "large" }) {
+  const [failed, setFailed] = useState(false);
+  const compact = size === "small";
+  return failed ? (
+    <span
+      aria-hidden="true"
+      className={`inline-flex shrink-0 items-center justify-center rounded-md border border-border bg-secondary font-mono font-semibold text-muted-foreground ${compact ? "h-4 w-4 text-[7px]" : "h-7 w-7 text-[9px]"}`}
+    >
+      {name.slice(0, 2).toUpperCase()}
+    </span>
+  ) : (
+    <img
+      src={skillIconUrl(name)}
+      alt=""
+      className={`shrink-0 rounded-md ${compact ? "h-4 w-4" : "h-7 w-7"}`}
+      loading="lazy"
+      onError={() => setFailed(true)}
+    />
   );
 }
