@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 96" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#060918"/>
+      <stop offset="35%" stopColor="#1E1B4B"/>
+      <stop offset="65%" stopColor="#3B0764"/>
+      <stop offset="90%" stopColor="#0E7490"/>
+      <stop offset="100%" stopColor="#0F1E2E"/>
+    </linearGradient>
+    <linearGradient id="aurora1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#22D3EE" stopOpacity="0.85"/>
+      <stop offset="45%" stopColor="#38BDF8" stopOpacity="0.6"/>
+      <stop offset="80%" stopColor="#818CF8" stopOpacity="0.4"/>
+      <stop offset="100%" stopColor="#C084FC" stopOpacity="0"/>
+    </linearGradient>
+    <linearGradient id="aurora2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stopColor="#A855F7" stopOpacity="0.8"/>
+      <stop offset="50%" stopColor="#06B6D4" stopOpacity="0.6"/>
+      <stop offset="100%" stopColor="#4ADE80" stopOpacity="0.2"/>
+    </linearGradient>
+    <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#E0F2FE" stopOpacity="0.9"/>
+      <stop offset="60%" stopColor="#38BDF8" stopOpacity="0.3"/>
+      <stop offset="100%" stopColor="#38BDF8" stopOpacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="400" height="96" fill="url(#bg)"/>
+
+  <!-- Stars -->
+  <g fill="#F8FAFC">
+    <circle cx="22" cy="10" r="0.9" opacity="0.8"/>
+    <circle cx="48" cy="16" r="0.7" opacity="0.6"/>
+    <circle cx="78" cy="8" r="1.2" opacity="0.9"/>
+    <circle cx="112" cy="14" r="0.8" opacity="0.7"/>
+    <circle cx="145" cy="6" r="1.0" opacity="0.85"/>
+    <circle cx="175" cy="18" r="0.7" opacity="0.65"/>
+    <circle cx="205" cy="9" r="1.3" opacity="0.9"/>
+    <circle cx="238" cy="15" r="0.7" opacity="0.7"/>
+    <circle cx="268" cy="7" r="1.1" opacity="0.85"/>
+    <circle cx="298" cy="17" r="0.8" opacity="0.75"/>
+    <circle cx="328" cy="8" r="1.0" opacity="0.8"/>
+    <circle cx="352" cy="19" r="0.7" opacity="0.65"/>
+    <circle cx="382" cy="12" r="1.2" opacity="0.9"/>
+    <circle cx="35" cy="26" r="0.7" opacity="0.6"/>
+    <circle cx="92" cy="24" r="0.9" opacity="0.75"/>
+    <circle cx="158" cy="22" r="0.7" opacity="0.65"/>
+    <circle cx="222" cy="25" r="0.8" opacity="0.7"/>
+    <circle cx="282" cy="23" r="0.9" opacity="0.8"/>
+    <circle cx="370" cy="26" r="0.7" opacity="0.65"/>
+  </g>
+
+  <!-- Sparkle stars -->
+  <path d="M78 8 L79 5 L80 8 L83 9 L80 10 L79 13 L78 10 L75 9 Z" fill="#E0F2FE" opacity="0.9"/>
+  <path d="M268 7 L269 4 L270 7 L273 8 L270 9 L269 12 L268 9 L265 8 Z" fill="#E0F2FE" opacity="0.9"/>
+
+  <!-- Crescent Moon with glow -->
+  <circle cx="348" cy="18" r="14" fill="url(#moonGlow)"/>
+  <circle cx="348" cy="18" r="7.5" fill="#F1F5F9"/>
+  <circle cx="351" cy="16" r="6.2" fill="#15173B"/>
+
+  <!-- Aurora sweeping waves -->
+  <path d="M-20 62 C 60 22, 120 74, 210 32 C 285 0, 340 50, 420 28 L 420 60 C 340 75, 275 35, 205 65 C 120 100, 55 50, -20 85 Z" fill="url(#aurora1)" opacity="0.85"/>
+  <path d="M-20 48 C 70 12, 130 60, 220 26 C 295 2, 350 42, 420 18" stroke="url(#aurora2)" strokeWidth="10" fill="none" opacity="0.75"/>
+  <path d="M-10 54 C 80 20, 145 66, 235 34 C 310 10, 360 48, 420 30" stroke="#22D3EE" strokeWidth="3.5" fill="none" opacity="0.85"/>
+
+  <!-- Distant mountain ridges -->
+  <polygon points="-10,96 15,64 45,76 80,52 115,70 150,46 195,68 235,42 275,64 315,48 355,66 395,54 415,68 415,96" fill="#1E1B4B" opacity="0.85"/>
+  <polygon points="-10,96 30,72 65,82 105,62 140,78 180,58 220,74 260,54 300,72 340,58 385,74 415,64 415,96" fill="#0F172A" opacity="0.95"/>
+
+  <!-- Pine forest -->
+  <g fill="#060914">
+    <polygon points="5,58 -2.6,78 12.6,78"/>
+    <polygon points="22,54 12.9,78 31.1,78"/>
+    <polygon points="40,60 33.2,78 46.8,78"/>
+    <polygon points="58,52 48.1,78 67.9,78"/>
+    <polygon points="75,56 66.6,78 83.4,78"/>
+    <polygon points="95,62 88.2,80 101.8,80"/>
+    <polygon points="112,55 103.3,78 120.7,78"/>
+    <polygon points="130,50 119.4,78 140.6,78"/>
+    <polygon points="150,57 142,78 158,78"/>
+    <polygon points="170,62 163.2,80 176.8,80"/>
+    <polygon points="190,54 180.9,78 199.1,78"/>
+    <polygon points="210,51 199.7,78 220.3,78"/>
+    <polygon points="230,58 222.4,78 237.6,78"/>
+    <polygon points="250,53 240.5,78 259.5,78"/>
+    <polygon points="270,60 263.2,78 276.8,78"/>
+    <polygon points="290,52 280.1,78 299.9,78"/>
+    <polygon points="310,55 301.3,78 318.7,78"/>
+    <polygon points="330,49 319,78 341,78"/>
+    <polygon points="350,56 341.6,78 358.4,78"/>
+    <polygon points="370,52 360.1,78 379.9,78"/>
+    <polygon points="390,55 381.6,77 398.4,77"/>
+    <polygon points="405,50 394.4,78 415.6,78"/>
+    <rect x="0" y="86" width="400" height="10" fill="#04060E"/>
+  </g>
+</svg>

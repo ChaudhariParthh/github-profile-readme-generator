@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 96" width="100%" height="100%">
+  <defs>
+    <linearGradient id="od-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#042F2E"/>
+      <stop offset="45%" stopColor="#0F766E"/>
+      <stop offset="85%" stopColor="#0891B2"/>
+      <stop offset="100%" stopColor="#021C1B"/>
+    </linearGradient>
+    <linearGradient id="sunRays" x1="0%" y1="0%" x2="40%" y2="100%">
+      <stop offset="0%" stopColor="#67E8F9" stopOpacity="0.55"/>
+      <stop offset="60%" stopColor="#0891B2" stopOpacity="0.2"/>
+      <stop offset="100%" stopColor="#042F2E" stopOpacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="96" fill="url(#od-bg)"/>
+
+  <!-- God rays -->
+  <polygon points="60,0 120,0 180,96 100,96" fill="url(#sunRays)"/>
+  <polygon points="150,0 210,0 300,96 220,96" fill="url(#sunRays)" opacity="0.85"/>
+  <polygon points="240,0 290,0 380,96 320,96" fill="url(#sunRays)" opacity="0.65"/>
+
+  <!-- Bubbles -->
+  <g fill="none" stroke="#67E8F9" strokeWidth="0.8" opacity="0.7">
+    <circle cx="90" cy="35" r="2"/>
+    <circle cx="140" cy="22" r="1.5"/>
+    <circle cx="175" cy="45" r="2.5"/>
+    <circle cx="210" cy="18" r="1.2"/>
+    <circle cx="260" cy="38" r="2"/>
+    <circle cx="315" cy="28" r="1.8"/>
+    <circle cx="350" cy="48" r="2.2"/>
+  </g>
+
+  <!-- Manta Ray -->
+  <g transform="translate(195, 36) scale(0.7)">
+    <path d="M 0 0 C 15 -14, 38 -12, 45 -4 C 36 6, 12 12, 0 10 C -12 12, -36 6, -45 -4 C -38 -12, -15 -14, 0 0 Z" fill="#042F2E" opacity="0.9"/>
+    <path d="M 0 10 C 2 24, -1 35, 1 44" stroke="#042F2E" strokeWidth="1.2" fill="none" opacity="0.9"/>
+  </g>
+
+  <!-- Fish school -->
+  <g fill="#0D9488" opacity="0.8">
+    <path d="M 110 52 Q 114 50.5 117 52 Q 114 53.5 110 52 Z"/>
+    <path d="M 118 50 Q 122 48.5 125 50 Q 122 51.5 118 50 Z"/>
+    <path d="M 125 53 Q 129 51.5 132 53 Q 129 54.5 125 53 Z"/>
+    <path d="M 132 49 Q 136 47.5 139 49 Q 136 50.5 132 49 Z"/>
+    <path d="M 140 52 Q 144 50.5 147 52 Q 144 53.5 140 52 Z"/>
+    <path d="M 280 24 Q 284 22.5 287 24 Q 284 25.5 280 24 Z"/>
+    <path d="M 288 22 Q 292 20.5 295 22 Q 292 23.5 288 22 Z"/>
+    <path d="M 296 25 Q 300 23.5 303 25 Q 300 26.5 296 25 Z"/>
+  </g>
+
+  <!-- Coral Reef Bottom -->
+  <path d="M 0 96 L 0 78 C 12 76, 18 68, 24 76 C 30 65, 36 62, 44 74 C 52 68, 58 72, 65 80 C 76 74, 84 62, 92 78 C 105 76, 115 82, 130 80 C 145 74, 155 66, 168 78 C 180 72, 192 68, 205 78 C 220 74, 235 80, 250 78 C 265 65, 275 62, 288 76 C 298 70, 310 64, 324 76 C 338 68, 350 72, 362 82 C 375 74, 388 66, 400 78 L 400 96 Z" fill="#021C1B"/>
+
+  <!-- Foreground Coral Fans -->
+  <path d="M 35 96 C 35 82, 30 76, 24 70 M 35 82 C 42 75, 48 68, 46 62" stroke="#0F766E" strokeWidth="2.2" fill="none"/>
+  <path d="M 370 96 C 370 80, 376 74, 384 68 M 370 82 C 362 76, 358 68, 360 60" stroke="#0F766E" strokeWidth="2.2" fill="none"/>
+</svg>

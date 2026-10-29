@@ -2,10 +2,7 @@ import type { Profile } from "./profile";
 
 const enc = (s: string) => encodeURIComponent(s.trim());
 const hexOk = (h: string) => (/^[0-9a-f]{6}$/i.test(h) ? h : "8B5CF6");
-const user = (p: Profile) => {
-  const username = p.username.trim();
-  return /^[a-z\d](?:[a-z\d-]{0,38})$/i.test(username) ? enc(username) : "";
-};
+const user = (p: Profile) => enc(p.username.trim() || "github");
 
 export type AppearanceTheme = {
   id: string;
@@ -36,10 +33,10 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Deep navy with violet-cyan aurora landscape. Professional and modern.",
     accent: "8B5CF6",
     palette: ["#0B1224", "#6D28D9", "#22D3EE"],
-    bannerUrl: cap("waving", "0:0B1224,38:164E63,72:4C1D95,100:0E7490", "E0E7FF", "svg-anim"),
+    bannerUrl: "https://raw.githubusercontent.com/ChaudhariParthh/github-profile-readme-generator/main/public/banners/midnight-aurora.svg",
     bannerMotion: "svg-anim",
     thumb:
-      "radial-gradient(ellipse at 22% 30%,#c084fc99 0%,transparent 30%),radial-gradient(ellipse at 70% 65%,#22d3ee88 0%,transparent 35%),linear-gradient(140deg,#060918 0%,#3b0764 42%,#0e7490 100%)",
+      "radial-gradient(ellipse at 15% 25%,#c084fc88 0%,transparent 40%),radial-gradient(ellipse at 85% 60%,#22d3ee77 0%,transparent 35%),radial-gradient(ellipse at 50% 10%,#4ade8055 0%,transparent 30%),linear-gradient(160deg,#060918 0%,#1e1b4b 35%,#3b0764 60%,#0e7490 85%,#0f1e2e 100%)",
   },
   {
     id: "neon-cyber",
@@ -48,10 +45,10 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Futuristic grid with neon glow. Great for tech and cybersecurity.",
     accent: "22D3EE",
     palette: ["#020617", "#7C3AED", "#06B6D4"],
-    bannerUrl: cap("slice", "0:020617,30:312E81,68:164E63,100:0891B2", "A5F3FC", "svg-anim"),
+    bannerUrl: "https://raw.githubusercontent.com/ChaudhariParthh/github-profile-readme-generator/main/public/banners/neon-cyber.svg",
     bannerMotion: "svg-anim",
     thumb:
-      "repeating-linear-gradient(0deg,transparent 0 17px,#22d3ee38 18px 19px),repeating-linear-gradient(90deg,transparent 0 25px,#818cf838 26px 27px),radial-gradient(ellipse at 70% 25%,#22d3ee 0%,transparent 26%),linear-gradient(160deg,#020617 0%,#1e1b4b 45%,#0e7490 78%,#22d3ee 100%)",
+      "repeating-linear-gradient(0deg,transparent 0 20px,#06b6d418 21px 22px),repeating-linear-gradient(90deg,transparent 0 30px,#7c3aed18 31px 32px),radial-gradient(ellipse at 50% 100%,#06b6d488 0%,transparent 55%),radial-gradient(circle at 50% 38%,#7c3aed66 0%,transparent 25%),linear-gradient(180deg,#020617 0%,#0c0a2e 50%,#0a2540 100%)",
   },
   {
     id: "terminal-hacker",
@@ -60,10 +57,10 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Matrix-style terminal inspired background. Perfect for security and systems profiles.",
     accent: "4ADE80",
     palette: ["#020202", "#14532D", "#4ADE80"],
-    bannerUrl: cap("venom", "0:020202,46:052e16,100:14532D", "86EFAC", "svg-anim"),
+    bannerUrl: "https://raw.githubusercontent.com/ChaudhariParthh/github-profile-readme-generator/main/public/banners/terminal-hacker.svg",
     bannerMotion: "svg-anim",
     thumb:
-      "repeating-linear-gradient(90deg,transparent 0 13px,#22c55e20 14px 16px),radial-gradient(ellipse at 80% 15%,#4ade8040,transparent 38%),linear-gradient(180deg,#000000 0%,#052e16 55%,#14532d 100%)",
+      "repeating-linear-gradient(90deg,transparent 0 15px,#4ade8018 16px 17px),repeating-linear-gradient(0deg,transparent 0 8px,#14532d30 9px 10px),radial-gradient(ellipse at 50% 35%,#14532d88 0%,transparent 50%),linear-gradient(180deg,#000000 0%,#020d02 40%,#052e16 70%,#14532d 100%)",
   },
   {
     id: "cosmic-galaxy",
@@ -72,10 +69,10 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Deep space theme with planets and nebula. Creative and eye-catching.",
     accent: "C084FC",
     palette: ["#0F172A", "#6D28D9", "#38BDF8"],
-    bannerUrl: cap("shark", "0:0F172A,36:4C1D95,68:075985,100:0EA5E9", "E0F2FE", "svg-anim"),
+    bannerUrl: "https://raw.githubusercontent.com/ChaudhariParthh/github-profile-readme-generator/main/public/banners/cosmic-galaxy.svg",
     bannerMotion: "svg-anim",
     thumb:
-      "radial-gradient(circle at 20% 30%,#7c3aed 0%,transparent 40%),radial-gradient(circle at 80% 70%,#0ea5e9 0%,transparent 35%),linear-gradient(135deg,#020617,#1e1b4b)",
+      "radial-gradient(circle at 65% 45%,#4c1d9577 0%,transparent 45%),radial-gradient(circle at 30% 25%,#0369a177 0%,transparent 35%),radial-gradient(circle at 80% 20%,#c084fc55 0%,transparent 25%),linear-gradient(135deg,#020617 0%,#0f0a2e 50%,#0a1628 100%)",
   },
   {
     id: "mountain-night",
@@ -84,9 +81,9 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Minimal illustrated mountains with moon. Clean and aesthetic.",
     accent: "818CF8",
     palette: ["#0B1220", "#312E81", "#F9A8D4"],
-    bannerUrl: cap("mountains", "0:0F172A,52:312E81,100:7C3AED", "E0E7FF"),
+    bannerUrl: "https://raw.githubusercontent.com/ChaudhariParthh/github-profile-readme-generator/main/public/banners/mountain-night.svg",
     bannerMotion: "none",
-    thumb: "linear-gradient(180deg,#0f172a 0%,#312e81 40%,#be185d 78%,#0f172a 100%)",
+    thumb: "linear-gradient(180deg,#060b18 0%,#0b1220 25%,#1a1745 55%,#312e81 75%,#be185d55 88%,#0b1220 100%)",
   },
   {
     id: "ocean-depths",
@@ -95,10 +92,10 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Dark ocean inspired theme with smooth gradients.",
     accent: "22D3EE",
     palette: ["#042F2E", "#0F766E", "#67E8F9"],
-    bannerUrl: cap("cylinder", "0:042F2E,38:0F766E,72:0891B2,100:164E63", "CFFAFE", "svg-anim"),
+    bannerUrl: "https://raw.githubusercontent.com/ChaudhariParthh/github-profile-readme-generator/main/public/banners/ocean-depths.svg",
     bannerMotion: "svg-anim",
     thumb:
-      "repeating-radial-gradient(ellipse at 52% 110%,transparent 0 13px,#67e8f933 14px 16px),linear-gradient(180deg,#022c22 0%,#0f766e 50%,#22d3ee 100%)",
+      "radial-gradient(ellipse at 30% 0%,#67e8f944 0%,transparent 40%),radial-gradient(ellipse at 70% 0%,#22d3ee33 0%,transparent 35%),linear-gradient(180deg,#001a1a 0%,#042f2e 20%,#064e3b 50%,#0f766e 75%,#0891b2 100%)",
   },
   {
     id: "sunset-horizon",
@@ -107,10 +104,10 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Warm sunset gradients with city skyline. Modern and vibrant.",
     accent: "F97316",
     palette: ["#4C0519", "#DB2777", "#F59E0B"],
-    bannerUrl: cap("wave", "0:4C0519,35:7C2D12,62:BE185D,100:F97316", "FFF7ED", "svg-anim"),
+    bannerUrl: "https://raw.githubusercontent.com/ChaudhariParthh/github-profile-readme-generator/main/public/banners/sunset-horizon.svg",
     bannerMotion: "svg-anim",
     thumb:
-      "linear-gradient(180deg,transparent 0 45%,#4c1d95 46% 52%,transparent 53%),linear-gradient(90deg,transparent 0 8%,#4c0519 8% 13%,transparent 13% 18%,#7f1d1d 18% 27%,transparent 27% 31%,#4c0519 31% 39%,transparent 39% 46%,#7f1d1d 46% 58%,transparent 58%),linear-gradient(180deg,#fbbf24 0%,#db2777 46%,#4c0519 100%)",
+      "linear-gradient(180deg,#FCD34D 0%,#F97316 20%,#BE185D 45%,#7C2D12 65%,#431407 80%,#1a0005 100%)",
   },
   {
     id: "minimal-mono",
@@ -119,10 +116,10 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Clean grayscale with geometric shapes. Professional and minimal.",
     accent: "A1A1AA",
     palette: ["#18181B", "#71717A", "#E4E4E7"],
-    bannerUrl: cap("rect", "0:18181B,45:3F3F46,100:71717A", "F4F4F5"),
+    bannerUrl: "https://raw.githubusercontent.com/ChaudhariParthh/github-profile-readme-generator/main/public/banners/minimal-mono.svg",
     bannerMotion: "none",
     thumb:
-      "radial-gradient(circle at 76% 28%,#e4e4e7 0 18px,transparent 19px),repeating-linear-gradient(135deg,transparent 0 13px,#ffffff16 14px 15px),linear-gradient(135deg,#18181b 0%,#3f3f46 50%,#71717a 100%)",
+      "linear-gradient(135deg,#09090B 0%,#18181B 30%,#27272A 55%,#3F3F46 75%,#52525B 90%,#71717A 100%)",
   },
   {
     id: "glass-prism",
@@ -131,10 +128,10 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Abstract prism shapes with glass effect. Modern and premium look.",
     accent: "A78BFA",
     palette: ["#1E1B4B", "#8B5CF6", "#67E8F9"],
-    bannerUrl: cap("egg", "0:1E1B4B,40:6D28D9,75:0F766E,100:22D3EE", "F5F3FF", "svg-anim"),
+    bannerUrl: "https://raw.githubusercontent.com/ChaudhariParthh/github-profile-readme-generator/main/public/banners/glass-prism.svg",
     bannerMotion: "svg-anim",
     thumb:
-      "conic-gradient(from 135deg at 55% 45%,#a78bfa 0 10%,#22d3ee 10% 22%,#1e1b4b 22% 36%,#38bdf8 36% 52%,#8b5cf6 52% 70%,#1e1b4b 70% 100%)",
+      "radial-gradient(circle at 35% 50%,#8b5cf677 0%,transparent 50%),radial-gradient(circle at 75% 30%,#06b6d455 0%,transparent 40%),linear-gradient(135deg,#0f0d2e 0%,#1e1b4b 45%,#0e1a35 100%)",
   },
   {
     id: "editorial-light",
@@ -143,10 +140,10 @@ export const BACKGROUND_THEMES: AppearanceTheme[] = [
     blurb: "Clean light theme with artistic landscape. Unique and minimal.",
     accent: "57534E",
     palette: ["#FAFAF9", "#D6D3D1", "#44403C"],
-    bannerUrl: cap("soft", "0:FAFAF9,48:E7E5E4,100:D6D3D1", "44403C"),
+    bannerUrl: "https://raw.githubusercontent.com/ChaudhariParthh/github-profile-readme-generator/main/public/banners/editorial-light.svg",
     bannerMotion: "none",
     thumb:
-      "radial-gradient(circle at 77% 26%,#ffffff 0 19px,#d6d3d1 20px 21px,transparent 22px),linear-gradient(90deg,transparent 0 14%,#57534e22 14% 15%,transparent 15% 56%,#57534e18 56% 57%,transparent 57%),linear-gradient(180deg,#fafaf9 0%,#e7e5e4 58%,#a8a29e 100%)",
+      "radial-gradient(circle at 80% 25%,#e0703066 0%,#d6d3d100 30%),linear-gradient(180deg,#FAFAF9 0%,#F5F5F4 40%,#E7E5E4 70%,#D6D3D1 100%)",
   },
 ];
 

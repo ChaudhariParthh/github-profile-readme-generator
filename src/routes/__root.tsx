@@ -89,7 +89,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         httpEquiv: "Content-Security-Policy",
         content:
-          "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://capsule-render.vercel.app https://github.com https://cdn.jsdelivr.net https://cdn.simpleicons.org https://img.shields.io https://github-readme-stats.vercel.app https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app https://streak-stats.demolab.com https://github-profile-trophy.vercel.app https://github-readme-activity-graph.vercel.app https://komarev.com https://readme-typing-svg.demolab.com https://api.github.com; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self';",
+          "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://raw.githubusercontent.com https://capsule-render.vercel.app https://github.com https://cdn.jsdelivr.net https://cdn.simpleicons.org https://img.shields.io https://github-readme-stats.vercel.app https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app https://streak-stats.demolab.com https://github-profile-trophy.vercel.app https://github-readme-activity-graph.vercel.app https://komarev.com https://readme-typing-svg.demolab.com https://api.github.com; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self';",
       },
     ],
     links: [

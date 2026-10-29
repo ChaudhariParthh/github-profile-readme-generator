@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 96" width="100%" height="100%">
+  <defs>
+    <linearGradient id="sh-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#4C0519"/>
+      <stop offset="25%" stopColor="#BE185D"/>
+      <stop offset="60%" stopColor="#F97316"/>
+      <stop offset="90%" stopColor="#FCD34D"/>
+      <stop offset="100%" stopColor="#2E020E"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#FEF08A"/>
+      <stop offset="35%" stopColor="#F97316" stopOpacity="0.85"/>
+      <stop offset="70%" stopColor="#DB2777" stopOpacity="0.3"/>
+      <stop offset="100%" stopColor="#4C0519" stopOpacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="400" height="96" fill="url(#sh-bg)"/>
+
+  <!-- Sun -->
+  <circle cx="270" cy="54" r="38" fill="url(#sunGlow)"/>
+  <circle cx="270" cy="54" r="18" fill="#FEF08A"/>
+
+  <!-- Atmospheric bands cutting the sun -->
+  <rect x="220" y="44" width="100" height="2" fill="#BE185D" opacity="0.8"/>
+  <rect x="235" y="49" width="80" height="2.2" fill="#BE185D" opacity="0.85"/>
+  <rect x="245" y="55" width="60" height="2.5" fill="#9D174D" opacity="0.9"/>
+
+  <!-- Distant skyline -->
+  <polygon points="0,64 15,64 15,58 25,58 25,62 38,62 38,54 48,54 48,60 62,60 62,52 75,52 75,64 95,64 95,56 110,56 110,62 135,62 135,50 150,50 150,60 180,60 180,52 200,52 200,64 320,64 320,54 340,54 340,58 360,58 360,50 375,50 375,64 400,64 400,96 0,96" fill="#831843" opacity="0.9"/>
+
+  <!-- Midground skyline -->
+  <polygon points="0,72 10,72 10,58 20,58 20,64 28,64 28,48 36,48 36,42 38,36 40,42 40,70 54,70 54,52 68,52 68,66 82,66 82,44 92,44 92,38 94,32 96,38 96,68 112,68 112,56 128,56 128,66 142,66 142,48 156,48 156,68 174,68 174,54 188,54 188,68 205,68 205,58 220,58 220,68 238,68 238,72 255,72 255,62 268,62 268,72 284,72 284,56 296,56 296,68 312,68 312,46 322,46 322,66 338,66 338,52 352,52 352,68 368,68 368,48 378,48 378,64 390,64 390,56 400,56 400,96 0,96" fill="#4C0519"/>
+
+  <!-- Windows -->
+  <g fill="#FDE047" opacity="0.95">
+    <rect x="32" y="54" width="2" height="1.8"/>
+    <rect x="32" y="60" width="2" height="1.8"/>
+    <rect x="86" y="50" width="2" height="1.8"/>
+    <rect x="86" y="56" width="2" height="1.8"/>
+    <rect x="86" y="62" width="2" height="1.8"/>
+    <rect x="148" y="54" width="2" height="1.8"/>
+    <rect x="148" y="60" width="2" height="1.8"/>
+    <rect x="316" y="52" width="2" height="1.8"/>
+    <rect x="316" y="58" width="2" height="1.8"/>
+    <rect x="344" y="58" width="2" height="1.8"/>
+    <rect x="372" y="54" width="2" height="1.8"/>
+  </g>
+
+  <!-- Waterfront -->
+  <rect x="0" y="74" width="400" height="22" fill="#2E020E"/>
+  <line x1="240" y1="78" x2="300" y2="78" stroke="#F97316" strokeWidth="1.2" opacity="0.85"/>
+  <line x1="250" y1="83" x2="290" y2="83" stroke="#FDE047" strokeWidth="1" opacity="0.7"/>
+  <line x1="260" y1="88" x2="280" y2="88" stroke="#FDE047" strokeWidth="0.8" opacity="0.5"/>
+</svg>

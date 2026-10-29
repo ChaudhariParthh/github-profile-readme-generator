@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 96" width="100%" height="100%">
+  <defs>
+    <linearGradient id="el-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#FAFAF9"/>
+      <stop offset="40%" stopColor="#F5F5F4"/>
+      <stop offset="75%" stopColor="#E7E5E4"/>
+      <stop offset="100%" stopColor="#D6D3D1"/>
+    </linearGradient>
+    <radialGradient id="elSun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#EA580C"/>
+      <stop offset="85%" stopColor="#DC2626"/>
+      <stop offset="100%" stopColor="#B91C1C"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="400" height="96" fill="url(#el-bg)"/>
+
+  <!-- Rising Crimson Sun -->
+  <circle cx="318" cy="34" r="20" fill="url(#elSun)" opacity="0.92"/>
+
+  <!-- Mist bands -->
+  <rect x="270" y="26" width="95" height="1.8" fill="#F8F6F0" opacity="0.6"/>
+  <rect x="280" y="36" width="80" height="2" fill="#F8F6F0" opacity="0.55"/>
+
+  <!-- Mountain 4 (Far) -->
+  <polygon points="0,86 45,54 95,72 155,44 210,68 265,48 315,66 360,52 400,62 400,96 0,96" fill="#D6D3D1" opacity="0.5"/>
+
+  <!-- Mountain 3 (Mid) -->
+  <polygon points="0,88 60,62 110,76 160,52 215,74 270,58 320,74 370,60 400,70 400,96 0,96" fill="#A8A29E" opacity="0.65"/>
+
+  <!-- Mountain 2 (Near) -->
+  <polygon points="0,92 40,74 85,84 135,62 180,82 225,66 280,84 330,68 375,82 400,76 400,96 0,96" fill="#78716C" opacity="0.8"/>
+
+  <!-- Mountain 1 (Foreground Ink) -->
+  <polygon points="0,96 25,82 65,90 115,74 150,86 195,78 245,90 295,76 345,88 385,82 400,88 400,96 0,96" fill="#292524" opacity="0.95"/>
+
+  <!-- Pine branch -->
+  <path d="M 0 45 C 18 42, 32 46, 45 42" stroke="#44403C" strokeWidth="1.5" fill="none" opacity="0.7"/>
+  <circle cx="32" cy="43" r="4" fill="#57534E" opacity="0.6"/>
+  <circle cx="45" cy="41" r="3.5" fill="#57534E" opacity="0.6"/>
+</svg>

@@ -11,6 +11,7 @@ import {
   GithubIcon,
   GripVertical,
   Loader2,
+  Pencil,
   Plus,
   RotateCcw,
   Trash2,
@@ -23,12 +24,12 @@ import { SkillPicker } from "@/components/builder/SkillPicker";
 import {
   BackgroundGallery,
   StatsGallery,
-  TemplateGallery,
 } from "@/components/builder/ThemeGalleries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { BannerAdjustDialog } from "@/components/builder/BannerAdjustDialog";
 import { Switch } from "@/components/ui/switch";
 import {
   AlertDialog,
@@ -77,13 +78,13 @@ import { moveItem } from "@/lib/reorder";
 export const Route = createFileRoute("/builder")({
   head: () => ({
     meta: [
-      { title: "Builder — GitProfile Studio" },
+      { title: "Builder â€” GitProfile Studio" },
       {
         name: "description",
         content:
           "Build your GitHub profile README with real tech logos, animated headers, stats widgets and a live preview.",
       },
-      { property: "og:title", content: "Builder — GitProfile Studio" },
+      { property: "og:title", content: "Builder â€” GitProfile Studio" },
       {
         property: "og:description",
         content:
@@ -110,35 +111,45 @@ function downloadFile(name: string, content: string, type: string) {
 }
 
 async function prepareBannerImage(file: File): Promise<string> {
-  if (!file.type.startsWith("image/") || file.size > 10 * 1024 * 1024) {
-    throw new Error("Choose an image smaller than 10 MB.");
+  const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|gif|webp|svg)$/i.test(file.name);
+  if (!isImage || file.size > 10 * 1024 * 1024) {
+    throw new Error("Choose an image (PNG, JPG, JPEG, WebP, GIF) smaller than 10 MB.");
   }
 
-  const sourceUrl = URL.createObjectURL(file);
-  try {
-    const image = new Image();
-    image.src = sourceUrl;
-    await new Promise<void>((resolve, reject) => {
-      image.onload = () => resolve();
-      image.onerror = () => reject(new Error("That image could not be read."));
-    });
+  // Use FileReader as the primary reader (immune to blob: CSP restrictions)
+  const dataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        resolve(reader.result);
+      } else {
+        reject(new Error("That image could not be read."));
+      }
+    };
+    reader.onerror = () => reject(new Error("That image could not be read."));
+    reader.readAsDataURL(file);
+  });
 
-    const width = 1600;
-    const height = 600;
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const context = canvas.getContext("2d");
-    if (!context) throw new Error("Your browser could not prepare that image.");
+  const image = new Image();
+  await new Promise<void>((resolve, reject) => {
+    image.onload = () => resolve();
+    image.onerror = () => reject(new Error("That image could not be read."));
+    image.src = dataUrl;
+  });
 
-    const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight);
-    const drawnWidth = image.naturalWidth * scale;
-    const drawnHeight = image.naturalHeight * scale;
-    context.drawImage(image, (width - drawnWidth) / 2, (height - drawnHeight) / 2, drawnWidth, drawnHeight);
-    return canvas.toDataURL("image/jpeg", 0.88);
-  } finally {
-    URL.revokeObjectURL(sourceUrl);
-  }
+  const width = 1600;
+  const height = 600;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Your browser could not prepare that image.");
+
+  const scale = Math.max(width / (image.naturalWidth || 1), height / (image.naturalHeight || 1));
+  const drawnWidth = image.naturalWidth * scale;
+  const drawnHeight = image.naturalHeight * scale;
+  context.drawImage(image, (width - drawnWidth) / 2, (height - drawnHeight) / 2, drawnWidth, drawnHeight);
+  return canvas.toDataURL("image/jpeg", 0.88);
 }
 
 const WORK_FIELDS: { key: keyof Work; label: string; placeholder: string }[] = [
@@ -162,13 +173,15 @@ function Builder() {
   const [p, setP] = useState<Profile>(seedProfile);
   const [tab, setTab] = useState<"editor" | "preview">("editor");
   const [active, setActive] = useState<string>("header");
-  const [raw, setRaw] = useState(false);
+  const [previewTab, setPreviewTab] = useState<"preview" | "markdown" | "import">("preview");
   const [copied, setCopied] = useState(false);
   const [drag, setDrag] = useState<number | null>(null);
   const [ghLoading, setGhLoading] = useState(false);
   const [ghInfo, setGhInfo] = useState<{ repos: number } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const bannerFileRef = useRef<HTMLInputElement>(null);
+  const [adjustDialogOpen, setAdjustDialogOpen] = useState(false);
+  const [adjustImageSrc, setAdjustImageSrc] = useState<string | null>(null);
   const md = useMemo(() => toMarkdown(p), [p]);
 
   // Restore a saved draft after mount (browser storage isn't available during server render).
@@ -223,17 +236,33 @@ function Builder() {
   };
   const importBannerImage = async (file: File) => {
     try {
-      const bannerUrl = await prepareBannerImage(file);
-      setP((s) => ({ ...s, bannerUrl, customBanner: true }));
-      toast.success("Banner image added");
+      const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|gif|webp|svg)$/i.test(file.name);
+      if (!isImage || file.size > 10 * 1024 * 1024) {
+        throw new Error("Choose an image (PNG, JPG, JPEG, WebP, GIF) smaller than 10 MB.");
+      }
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result === "string") resolve(reader.result);
+          else reject(new Error("That image could not be read."));
+        };
+        reader.onerror = () => reject(new Error("That image could not be read."));
+        reader.readAsDataURL(file);
+      });
+      // Apply default crop
+      const defaultCropped = await prepareBannerImage(file);
+      setP((s) => ({ ...s, bannerUrl: defaultCropped, customBanner: true }));
+      // Open adjustment dialog for fine-tuning position & zoom
+      setAdjustImageSrc(dataUrl);
+      setAdjustDialogOpen(true);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "That image could not be used.");
     }
   };
-  const importGitHub = async () => {
+  const importGitHub = async (username?: string) => {
     setGhLoading(true);
     try {
-      const { user, top } = await fetchGitHubProfile(p.username);
+      const { user, top } = await fetchGitHubProfile(username ?? p.username);
       setP((s) => ({
         ...s,
         username: user.login,
@@ -344,7 +373,7 @@ function Builder() {
       <input
         ref={bannerFileRef}
         type="file"
-        accept="image/png,image/jpeg,image/gif,image/webp"
+        accept="image/png,image/jpeg,image/gif,image/webp,.png,.jpg,.jpeg,.webp,.gif"
         className="hidden"
         onChange={(e) => {
           const f = e.target.files?.[0];
@@ -550,7 +579,7 @@ function Builder() {
                         size="icon"
                         aria-label="Import from GitHub"
                         title="Import public GitHub profile"
-                        onClick={importGitHub}
+                        onClick={() => importGitHub()}
                         disabled={ghLoading || !p.username}
                       >
                         {ghLoading ? (
@@ -602,12 +631,24 @@ function Builder() {
                       <Button size="sm" variant="secondary" onClick={() => bannerFileRef.current?.click()}>
                         <Upload className="h-4 w-4" /> Choose photo
                       </Button>
+                      {safeUrl(p.bannerUrl) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setAdjustImageSrc(p.bannerUrl);
+                            setAdjustDialogOpen(true);
+                          }}
+                        >
+                          <Pencil className="h-4 w-4" /> Edit / Adjust
+                        </Button>
+                      )}
                     </div>
                     <UrlField
                       label="Or paste a custom banner image URL"
                       value={p.bannerUrl}
                       onChange={(v) => setP((s) => ({ ...s, bannerUrl: v, customBanner: true }))}
-                      hint="Photos are center-cropped to a 1600 × 600 banner and kept in this browser."
+                      hint="Photos are center-cropped to a 1600 Ã— 600 banner and kept in this browser."
                       placeholder="https://example.com/banner.jpg"
                     />
                     <div className="mt-1.5 flex gap-2">
@@ -884,7 +925,7 @@ function Builder() {
                       onChange={(v) => setAddon("streak", v)}
                     />
                     <p className="text-xs text-muted-foreground">
-                      Stats design is independent of the background theme. Pick a layout below — it
+                      Stats design is independent of the background theme. Pick a layout below â€” it
                       changes the generated Markdown, not just this editor.
                     </p>
                   </>
@@ -1008,7 +1049,7 @@ function Builder() {
                     }
                   />
                 </Field>
-                <Field label="Content (plain text, **bold**, [links](https://…) and - bullets)">
+                <Field label="Content (plain text, **bold**, [links](https://â€¦) and - bullets)">
                   <Textarea
                     rows={6}
                     value={p.custom[active]!.body}
@@ -1041,17 +1082,24 @@ function Builder() {
                 <div className="inline-flex rounded-lg border border-border bg-card p-1">
                   <Button
                     size="sm"
-                    variant={raw ? "ghost" : "secondary"}
-                    onClick={() => setRaw(false)}
+                    variant={previewTab === "preview" ? "secondary" : "ghost"}
+                    onClick={() => setPreviewTab("preview")}
                   >
                     <Eye className="h-4 w-4" /> Preview
                   </Button>
                   <Button
                     size="sm"
-                    variant={raw ? "secondary" : "ghost"}
-                    onClick={() => setRaw(true)}
+                    variant={previewTab === "markdown" ? "secondary" : "ghost"}
+                    onClick={() => setPreviewTab("markdown")}
                   >
                     <Code2 className="h-4 w-4" /> Markdown
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={previewTab === "import" ? "secondary" : "ghost"}
+                    onClick={() => setPreviewTab("import")}
+                  >
+                    <GithubIcon className="h-4 w-4" /> Import
                   </Button>
                 </div>
                 <Button size="sm" onClick={copyMd}>
@@ -1061,12 +1109,50 @@ function Builder() {
               </div>
             </div>
             <div className="max-h-[calc(100vh-8.5rem)] overflow-auto rounded-xl">
-              {raw ? (
+              {previewTab === "import" ? (
+                <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-semibold">Import from GitHub</h3>
+                    <p className="text-xs text-muted-foreground">
+                      Enter your GitHub username to import your public profile bio, social links, and top repositories.
+                    </p>
+                  </div>
+                  <div className="relative max-w-sm">
+                    <Input
+                      type="text"
+                      placeholder="Enter GitHub username"
+                      value={p.username}
+                      maxLength={39}
+                      onChange={(e) => set("username", e.target.value.replace(/\s/g, ""))}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && p.username.trim() && !ghLoading) {
+                          importGitHub();
+                        }
+                      }}
+                      className="font-mono pr-9 h-9 text-xs bg-background/50 border-border/80 focus-visible:ring-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => importGitHub()}
+                      disabled={ghLoading || !p.username.trim()}
+                      title="Import from GitHub"
+                      aria-label="Import from GitHub"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40 disabled:pointer-events-none"
+                    >
+                      {ghLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                      ) : (
+                        <GithubIcon className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ) : previewTab === "markdown" ? (
                 <pre className="whitespace-pre-wrap break-all rounded-xl border border-border bg-card p-5 font-mono text-xs leading-relaxed text-muted-foreground">
                   {md}
                 </pre>
               ) : (
-                <ReadmePreview p={p} />
+                <ReadmePreview p={p} onImport={importGitHub} />
               )}
             </div>
           </div>
@@ -1076,12 +1162,6 @@ function Builder() {
       <div
         className={`${tab === "editor" ? "" : "hidden"} xl:block mx-auto max-w-[1680px] space-y-6 px-3 pb-8 md:px-4`}
       >
-        <TemplateGallery
-          onApply={(id) => {
-            setP((s) => applyTemplate(s, id));
-            toast("Applied template");
-          }}
-        />
         <BackgroundGallery
           value={p.appearanceId}
           onChange={(id) => setP((s) => applyAppearance(s, id))}
@@ -1091,6 +1171,16 @@ function Builder() {
           onChange={(id) => setP((s) => applyStatsLayout(s, id))}
         />
       </div>
+
+      <BannerAdjustDialog
+        open={adjustDialogOpen}
+        onOpenChange={setAdjustDialogOpen}
+        imageSrc={adjustImageSrc}
+        onSave={(newBannerUrl) => {
+          setP((s) => ({ ...s, bannerUrl: newBannerUrl, customBanner: true }));
+          toast.success("Banner updated");
+        }}
+      />
     </div>
   );
 }
@@ -1130,7 +1220,7 @@ function UrlField({
       />
       {bad ? (
         <p className="text-xs text-destructive">
-          Only full http(s) links are allowed — this one will be left out.
+          Only full http(s) links are allowed â€” this one will be left out.
         </p>
       ) : (
         hint && <p className="text-xs text-muted-foreground">{hint}</p>

@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 96" width="100%" height="100%">
+  <defs>
+    <linearGradient id="nc-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#020617"/>
+      <stop offset="50%" stopColor="#0C0A2E"/>
+      <stop offset="100%" stopColor="#0A2540"/>
+    </linearGradient>
+    <radialGradient id="ringGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#F43F5E" stopOpacity="0.45"/>
+      <stop offset="65%" stopColor="#A855F7" stopOpacity="0.25"/>
+      <stop offset="100%" stopColor="#06B6D4" stopOpacity="0"/>
+    </radialGradient>
+    <linearGradient id="ringStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#EC4899"/>
+      <stop offset="50%" stopColor="#8B5CF6"/>
+      <stop offset="100%" stopColor="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="gridFade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#06B6D4" stopOpacity="0.1"/>
+      <stop offset="100%" stopColor="#06B6D4" stopOpacity="0.75"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="96" fill="url(#nc-bg)"/>
+
+  <!-- Portal Ring -->
+  <circle cx="280" cy="34" r="32" fill="url(#ringGlow)"/>
+  <circle cx="280" cy="34" r="23" stroke="#EC4899" strokeWidth="6" opacity="0.3" fill="none"/>
+  <circle cx="280" cy="34" r="23" stroke="url(#ringStroke)" strokeWidth="2.5" fill="none"/>
+  <circle cx="280" cy="34" r="21" stroke="#F43F5E" strokeWidth="1" opacity="0.8" fill="none"/>
+
+  <!-- Skyline Left -->
+  <polygon points="0,52 0,28 14,28 14,35 24,35 24,20 34,20 34,14 36,8 38,14 38,36 50,36 50,24 64,24 64,38 78,38 78,16 86,16 86,10 88,6 90,10 90,40 104,40 104,30 118,30 118,44 135,44 135,26 148,26 148,46 160,46 160,34 175,34 175,48 190,48 190,52" fill="#090A22"/>
+  <!-- Skyline Right -->
+  <polygon points="325,52 325,42 336,42 336,32 346,32 346,22 348,15 350,22 350,44 362,44 362,28 376,28 376,40 388,40 388,18 390,12 392,18 392,36 400,36 400,52" fill="#090A22"/>
+
+  <!-- Windows -->
+  <g opacity="0.9">
+    <rect x="18" y="30" width="2.5" height="1.8" fill="#22D3EE"/>
+    <rect x="28" y="25" width="2.5" height="1.8" fill="#F43F5E"/>
+    <rect x="28" y="29" width="2.5" height="1.8" fill="#22D3EE"/>
+    <rect x="70" y="28" width="2.5" height="1.8" fill="#F43F5E"/>
+    <rect x="70" y="32" width="2.5" height="1.8" fill="#22D3EE"/>
+    <rect x="82" y="22" width="2.5" height="1.8" fill="#F43F5E"/>
+    <rect x="82" y="26" width="2.5" height="1.8" fill="#22D3EE"/>
+    <rect x="82" y="30" width="2.5" height="1.8" fill="#F43F5E"/>
+    <rect x="110" y="34" width="2.5" height="1.8" fill="#22D3EE"/>
+    <rect x="140" y="30" width="2.5" height="1.8" fill="#F43F5E"/>
+    <rect x="140" y="36" width="2.5" height="1.8" fill="#22D3EE"/>
+    <rect x="340" y="36" width="2.5" height="1.8" fill="#F43F5E"/>
+    <rect x="370" y="32" width="2.5" height="1.8" fill="#22D3EE"/>
+    <rect x="382" y="24" width="2.5" height="1.8" fill="#F43F5E"/>
+  </g>
+
+  <!-- Horizon -->
+  <line x1="0" y1="52" x2="400" y2="52" stroke="#06B6D4" strokeWidth="2" opacity="0.9"/>
+  <line x1="0" y1="52" x2="400" y2="52" stroke="#EC4899" strokeWidth="0.8" opacity="0.7"/>
+
+  <!-- Perspective grid floor -->
+  <g stroke="url(#gridFade)" strokeWidth="0.9">
+    <line x1="260" y1="52" x2="-180" y2="96"/>
+    <line x1="260" y1="52" x2="-120" y2="96"/>
+    <line x1="260" y1="52" x2="-70" y2="96"/>
+    <line x1="260" y1="52" x2="-30" y2="96"/>
+    <line x1="260" y1="52" x2="0" y2="96"/>
+    <line x1="260" y1="52" x2="30" y2="96"/>
+    <line x1="260" y1="52" x2="70" y2="96"/>
+    <line x1="260" y1="52" x2="110" y2="96"/>
+    <line x1="260" y1="52" x2="150" y2="96"/>
+    <line x1="260" y1="52" x2="190" y2="96"/>
+    <line x1="260" y1="52" x2="240" y2="96"/>
+    <line x1="260" y1="52" x2="290" y2="96"/>
+    <line x1="260" y1="52" x2="340" y2="96"/>
+    <line x1="260" y1="52" x2="400" y2="96"/>
+    <line x1="260" y1="52" x2="470" y2="96"/>
+    <line x1="260" y1="52" x2="540" y2="96"/>
+  </g>
+
+  <!-- Horizontal grid rungs -->
+  <g stroke="#06B6D4">
+    <line x1="0" y1="54" x2="400" y2="54" strokeWidth="0.6" opacity="0.3"/>
+    <line x1="0" y1="57" x2="400" y2="57" strokeWidth="0.75" opacity="0.4"/>
+    <line x1="0" y1="61" x2="400" y2="61" strokeWidth="0.9" opacity="0.5"/>
+    <line x1="0" y1="66" x2="400" y2="66" strokeWidth="1.05" opacity="0.6"/>
+    <line x1="0" y1="73" x2="400" y2="73" strokeWidth="1.2" opacity="0.7"/>
+    <line x1="0" y1="82" x2="400" y2="82" strokeWidth="1.35" opacity="0.8"/>
+    <line x1="0" y1="94" x2="400" y2="94" strokeWidth="1.5" opacity="0.9"/>
+  </g>
+</svg>
