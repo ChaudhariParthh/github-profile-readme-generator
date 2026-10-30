@@ -124,5 +124,14 @@ export async function fetchGitHubProfile(username: string) {
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
     .map(([language]) => language);
 
-  return { user, repos, top, languages, warning };
+  return {
+    user,
+    repos,
+    top,
+    languages,
+    warning,
+    followers: user.followers,
+    following: user.following,
+    publicRepos: user.public_repos,
+  };
 }

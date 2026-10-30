@@ -317,6 +317,9 @@ export type GitHubStatsData = {
   languages: string[];
   totalStars: number;
   totalForks: number;
+  followers: number;
+  following: number;
+  publicRepos: number;
   warning: string | null;
 };
 
@@ -505,56 +508,178 @@ export const typingUrl = (p: Profile) => {
 
 // ---------- Stats section renderer ----------
 
-/** Render the GitHub Stats section as Markdown lines with a simple default layout. */
+const STATS_IMG = (src: string, alt: string) => (src ? `<img src="${src}" alt="${esc(alt)}" />` : "");
+
+/** Render the GitHub Stats section as Markdown lines using the selected stats theme and live widget data. */
 export function renderStatsSection(p: Profile): string[] {
-  const { stats, langs, streak } = p.addons;
+  const { stats, langs, streak, contributionGraph } = p.addons;
   const data = p.githubStats;
   const username = u(p);
-  if (!username || !data) return [];
+  if (!username) return [];
+
+  const theme = statsThemeById(p.statsTheme);
+  const accent = resolvedAccent(p);
+
+  const statsUrl = stats
+    ? `https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=default&hide_border=true`
+    : "";
+  const langsUrl = langs
+    ? `https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=default&hide_border=true`
+    : "";
+  const streakUrl = streak
+    ? `https://github-readme-streak-stats.herokuapp.com/?user=${username}&theme=default&hide_border=true`
+    : "";
+  const graphUrl = contributionGraph ? `https://ghchart.rshah.org/${accent}/${username}` : "";
 
   const out: string[] = [];
   out.push("## GitHub Stats", "");
 
-  // Simple default layout
-  const images: string[] = [];
-  if (stats) {
-    const statsUrl = `https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=default&hide_border=true`;
-    images.push(imgTag(statsUrl, "GitHub stats"));
-  }
-  if (langs) {
-    const langsUrl = `https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=default&hide_border=true`;
-    images.push(imgTag(langsUrl, "Top languages"));
-  }
+  const metrics = data
+    ? [
+        { label: "Public repos", value: data.publicRepos },
+        { label: "Followers", value: data.followers },
+        { label: "Following", value: data.following },
+        { label: "Total stars", value: data.totalStars },
+      ]
+    : [];
 
-  if (images.length > 0) {
-    out.push(...table([images]));
-  }
-
-  if (streak) {
-    const streakUrl = `https://github-readme-streak-stats.herokuapp.com/?user=${username}&theme=default&hide_border=true`;
-    out.push("", `<p align="left">${imgTag(streakUrl, "GitHub streak")}</p>`);
+  switch (theme.id) {
+    case "glassmorphism":
+      out.push(...glassmorphismTheme(statsUrl, langsUrl, streakUrl, graphUrl, theme.accent));
+      break;
+    case "neon-glow":
+      out.push(...neonGlowTheme(statsUrl, langsUrl, streakUrl, graphUrl, theme.accent));
+      break;
+    case "minimalist":
+      out.push(...minimalistTheme(statsUrl, langsUrl, streakUrl, graphUrl, theme.accent, metrics));
+      break;
+    case "gradient-waves":
+      out.push(...gradientWavesTheme(statsUrl, langsUrl, streakUrl, graphUrl, theme.accent));
+      break;
+    case "card-stack":
+      out.push(...cardStackTheme(statsUrl, langsUrl, streakUrl, graphUrl, theme.accent));
+      break;
+    case "timeline":
+      out.push(...timelineTheme(statsUrl, langsUrl, streakUrl, graphUrl, theme.accent));
+      break;
+    case "hexagon":
+      out.push(...hexagonTheme(statsUrl, langsUrl, streakUrl, graphUrl, theme.accent));
+      break;
+    case "isometric":
+      out.push(...isometricTheme(statsUrl, langsUrl, streakUrl, graphUrl, theme.accent));
+      break;
   }
 
   return out.filter((line, i, arr) => !(line === "" && arr[i - 1] === ""));
 }
 
-/** Build an img tag from a URL, or empty string if URL is blank. */
-function imgTag(src: string, alt: string, width?: string): string {
-  if (!src) return "";
-  return width
-    ? `<img src="${src}" alt="${alt}" width="${width}" />`
-    : `<img src="${src}" alt="${alt}" />`;
+function wrap(style: string, inner: string): string {
+  return `<div style="${style}">${inner}</div>`;
 }
 
-/** Build a table row pair from arrays of cells. */
-function table(rows: string[][]): string[] {
-  const html: string[] = [];
-  for (const row of rows) {
-    if (!row.some(Boolean)) continue;
-    html.push(`<tr>` + row.map((c) => `<td valign="top">${c}</td>`).join("") + `</tr>`);
-  }
-  if (!html.length) return [];
-  return ["<table>", ...html, "</table>"];
+function row(inner: string, gap = "12px"): string {
+  return `<div style="display:flex;flex-wrap:wrap;gap:${gap};align-items:flex-start;">${inner}</div>`;
+}
+
+function glassmorphismTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+  const a = `#${accent}`;
+  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
+  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
+  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
+  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  return ["", wrap(`display:flex;flex-direction:column;gap:14px;background:rgba(255,255,255,0.04);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.2);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.45),inset 0 0 0 1px rgba(255,255,255,0.1);padding:20px;`, body), ""];
+}
+
+function neonGlowTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+  const a = `#${accent}`;
+  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
+  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
+  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
+  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  return [
+    "",
+    wrap(`font-family:'Courier New',Courier,monospace;display:flex;flex-direction:column;gap:14px;background:#0a0a0a;border:2px solid ${a};border-radius:12px;box-shadow:0 0 22px ${a}44,inset 0 0 18px ${a}22;color:#fff;padding:18px;`, body),
+    "",
+  ];
+}
+
+function minimalistTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string, metrics: Array<{ label: string; value: number }>): string[] {
+  const a = `#${accent}`;
+  const metricHtml = metrics
+    .map((m) => `<div style="display:flex;flex-direction:column;gap:2px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.6;">${esc(m.label)}</div><div style="font-size:24px;font-weight:800;color:${a};">${m.value}</div></div>`)
+    .join("");
+  const metricsBlock = metrics.length ? wrap(`display:flex;gap:26px;`, metricHtml) : "";
+  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
+  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
+  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
+  const cards = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  return ["", wrap(`display:flex;flex-direction:column;gap:18px;background:#ffffff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.06);padding:26px;color:#111;`, metricsBlock + wrap(`display:flex;flex-wrap:wrap;gap:14px;`, cards)), ""];
+}
+
+function gradientWavesTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+  const a = `#${accent}`;
+  const b = accent === "8B5CF6" ? "F472B6" : accent;
+  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
+  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
+  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
+  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  return [
+    "",
+    wrap(`position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px;border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,0.45);padding:22px;background:linear-gradient(135deg,${a}22,${b}22);border:1px solid rgba(255,255,255,0.15);`, `<div style="position:absolute;inset:-20%;z-index:0;border-radius:inherit;background:conic-gradient(from 0deg,transparent,${a}40,transparent,${b}40,transparent);opacity:0.55;"></div><div style="position:relative;z-index:1;">${body}</div>`),
+    "",
+  ];
+}
+
+function cardStackTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+  const a = `#${accent}`;
+  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
+  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
+  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
+  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  return [
+    "",
+    wrap(`perspective:1200px;display:flex;flex-direction:column;gap:8px;padding:26px;border-radius:18px;background:#111;border:1px solid #333;box-shadow:0 30px 60px rgba(0,0,0,0.5);`, `<div style="transform:rotateX(8deg) rotateY(-4deg) scale(0.98);transform-origin:center;box-shadow:0 25px 50px -12px rgba(0,0,0,0.6);border:1px solid ${a}55;border-radius:14px;overflow:hidden;">${body}</div>`),
+    "",
+  ];
+}
+
+function timelineTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+  const a = `#${accent}`;
+  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
+  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
+  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
+  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  return [
+    "",
+    wrap(`display:flex;flex-direction:column;gap:10px;border-radius:16px;background:#0b1120;border:1px solid ${a}55;box-shadow:0 0 30px ${a}22;padding:18px;color:#e5e7eb;`, `<div style="height:3px;background:linear-gradient(90deg,${a},transparent);border-radius:2px;margin-bottom:10px;"></div><div style="display:flex;flex-wrap:wrap;gap:10px;opacity:0.95;">${body}</div>`),
+    "",
+  ];
+}
+
+function hexagonTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+  const a = `#${accent}`;
+  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
+  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
+  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
+  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  return [
+    "",
+    wrap(`display:flex;flex-wrap:wrap;gap:16px;justify-content:center;border-radius:16px;background:#0a0a0a;border:1px solid ${a}44;box-shadow:0 0 40px ${a}20;padding:20px;`, body),
+    "",
+  ];
+}
+
+function isometricTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+  const a = `#${accent}`;
+  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
+  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
+  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
+  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  return [
+    "",
+    wrap(`transform:rotateX(45deg) scale(0.92);transform-origin:center;display:flex;flex-direction:column;gap:10px;border-radius:16px;background:linear-gradient(135deg,#161b22,#1f2937);border:1px solid ${a}55;box-shadow:0 40px 80px rgba(0,0,0,0.6);padding:24px;`, body),
+    "",
+  ];
 }
 
 const mdLink = (text: string, href: string) => {
@@ -846,6 +971,9 @@ export function parseConfig(raw: unknown): Profile {
     ),
     customBanner: input["customBanner"] === true,
     bannerMotion: input["bannerMotion"] === "none" ? "none" : "svg-anim",
+    statsTheme: statsThemeById(
+      typeof input["statsTheme"] === "string" ? input["statsTheme"] : seedProfile.statsTheme,
+    ).id,
     typing: {
       lines: text(typingInput["lines"], seedProfile.typing.lines, 1000),
       font: TYPING_FONTS.includes(typingInput["font"] as TypingFont)
@@ -869,6 +997,8 @@ export function parseConfig(raw: unknown): Profile {
       stats: addonsInput["stats"] !== false,
       langs: addonsInput["langs"] !== false,
       streak: addonsInput["streak"] !== false,
+      statsOverview: addonsInput["statsOverview"] !== false,
+      contributionGraph: addonsInput["contributionGraph"] !== false,
     },
     support: {
       bmc: validHandle(supportInput["bmc"]),

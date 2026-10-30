@@ -21,7 +21,7 @@ import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ReadmePreview } from "@/components/ReadmePreview";
 import { SkillPicker } from "@/components/builder/SkillPicker";
-import { BackgroundGallery } from "@/components/builder/ThemeGalleries";
+import { BackgroundGallery, StatsThemeGallery } from "@/components/builder/ThemeGalleries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -62,7 +62,7 @@ import {
   type Profile,
   type Work,
 } from "@/lib/profile";
-import { applyAppearance, appearanceById } from "@/lib/appearance";
+import { applyAppearance, appearanceById, applyStatsTheme } from "@/lib/appearance";
 import { renderStatsSection } from "@/lib/profile";
 import { mdToHtml } from "@/components/ReadmePreview";
 import { sanitizeHtml } from "@/lib/sanitize";
@@ -990,39 +990,54 @@ function Builder() {
                   <p className="text-xs text-muted-foreground">
                     Select the widgets you want to show in your README stats section:
                   </p>
-                  <div className="flex items-center gap-3">
-                    <Switch
-                      checked={p.addons.stats}
-                      onCheckedChange={(checked) => setAddon("stats", checked)}
-                    />
-                    <label className="text-sm">Stats card</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Switch
-                      checked={p.addons.langs}
-                      onCheckedChange={(checked) => setAddon("langs", checked)}
-                    />
-                    <label className="text-sm">Top languages</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Switch
-                      checked={p.addons.streak}
-                      onCheckedChange={(checked) => setAddon("streak", checked)}
-                    />
-                    <label className="text-sm">Contribution streak</label>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <div className="flex items-center gap-3">
+                      <Switch
+                        checked={p.addons.stats}
+                        onCheckedChange={(checked) => setAddon("stats", checked)}
+                      />
+                      <label className="text-sm">Stats card</label>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Switch
+                        checked={p.addons.langs}
+                        onCheckedChange={(checked) => setAddon("langs", checked)}
+                      />
+                      <label className="text-sm">Top languages</label>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Switch
+                        checked={p.addons.streak}
+                        onCheckedChange={(checked) => setAddon("streak", checked)}
+                      />
+                      <label className="text-sm">Contribution streak</label>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Switch
+                        checked={p.addons.contributionGraph}
+                        onCheckedChange={(checked) => setAddon("contributionGraph", checked)}
+                      />
+                      <label className="text-sm">Contribution graph</label>
+                    </div>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Stats design is independent of the background theme. Pick a layout below — it
-                    changes the generated Markdown, not just this editor.
+                    Pick a layout below — it changes the generated Markdown, not just this editor.
                   </p>
+                  <StatsThemeGallery
+                    value={p.statsTheme}
+                    onChange={(id) =>
+                      setP((s) => applyStatsTheme(s, id))
+                    }
+                  />
                 </div>
-                <div className="rounded-xl border border-border bg-card p-4 overflow-auto max-h-[200px]">
+                <div className="rounded-xl border border-border bg-card p-4 overflow-auto max-h-[340px]">
                   {(() => {
                     const lines = renderStatsSection(p);
                     if (lines.length === 0) {
                       return (
                         <p className="text-xs text-muted-foreground italic">
-                          Stats section is not enabled. Add it in the Sections tab.
+                          Stats section is not enabled. Add it in the Sections tab, or import a
+                          GitHub profile to populate live data.
                         </p>
                       );
                     }
