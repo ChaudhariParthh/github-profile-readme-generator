@@ -151,6 +151,10 @@ export function applyAppearance(p: Profile, id: string): Profile {
     bannerUrl: theme.bannerUrl,
     bannerMotion: theme.bannerMotion,
     customBanner: false,
+    statsCard: {
+      ...p.statsCard,
+      themePalette: theme.id,
+    },
   };
 }
 
@@ -246,3 +250,324 @@ export function applyStatsTheme(p: Profile, id: string): Profile {
   const theme = statsThemeById(id);
   return { ...p, statsTheme: theme.id };
 }
+
+export const STATS_CARD_THEMES = [
+  { id: "default", name: "Default" },
+  { id: "dark", name: "GitHub Dark" },
+  { id: "radical", name: "Radical Neon" },
+  { id: "tokyonight", name: "Tokyo Night" },
+  { id: "onedark", name: "One Dark" },
+  { id: "dracula", name: "Dracula" },
+  { id: "cobalt", name: "Cobalt" },
+  { id: "synthwave", name: "Synthwave" },
+  { id: "gruvbox", name: "Gruvbox" },
+  { id: "merko", name: "Merko" },
+  { id: "highcontrast", name: "High Contrast" },
+] as const;
+
+
+export type ThemeStatsPalette = {
+  id: string;
+  name: string;
+  bg: string;
+  title: string;
+  text: string;
+  icon: string;
+  border: string;
+  ring: string;
+  fire: string;
+  sideNums: string;
+  currStreakNum: string;
+  graphColor: string;
+};
+
+export const THEME_STATS_PALETTES: Record<string, ThemeStatsPalette> = {
+  "classic-blue": {
+    id: "classic-blue",
+    name: "Classic Blue (Default)",
+    bg: "080B14",
+    title: "58A6FF",
+    text: "C9D1D9",
+    icon: "58A6FF",
+    border: "1E2638",
+    ring: "58A6FF",
+    fire: "58A6FF",
+    sideNums: "58A6FF",
+    currStreakNum: "FFFFFF",
+    graphColor: "58A6FF",
+  },
+  "midnight-aurora": {
+    id: "midnight-aurora",
+    name: "Midnight Aurora",
+    bg: "0B1224",
+    title: "A78BFA",
+    text: "E2E8F0",
+    icon: "22D3EE",
+    border: "1E293B",
+    ring: "22D3EE",
+    fire: "A78BFA",
+    sideNums: "A78BFA",
+    currStreakNum: "FFFFFF",
+    graphColor: "8B5CF6",
+  },
+  "neon-cyber": {
+    id: "neon-cyber",
+    name: "Neon Cyber",
+    bg: "020617",
+    title: "22D3EE",
+    text: "F8FAFC",
+    icon: "A855F7",
+    border: "06B6D4",
+    ring: "22D3EE",
+    fire: "A855F7",
+    sideNums: "22D3EE",
+    currStreakNum: "FFFFFF",
+    graphColor: "22D3EE",
+  },
+  "terminal-hacker": {
+    id: "terminal-hacker",
+    name: "Terminal Hacker",
+    bg: "020202",
+    title: "4ADE80",
+    text: "E2E8F0",
+    icon: "22C55E",
+    border: "14532D",
+    ring: "4ADE80",
+    fire: "22C55E",
+    sideNums: "4ADE80",
+    currStreakNum: "FFFFFF",
+    graphColor: "4ADE80",
+  },
+  "cosmic-galaxy": {
+    id: "cosmic-galaxy",
+    name: "Cosmic Galaxy",
+    bg: "0F172A",
+    title: "C084FC",
+    text: "F1F5F9",
+    icon: "38BDF8",
+    border: "312E81",
+    ring: "38BDF8",
+    fire: "C084FC",
+    sideNums: "C084FC",
+    currStreakNum: "FFFFFF",
+    graphColor: "C084FC",
+  },
+  "mountain-night": {
+    id: "mountain-night",
+    name: "Mountain Night",
+    bg: "0B1220",
+    title: "818CF8",
+    text: "FDF2F8",
+    icon: "F472B6",
+    border: "312E81",
+    ring: "F472B6",
+    fire: "818CF8",
+    sideNums: "818CF8",
+    currStreakNum: "FFFFFF",
+    graphColor: "818CF8",
+  },
+  "ocean-depths": {
+    id: "ocean-depths",
+    name: "Ocean Depths",
+    bg: "042F2E",
+    title: "22D3EE",
+    text: "CCFBF1",
+    icon: "14B8A6",
+    border: "0F766E",
+    ring: "22D3EE",
+    fire: "14B8A6",
+    sideNums: "22D3EE",
+    currStreakNum: "FFFFFF",
+    graphColor: "22D3EE",
+  },
+  "sunset-horizon": {
+    id: "sunset-horizon",
+    name: "Sunset Horizon",
+    bg: "1E0B14",
+    title: "F97316",
+    text: "FFF1F2",
+    icon: "F43F5E",
+    border: "831843",
+    ring: "F97316",
+    fire: "F59E0B",
+    sideNums: "F97316",
+    currStreakNum: "FFFFFF",
+    graphColor: "F97316",
+  },
+  "minimal-mono": {
+    id: "minimal-mono",
+    name: "Minimal Monochrome",
+    bg: "09090B",
+    title: "FAFAFA",
+    text: "A1A1AA",
+    icon: "D4D4D8",
+    border: "27272A",
+    ring: "E4E4E7",
+    fire: "A1A1AA",
+    sideNums: "FAFAFA",
+    currStreakNum: "FFFFFF",
+    graphColor: "71717A",
+  },
+  "glass-prism": {
+    id: "glass-prism",
+    name: "Glass Prism",
+    bg: "0F0C29",
+    title: "A78BFA",
+    text: "F5F3FF",
+    icon: "67E8F9",
+    border: "4C1D95",
+    ring: "67E8F9",
+    fire: "A78BFA",
+    sideNums: "A78BFA",
+    currStreakNum: "FFFFFF",
+    graphColor: "A78BFA",
+  },
+  "editorial-light": {
+    id: "editorial-light",
+    name: "Editorial Light",
+    bg: "FAFAF9",
+    title: "1C1917",
+    text: "44403C",
+    icon: "DC2626",
+    border: "D6D3D1",
+    ring: "DC2626",
+    fire: "EA580C",
+    sideNums: "1C1917",
+    currStreakNum: "1C1917",
+    graphColor: "DC2626",
+  },
+};
+
+export function resolveThemePalette(p: Profile): ThemeStatsPalette {
+  const chosen = p.statsCard?.themePalette;
+  if (chosen && chosen !== "auto" && THEME_STATS_PALETTES[chosen]) {
+    return THEME_STATS_PALETTES[chosen]!;
+  }
+  if (p.appearanceId && THEME_STATS_PALETTES[p.appearanceId]) {
+    return THEME_STATS_PALETTES[p.appearanceId]!;
+  }
+  return THEME_STATS_PALETTES["classic-blue"]!;
+}
+
+export function statsCardUrl(p: Profile): string {
+  const username = user(p);
+  const cfg = p.statsCard;
+  const palette = resolveThemePalette(p);
+  const params = new URLSearchParams();
+  params.set("username", username);
+  if (cfg?.showIcons ?? true) params.set("show_icons", "true");
+  if (cfg?.theme && cfg.theme !== "default") {
+    params.set("theme", cfg.theme);
+  } else {
+    params.set("bg_color", (cfg?.bgColor || palette.bg).replace(/^#/, ""));
+    params.set("title_color", (cfg?.accentColor || palette.title).replace(/^#/, ""));
+    params.set("text_color", (cfg?.textColor || palette.text).replace(/^#/, ""));
+    params.set("icon_color", palette.icon.replace(/^#/, ""));
+    if (cfg?.borderColor || palette.border) {
+      params.set("border_color", (cfg?.borderColor || palette.border).replace(/^#/, ""));
+    }
+  }
+  if (cfg?.includeAllCommits ?? true) params.set("include_all_commits", "true");
+  if (cfg?.countPrivate) params.set("count_private", "true");
+  if (cfg?.hideRank) params.set("hide_rank", "true");
+  if (cfg?.hideMetrics && cfg.hideMetrics.length > 0) params.set("hide", cfg.hideMetrics.join(","));
+  const radius = cfg?.borderRadius ?? 12;
+  if (radius !== undefined) params.set("border_radius", String(radius));
+  if (cfg?.bgColor && cfg.theme && cfg.theme !== "default") params.set("bg_color", cfg.bgColor.replace(/^#/, ""));
+  if (cfg?.textColor && cfg.theme && cfg.theme !== "default") params.set("text_color", cfg.textColor.replace(/^#/, ""));
+  if (cfg?.accentColor && cfg.theme && cfg.theme !== "default") params.set("title_color", cfg.accentColor.replace(/^#/, ""));
+  if (cfg?.borderColor && cfg.theme && cfg.theme !== "default") params.set("border_color", cfg.borderColor.replace(/^#/, ""));
+  if (cfg?.customTitle) params.set("custom_title", cfg.customTitle);
+  const hasBorder = !!(cfg?.borderColor || palette.border);
+  params.set("hide_border", hasBorder ? "false" : "true");
+  return `https://github-readme-stats.vercel.app/api?${params.toString()}`;
+}
+
+export function langsCardUrl(p: Profile): string {
+  const username = user(p);
+  const cfg = p.langsCard;
+  const palette = resolveThemePalette(p);
+  const params = new URLSearchParams();
+  params.set("username", username);
+  params.set("layout", cfg?.layout || "compact");
+  params.set("langs_count", String(Math.min(10, Math.max(1, cfg?.langsCount ?? 6))));
+
+  // Fix for "Top Languages Unavailable": include forks and optional private count
+  if (cfg?.includeForks ?? true) {
+    params.set("include_forks", "true");
+  }
+  if (cfg?.countPrivate) {
+    params.set("count_private", "true");
+  }
+
+  if (cfg?.theme && cfg.theme !== "default") {
+    params.set("theme", cfg.theme);
+  } else {
+    params.set("bg_color", palette.bg.replace(/^#/, ""));
+    params.set("title_color", palette.title.replace(/^#/, ""));
+    params.set("text_color", palette.text.replace(/^#/, ""));
+    if (palette.border) {
+      params.set("border_color", palette.border.replace(/^#/, ""));
+    }
+  }
+  if (cfg?.hideProgress) params.set("hide_progress", "true");
+  const radius = cfg?.borderRadius ?? 12;
+  if (radius !== undefined) params.set("border_radius", String(radius));
+  if (cfg?.cardWidth && cfg.cardWidth !== 400) params.set("card_width", String(cfg.cardWidth));
+  const hasBorder = !!palette.border;
+  params.set("hide_border", hasBorder ? "false" : "true");
+  return `https://github-readme-stats.vercel.app/api/top-langs/?${params.toString()}`;
+}
+
+export function streakCardUrl(p: Profile): string {
+  const username = user(p);
+  const cfg = p.streakCard;
+  const palette = resolveThemePalette(p);
+  const params = new URLSearchParams();
+  params.set("user", username);
+  if (cfg?.theme && cfg.theme !== "default") {
+    params.set("theme", cfg.theme);
+  } else {
+    params.set("background", palette.bg.replace(/^#/, ""));
+    params.set("border", palette.border.replace(/^#/, ""));
+    params.set("stroke", palette.border.replace(/^#/, ""));
+    params.set("ring", (cfg?.ringColor || palette.ring).replace(/^#/, ""));
+    params.set("fire", (cfg?.fireColor || palette.fire).replace(/^#/, ""));
+    params.set("currStreakNum", palette.currStreakNum.replace(/^#/, ""));
+    params.set("sideNums", palette.sideNums.replace(/^#/, ""));
+    params.set("currStreakLabel", palette.title.replace(/^#/, ""));
+    params.set("sideLabels", palette.text.replace(/^#/, ""));
+    params.set("dates", "64748B");
+  }
+  const radius = cfg?.borderRadius ?? 12;
+  if (radius !== undefined) params.set("border_radius", String(radius));
+  if (cfg?.mode === "weekly") params.set("mode", "weekly");
+  if (cfg?.fireColor && cfg.theme && cfg.theme !== "default") params.set("fire", cfg.fireColor.replace(/^#/, ""));
+  if (cfg?.ringColor && cfg.theme && cfg.theme !== "default") params.set("ring", cfg.ringColor.replace(/^#/, ""));
+  const hasBorder = !!palette.border;
+  params.set("hide_border", hasBorder ? "false" : "true");
+  return `https://streak-stats.demolab.com/?${params.toString()}`;
+}
+
+export function graphCardUrl(p: Profile): string {
+  const username = user(p);
+  const cfg = p.activityGraph;
+  const palette = resolveThemePalette(p);
+  const color = (cfg?.color || palette.graphColor || p.accentColor || "8B5CF6").replace(/^#/, "");
+  
+  if (cfg?.graphType === "activity-graph") {
+    const params = new URLSearchParams();
+    params.set("username", username);
+    params.set("bg_color", palette.bg.replace(/^#/, ""));
+    params.set("color", color);
+    params.set("line", color);
+    params.set("point", palette.title.replace(/^#/, ""));
+    params.set("area", cfg.area !== false ? "true" : "false");
+    params.set("hide_border", "true");
+    params.set("radius", String(cfg.radius ?? 12));
+    return `https://github-readme-activity-graph.vercel.app/graph?${params.toString()}`;
+  }
+  
+  return `https://ghchart.rshah.org/${color}/${username}`;
+}
+

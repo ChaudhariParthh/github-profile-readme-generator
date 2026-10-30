@@ -6,6 +6,10 @@ import {
   resolvedBanner,
   statsThemeById,
   trophyCardUrl,
+  statsCardUrl,
+  langsCardUrl,
+  streakCardUrl,
+  graphCardUrl,
 } from "./appearance";
 
 // ---------- Technology catalog ----------
@@ -323,6 +327,113 @@ export type GitHubStatsData = {
   warning: string | null;
 };
 
+export type StatsCardConfig = {
+  theme: string;
+  themePalette?: string;
+  bgColor: string;
+  textColor: string;
+  accentColor: string;
+  borderColor: string;
+  borderRadius: number;
+  showIcons: boolean;
+  hideRank: boolean;
+  includeAllCommits: boolean;
+  countPrivate: boolean;
+  hideMetrics: string[];
+  customTitle: string;
+};
+
+export type CustomLanguage = {
+  name: string;
+  percent: number;
+  color: string;
+};
+
+export type LangsCardConfig = {
+  theme: string;
+  layout: "compact" | "donut" | "pie";
+  langsCount: number;
+  hideProgress: boolean;
+  borderRadius: number;
+  cardWidth: number;
+  includeForks: boolean;
+  countPrivate: boolean;
+  customLanguages: CustomLanguage[];
+  useCustomLanguages: boolean;
+};
+
+export type StreakCardConfig = {
+  theme: string;
+  borderRadius: number;
+  mode: "daily" | "weekly";
+  fireColor: string;
+  ringColor: string;
+};
+
+export type ActivityGraphConfig = {
+  theme: string;
+  color: string;
+  lineColor: string;
+  pointColor: string;
+  area: boolean;
+  radius: number;
+  graphType?: "heatmap" | "activity-graph";
+};
+
+export const defaultStatsCardConfig: StatsCardConfig = {
+  theme: "default",
+  themePalette: "auto",
+  bgColor: "",
+  textColor: "",
+  accentColor: "",
+  borderColor: "",
+  borderRadius: 8,
+  showIcons: true,
+  hideRank: false,
+  includeAllCommits: true,
+  countPrivate: false,
+  hideMetrics: [],
+  customTitle: "",
+};
+
+export const defaultLangsCardConfig: LangsCardConfig = {
+  theme: "default",
+  layout: "compact",
+  langsCount: 6,
+  hideProgress: false,
+  borderRadius: 12,
+  cardWidth: 400,
+  includeForks: true,
+  countPrivate: false,
+  useCustomLanguages: false,
+  customLanguages: [
+    { name: "HTML", percent: 32.9, color: "E34F26" },
+    { name: "CSS", percent: 32.5, color: "1572B6" },
+    { name: "Java", percent: 24.0, color: "ED8B00" },
+    { name: "JavaScript", percent: 6.3, color: "F7DF1E" },
+    { name: "Python", percent: 4.0, color: "3776AB" },
+    { name: "Dockerfile", percent: 0.3, color: "2496ED" },
+  ],
+};
+
+export const defaultStreakCardConfig: StreakCardConfig = {
+  theme: "default",
+  borderRadius: 8,
+  mode: "daily",
+  fireColor: "",
+  ringColor: "",
+};
+
+export const defaultActivityGraphConfig: ActivityGraphConfig = {
+  theme: "default",
+  color: "",
+  lineColor: "",
+  pointColor: "",
+  area: true,
+  radius: 8,
+  graphType: "heatmap",
+};
+
 export type Profile = {
   name: string;
   username: string;
@@ -336,6 +447,10 @@ export type Profile = {
   customBanner: boolean;
   bannerMotion: BannerMotion;
   statsTheme: string;
+  statsCard: StatsCardConfig;
+  langsCard: LangsCardConfig;
+  streakCard: StreakCardConfig;
+  activityGraph: ActivityGraphConfig;
   githubStats: GitHubStatsData | null;
   typing: { lines: string; font: TypingFont; size: number; color: string; center: boolean };
   work: Work;
@@ -352,6 +467,9 @@ export type Profile = {
     streak: boolean;
     statsOverview: boolean;
     contributionGraph: boolean;
+    followersBadge?: boolean;
+    reposBadge?: boolean;
+    followingBadge?: boolean;
   };
   support: { bmc: string; kofi: string; chai: string; sponsors: boolean };
   sections: SectionEntry[];
@@ -388,6 +506,10 @@ export const seedProfile: Profile = {
   customBanner: false,
   bannerMotion: "svg-anim",
   statsTheme: DEFAULT_STATS_THEME_ID,
+  statsCard: { ...defaultStatsCardConfig },
+  langsCard: { ...defaultLangsCardConfig },
+  streakCard: { ...defaultStreakCardConfig },
+  activityGraph: { ...defaultActivityGraphConfig },
   githubStats: null,
   typing: {
     lines: "",
@@ -402,7 +524,7 @@ export const seedProfile: Profile = {
   badgeStyle: "for-the-badge",
   socials: {},
   projects: [],
-  addons: { blog: "none", blogHandle: "", stats: true, langs: true, streak: true, statsOverview: true, contributionGraph: true },
+  addons: { blog: "none", blogHandle: "", stats: true, langs: true, streak: true, statsOverview: true, contributionGraph: true, followersBadge: false, reposBadge: false, followingBadge: false },
   support: { bmc: "", kofi: "", chai: "", sponsors: false },
   sections: ALL_SECTIONS(["trophies", "graph", "blog", "support", "projects"]),
   custom: {},
@@ -489,8 +611,8 @@ export const visitorsUrl = (p: Profile) =>
   u(p)
     ? `https://komarev.com/ghpvc/?username=${u(p)}&label=Profile%20views&color=${resolvedAccent(p)}&style=flat`
     : "";
-export const graphUrl = (p: Profile): string =>
-  u(p) ? `https://ghchart.rshah.org/${resolvedAccent(p)}/${u(p)}` : "";
+export const graphUrl = (p: Profile): string => (u(p) ? graphCardUrl(p) : "");
+export { statsCardUrl, langsCardUrl, streakCardUrl, graphCardUrl };
 export const pinUrl = (p: Profile, owner: string, repo: string): string =>
   `https://github-readme-stats.vercel.app/api/pin/?username=${enc(owner)}&repo=${enc(repo)}&theme=default&hide_border=true`;
 export const typingUrl = (p: Profile) => {
@@ -520,19 +642,31 @@ export function renderStatsSection(p: Profile): string[] {
   const theme = statsThemeById(p.statsTheme);
   const accent = resolvedAccent(p);
 
-  const statsUrl = stats
-    ? `https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=default&hide_border=true`
-    : "";
-  const langsUrl = langs
-    ? `https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=default&hide_border=true`
-    : "";
-  const streakUrl = streak
-    ? `https://github-readme-streak-stats.herokuapp.com/?user=${username}&theme=default&hide_border=true`
-    : "";
-  const graphUrl = contributionGraph ? `https://ghchart.rshah.org/${accent}/${username}` : "";
+  const statsUrl = stats ? statsCardUrl(p) : "";
+  const langsUrl = langs ? langsCardUrl(p) : "";
+  const streakUrl = streak ? streakCardUrl(p) : "";
+  const graphUrl = contributionGraph ? graphCardUrl(p) : "";
 
   const out: string[] = [];
   out.push("## GitHub Stats", "");
+
+  const badges: string[] = [];
+  if (p.addons.followersBadge) {
+    badges.push(`<a href="https://github.com/${username}?tab=followers"><img src="https://img.shields.io/github/followers/${username}?label=Followers&style=for-the-badge&logo=github&color=${accent}" alt="GitHub Followers" /></a>`);
+  }
+  if (p.addons.reposBadge) {
+    const repoCount = data?.publicRepos ?? "";
+    const repoLabel = repoCount !== "" ? `Repositories-${repoCount}` : "Repositories";
+    badges.push(`<a href="https://github.com/${username}?tab=repositories"><img src="https://img.shields.io/badge/${encodeURIComponent(repoLabel)}-${accent}?style=for-the-badge&logo=github" alt="GitHub Repositories" /></a>`);
+  }
+  if (p.addons.followingBadge) {
+    const followCount = data?.following ?? "";
+    const followLabel = followCount !== "" ? `Following-${followCount}` : "Following";
+    badges.push(`<a href="https://github.com/${username}?tab=following"><img src="https://img.shields.io/badge/${encodeURIComponent(followLabel)}-555555?style=for-the-badge&logo=github" alt="GitHub Following" /></a>`);
+  }
+  if (badges.length > 0) {
+    out.push(`<p align="center">${badges.join(" ")}</p>`, "");
+  }
 
   const metrics = data
     ? [
@@ -583,19 +717,23 @@ function row(inner: string, gap = "12px"): string {
 
 function glassmorphismTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
   const a = `#${accent}`;
-  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
-  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
-  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
-  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  const body = [
+    STATS_IMG(statsUrl, "GitHub stats"),
+    STATS_IMG(streakUrl, "GitHub streak"),
+    STATS_IMG(langsUrl, "Top languages"),
+    STATS_IMG(graphUrl, "Contribution graph"),
+  ].filter(Boolean).join("");
   return ["", wrap(`display:flex;flex-direction:column;gap:14px;background:rgba(255,255,255,0.04);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.2);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.45),inset 0 0 0 1px rgba(255,255,255,0.1);padding:20px;`, body), ""];
 }
 
 function neonGlowTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
   const a = `#${accent}`;
-  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
-  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
-  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
-  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  const body = [
+    STATS_IMG(statsUrl, "GitHub stats"),
+    STATS_IMG(streakUrl, "GitHub streak"),
+    STATS_IMG(langsUrl, "Top languages"),
+    STATS_IMG(graphUrl, "Contribution graph"),
+  ].filter(Boolean).join("");
   return [
     "",
     wrap(`font-family:'Courier New',Courier,monospace;display:flex;flex-direction:column;gap:14px;background:#0a0a0a;border:2px solid ${a};border-radius:12px;box-shadow:0 0 22px ${a}44,inset 0 0 18px ${a}22;color:#fff;padding:18px;`, body),
@@ -609,20 +747,24 @@ function minimalistTheme(statsUrl: string, langsUrl: string, streakUrl: string, 
     .map((m) => `<div style="display:flex;flex-direction:column;gap:2px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.6;">${esc(m.label)}</div><div style="font-size:24px;font-weight:800;color:${a};">${m.value}</div></div>`)
     .join("");
   const metricsBlock = metrics.length ? wrap(`display:flex;gap:26px;`, metricHtml) : "";
-  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
-  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
-  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
-  const cards = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  const cards = [
+    STATS_IMG(statsUrl, "GitHub stats"),
+    STATS_IMG(streakUrl, "GitHub streak"),
+    STATS_IMG(langsUrl, "Top languages"),
+    STATS_IMG(graphUrl, "Contribution graph"),
+  ].filter(Boolean).join("");
   return ["", wrap(`display:flex;flex-direction:column;gap:18px;background:#ffffff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.06);padding:26px;color:#111;`, metricsBlock + wrap(`display:flex;flex-wrap:wrap;gap:14px;`, cards)), ""];
 }
 
 function gradientWavesTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
   const a = `#${accent}`;
   const b = accent === "8B5CF6" ? "F472B6" : accent;
-  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
-  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
-  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
-  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  const body = [
+    STATS_IMG(statsUrl, "GitHub stats"),
+    STATS_IMG(streakUrl, "GitHub streak"),
+    STATS_IMG(langsUrl, "Top languages"),
+    STATS_IMG(graphUrl, "Contribution graph"),
+  ].filter(Boolean).join("");
   return [
     "",
     wrap(`position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px;border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,0.45);padding:22px;background:linear-gradient(135deg,${a}22,${b}22);border:1px solid rgba(255,255,255,0.15);`, `<div style="position:absolute;inset:-20%;z-index:0;border-radius:inherit;background:conic-gradient(from 0deg,transparent,${a}40,transparent,${b}40,transparent);opacity:0.55;"></div><div style="position:relative;z-index:1;">${body}</div>`),
@@ -632,10 +774,12 @@ function gradientWavesTheme(statsUrl: string, langsUrl: string, streakUrl: strin
 
 function cardStackTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
   const a = `#${accent}`;
-  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
-  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
-  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
-  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  const body = [
+    STATS_IMG(statsUrl, "GitHub stats"),
+    STATS_IMG(streakUrl, "GitHub streak"),
+    STATS_IMG(langsUrl, "Top languages"),
+    STATS_IMG(graphUrl, "Contribution graph"),
+  ].filter(Boolean).join("");
   return [
     "",
     wrap(`perspective:1200px;display:flex;flex-direction:column;gap:8px;padding:26px;border-radius:18px;background:#111;border:1px solid #333;box-shadow:0 30px 60px rgba(0,0,0,0.5);`, `<div style="transform:rotateX(8deg) rotateY(-4deg) scale(0.98);transform-origin:center;box-shadow:0 25px 50px -12px rgba(0,0,0,0.6);border:1px solid ${a}55;border-radius:14px;overflow:hidden;">${body}</div>`),
@@ -645,10 +789,12 @@ function cardStackTheme(statsUrl: string, langsUrl: string, streakUrl: string, g
 
 function timelineTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
   const a = `#${accent}`;
-  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
-  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
-  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
-  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  const body = [
+    STATS_IMG(statsUrl, "GitHub stats"),
+    STATS_IMG(streakUrl, "GitHub streak"),
+    STATS_IMG(langsUrl, "Top languages"),
+    STATS_IMG(graphUrl, "Contribution graph"),
+  ].filter(Boolean).join("");
   return [
     "",
     wrap(`display:flex;flex-direction:column;gap:10px;border-radius:16px;background:#0b1120;border:1px solid ${a}55;box-shadow:0 0 30px ${a}22;padding:18px;color:#e5e7eb;`, `<div style="height:3px;background:linear-gradient(90deg,${a},transparent);border-radius:2px;margin-bottom:10px;"></div><div style="display:flex;flex-wrap:wrap;gap:10px;opacity:0.95;">${body}</div>`),
@@ -658,10 +804,12 @@ function timelineTheme(statsUrl: string, langsUrl: string, streakUrl: string, gr
 
 function hexagonTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
   const a = `#${accent}`;
-  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
-  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
-  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
-  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  const body = [
+    STATS_IMG(statsUrl, "GitHub stats"),
+    STATS_IMG(streakUrl, "GitHub streak"),
+    STATS_IMG(langsUrl, "Top languages"),
+    STATS_IMG(graphUrl, "Contribution graph"),
+  ].filter(Boolean).join("");
   return [
     "",
     wrap(`display:flex;flex-wrap:wrap;gap:16px;justify-content:center;border-radius:16px;background:#0a0a0a;border:1px solid ${a}44;box-shadow:0 0 40px ${a}20;padding:20px;`, body),
@@ -671,10 +819,12 @@ function hexagonTheme(statsUrl: string, langsUrl: string, streakUrl: string, gra
 
 function isometricTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
   const a = `#${accent}`;
-  const inner = [STATS_IMG(statsUrl, "GitHub stats"), STATS_IMG(langsUrl, "Top languages")].filter(Boolean).join("");
-  const streakHtml = STATS_IMG(streakUrl, "GitHub streak");
-  const graphHtml = STATS_IMG(graphUrl, "Contribution graph");
-  const body = [inner, streakHtml, graphHtml].filter(Boolean).join("");
+  const body = [
+    STATS_IMG(statsUrl, "GitHub stats"),
+    STATS_IMG(streakUrl, "GitHub streak"),
+    STATS_IMG(langsUrl, "Top languages"),
+    STATS_IMG(graphUrl, "Contribution graph"),
+  ].filter(Boolean).join("");
   return [
     "",
     wrap(`transform:rotateX(45deg) scale(0.92);transform-origin:center;display:flex;flex-direction:column;gap:10px;border-radius:16px;background:linear-gradient(135deg,#161b22,#1f2937);border:1px solid ${a}55;box-shadow:0 40px 80px rgba(0,0,0,0.6);padding:24px;`, body),
@@ -907,6 +1057,12 @@ export function parseConfig(raw: unknown): Profile {
   const typingInput = source(input["typing"]);
   const workInput = source(input["work"]);
   const addonsInput = source(input["addons"]);
+    const statsCardInput = source(input["statsCard"]);
+    const langsCardInput = source(input["langsCard"]);
+    const streakCardInput = source(input["streakCard"]);
+    const activityGraphInput = source(input["activityGraph"]);
+    const hexOkOrEmpty = (h: unknown) => (typeof h === "string" && /^[0-9a-f]{6}$/i.test(h.replace(/^#/, "")) ? h.replace(/^#/, "") : "");
+
   const supportInput = source(input["support"]);
   const customInput = source(input["custom"]);
   const custom: Record<string, CustomSection> = {};
@@ -974,6 +1130,53 @@ export function parseConfig(raw: unknown): Profile {
     statsTheme: statsThemeById(
       typeof input["statsTheme"] === "string" ? input["statsTheme"] : seedProfile.statsTheme,
     ).id,
+    statsCard: {
+      theme: text(statsCardInput["theme"], seedProfile.statsCard.theme, 50),
+      themePalette: text(statsCardInput["themePalette"], "auto", 50),
+      bgColor: hexOkOrEmpty(statsCardInput["bgColor"]),
+      textColor: hexOkOrEmpty(statsCardInput["textColor"]),
+      accentColor: hexOkOrEmpty(statsCardInput["accentColor"]),
+      borderColor: hexOkOrEmpty(statsCardInput["borderColor"]),
+      borderRadius: typeof statsCardInput["borderRadius"] === "number" ? Math.max(0, Math.min(30, statsCardInput["borderRadius"])) : seedProfile.statsCard.borderRadius,
+      showIcons: statsCardInput["showIcons"] !== false,
+      hideRank: statsCardInput["hideRank"] === true,
+      includeAllCommits: statsCardInput["includeAllCommits"] !== false,
+      countPrivate: statsCardInput["countPrivate"] === true,
+      hideMetrics: Array.isArray(statsCardInput["hideMetrics"])
+        ? statsCardInput["hideMetrics"].filter((m) => typeof m === "string" && /^[a-z_]+$/i.test(m)).slice(0, 10)
+        : seedProfile.statsCard.hideMetrics,
+      customTitle: text(statsCardInput["customTitle"], "", 100),
+    },
+    langsCard: {
+      theme: text(langsCardInput["theme"], seedProfile.langsCard.theme, 50),
+      layout: langsCardInput["layout"] === "donut" || langsCardInput["layout"] === "pie" ? langsCardInput["layout"] : "compact",
+      langsCount: typeof langsCardInput["langsCount"] === "number" ? Math.max(1, Math.min(10, langsCardInput["langsCount"])) : seedProfile.langsCard.langsCount,
+      hideProgress: langsCardInput["hideProgress"] === true,
+      borderRadius: typeof langsCardInput["borderRadius"] === "number" ? Math.max(0, Math.min(30, langsCardInput["borderRadius"])) : seedProfile.langsCard.borderRadius,
+      cardWidth: typeof langsCardInput["cardWidth"] === "number" ? Math.max(200, Math.min(600, langsCardInput["cardWidth"])) : seedProfile.langsCard.cardWidth,
+      includeForks: langsCardInput["includeForks"] !== false,
+      countPrivate: langsCardInput["countPrivate"] === true,
+      useCustomLanguages: langsCardInput["useCustomLanguages"] === true,
+      customLanguages: Array.isArray(langsCardInput["customLanguages"])
+        ? (langsCardInput["customLanguages"] as CustomLanguage[]).slice(0, 10)
+        : seedProfile.langsCard.customLanguages,
+    },
+    streakCard: {
+      theme: text(streakCardInput["theme"], seedProfile.streakCard.theme, 50),
+      borderRadius: typeof streakCardInput["borderRadius"] === "number" ? Math.max(0, Math.min(30, streakCardInput["borderRadius"])) : seedProfile.streakCard.borderRadius,
+      mode: streakCardInput["mode"] === "weekly" ? "weekly" : "daily",
+      fireColor: hexOkOrEmpty(streakCardInput["fireColor"]),
+      ringColor: hexOkOrEmpty(streakCardInput["ringColor"]),
+    },
+    activityGraph: {
+      theme: text(activityGraphInput["theme"], seedProfile.activityGraph.theme, 50),
+      color: hexOkOrEmpty(activityGraphInput["color"]),
+      lineColor: hexOkOrEmpty(activityGraphInput["lineColor"]),
+      pointColor: hexOkOrEmpty(activityGraphInput["pointColor"]),
+      area: activityGraphInput["area"] !== false,
+      radius: typeof activityGraphInput["radius"] === "number" ? Math.max(0, Math.min(30, activityGraphInput["radius"])) : seedProfile.activityGraph.radius,
+      graphType: activityGraphInput["graphType"] === "activity-graph" ? "activity-graph" : "heatmap",
+    },
     typing: {
       lines: text(typingInput["lines"], seedProfile.typing.lines, 1000),
       font: TYPING_FONTS.includes(typingInput["font"] as TypingFont)
@@ -999,6 +1202,9 @@ export function parseConfig(raw: unknown): Profile {
       streak: addonsInput["streak"] !== false,
       statsOverview: addonsInput["statsOverview"] !== false,
       contributionGraph: addonsInput["contributionGraph"] !== false,
+      followersBadge: addonsInput["followersBadge"] === true,
+      reposBadge: addonsInput["reposBadge"] === true,
+      followingBadge: addonsInput["followingBadge"] === true,
     },
     support: {
       bmc: validHandle(supportInput["bmc"]),

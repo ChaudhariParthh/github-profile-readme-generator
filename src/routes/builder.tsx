@@ -21,7 +21,8 @@ import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ReadmePreview } from "@/components/ReadmePreview";
 import { SkillPicker } from "@/components/builder/SkillPicker";
-import { BackgroundGallery, StatsThemeGallery } from "@/components/builder/ThemeGalleries";
+import { BackgroundGallery } from "@/components/builder/ThemeGalleries";
+import { StatsCardSection } from "@/components/builder/StatsCardSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -263,15 +264,7 @@ function Builder() {
   const importGitHub = async (username?: string) => {
     setGhLoading(true);
     try {
-      const { user, top, languages, warning } = await fetchGitHubProfile(username ?? p.username);
-      const repos = top.map((r) => ({
-        name: r.name,
-        url: r.html_url,
-        description: r.description ?? null,
-        stars: r.stargazers_count,
-        forks: r.forks_count,
-        language: r.language,
-      }));
+      const { user, top, languages, repos: allRepos, followers, following, publicRepos, warning } = await fetchGitHubProfile(username ?? p.username);
       const totalStars = top.reduce((sum, r) => sum + r.stargazers_count, 0);
       const totalForks = top.reduce((sum, r) => sum + r.forks_count, 0);
       setP((s) => ({
@@ -285,6 +278,23 @@ function Builder() {
           GitHub: user.login,
           ...(user.twitter_username ? { X: user.twitter_username } : {}),
           ...(user.blog ? { Portfolio: user.blog } : {}),
+        },
+        githubStats: {
+          repos: (allRepos || top).map((r) => ({
+            name: r.name,
+            url: r.html_url,
+            description: r.description ?? null,
+            stars: r.stargazers_count,
+            forks: r.forks_count,
+            language: r.language,
+          })),
+          languages,
+          totalStars,
+          totalForks,
+          followers,
+          following,
+          publicRepos,
+          warning,
         },
         projects: top.length
           ? top.map((r) => ({ name: r.name, url: r.html_url, description: r.description ?? "" }))
@@ -984,68 +994,8 @@ function Builder() {
               </>
             )}
 
-            {active === "stats" && (
-              <>
-                <div className="space-y-3">
-                  <p className="text-xs text-muted-foreground">
-                    Select the widgets you want to show in your README stats section:
-                  </p>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    <div className="flex items-center gap-3">
-                      <Switch
-                        checked={p.addons.stats}
-                        onCheckedChange={(checked) => setAddon("stats", checked)}
-                      />
-                      <label className="text-sm">Stats card</label>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Switch
-                        checked={p.addons.langs}
-                        onCheckedChange={(checked) => setAddon("langs", checked)}
-                      />
-                      <label className="text-sm">Top languages</label>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Switch
-                        checked={p.addons.streak}
-                        onCheckedChange={(checked) => setAddon("streak", checked)}
-                      />
-                      <label className="text-sm">Contribution streak</label>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Switch
-                        checked={p.addons.contributionGraph}
-                        onCheckedChange={(checked) => setAddon("contributionGraph", checked)}
-                      />
-                      <label className="text-sm">Contribution graph</label>
-                    </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Pick a layout below — it changes the generated Markdown, not just this editor.
-                  </p>
-                  <StatsThemeGallery
-                    value={p.statsTheme}
-                    onChange={(id) =>
-                      setP((s) => applyStatsTheme(s, id))
-                    }
-                  />
-                </div>
-                <div className="rounded-xl border border-border bg-card p-4 overflow-auto max-h-[340px]">
-                  {(() => {
-                    const lines = renderStatsSection(p);
-                    if (lines.length === 0) {
-                      return (
-                        <p className="text-xs text-muted-foreground italic">
-                          Stats section is not enabled. Add it in the Sections tab, or import a
-                          GitHub profile to populate live data.
-                        </p>
-                      );
-                    }
-                    const html = sanitizeHtml(mdToHtml(lines.join("\n")));
-                    return <div className="text-xs" dangerouslySetInnerHTML={{ __html: html }} />;
-                  })()}
-                </div>
-              </>
+                        {active === "stats" && (
+              <StatsCardSection profile={p} onChange={setP} />
             )}
 
             {active === "blog" && (

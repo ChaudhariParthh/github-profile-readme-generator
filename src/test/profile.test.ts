@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseConfig, safeUrl, seedProfile, toMarkdown } from "@/lib/profile";
+import { parseConfig, safeUrl, seedProfile, toMarkdown, statsCardUrl, langsCardUrl, streakCardUrl, graphCardUrl } from "@/lib/profile";
 import { applyAppearance, BACKGROUND_THEMES } from "@/lib/appearance";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { moveItem } from "@/lib/reorder";
@@ -150,3 +150,179 @@ describe("new visitor profile", () => {
     expect(Object.values(seedProfile.work).every((v) => v === "")).toBe(true);
   });
 });
+
+describe("GitHub Stats Cards URL generators", () => {
+  const testProfile = {
+    ...seedProfile,
+    username: "octocat",
+    statsCard: {
+      theme: "radical",
+      bgColor: "0a0a0a",
+      textColor: "ffffff",
+      accentColor: "8B5CF6",
+      borderColor: "333333",
+      borderRadius: 12,
+      showIcons: true,
+      hideRank: true,
+      includeAllCommits: true,
+      countPrivate: false,
+      hideMetrics: ["issues", "prs"],
+      customTitle: "Octo Stats",
+    },
+    langsCard: {
+      theme: "tokyonight",
+      layout: "donut" as const,
+      langsCount: 8,
+      hideProgress: false,
+      borderRadius: 14,
+      cardWidth: 450,
+      includeForks: true,
+      countPrivate: false,
+      useCustomLanguages: false,
+      customLanguages: [],
+    },
+    streakCard: {
+      theme: "dracula",
+      borderRadius: 10,
+      mode: "weekly" as const,
+      fireColor: "F97316",
+      ringColor: "8B5CF6",
+    },
+    activityGraph: {
+      theme: "default",
+      color: "22D3EE",
+      lineColor: "",
+      pointColor: "",
+      area: true,
+      radius: 8,
+    },
+  };
+
+  it("generates classic stats card URL with custom options", () => {
+    const url = statsCardUrl(testProfile);
+    expect(url).toContain("https://github-readme-stats.vercel.app/api?");
+    expect(url).toContain("username=octocat");
+    expect(url).toContain("theme=radical");
+    expect(url).toContain("show_icons=true");
+    expect(url).toContain("hide_rank=true");
+    expect(url).toContain("include_all_commits=true");
+    expect(url).toContain("hide=issues%2Cprs");
+    expect(url).toContain("border_radius=12");
+    expect(url).toContain("custom_title=Octo+Stats");
+    expect(url).toContain("bg_color=0a0a0a");
+    expect(url).toContain("border_color=333333");
+  });
+
+  it("generates top languages card URL with donut layout and language count", () => {
+    const url = langsCardUrl(testProfile);
+    expect(url).toContain("https://github-readme-stats.vercel.app/api/top-langs/?");
+    expect(url).toContain("username=octocat");
+    expect(url).toContain("layout=donut");
+    expect(url).toContain("langs_count=8");
+    expect(url).toContain("theme=tokyonight");
+    expect(url).toContain("border_radius=14");
+    expect(url).toContain("card_width=450");
+  });
+
+  it("generates contribution streak card URL with weekly mode and custom fire color", () => {
+    const url = streakCardUrl(testProfile);
+    expect(url).toContain("https://streak-stats.demolab.com/?");
+    expect(url).toContain("user=octocat");
+    expect(url).toContain("theme=dracula");
+    expect(url).toContain("mode=weekly");
+    expect(url).toContain("fire=F97316");
+    expect(url).toContain("ring=8B5CF6");
+    expect(url).toContain("border_radius=10");
+  });
+
+  it("generates contribution activity graph heatmap URL with chosen accent", () => {
+    const url = graphCardUrl(testProfile);
+    expect(url).toBe("https://ghchart.rshah.org/22D3EE/octocat");
+  });
+
+  it("parses and validates custom stats configuration safely", () => {
+    const parsed = parseConfig({
+      name: "Parth",
+      username: "parth",
+      statsCard: {
+        theme: "synthwave",
+        borderRadius: 16,
+        showIcons: false,
+        hideRank: true,
+        hideMetrics: ["issues", "<script>", "invalid metric name!"],
+      },
+      langsCard: {
+        theme: "gruvbox",
+        layout: "pie",
+        langsCount: 20, // Should be clamped to 10
+      },
+      streakCard: {
+        mode: "weekly",
+        fireColor: "#FF5500",
+      },
+      activityGraph: {
+        color: "4ADE80",
+      },
+    });
+
+    expect(parsed.statsCard.theme).toBe("synthwave");
+    expect(parsed.statsCard.borderRadius).toBe(16);
+    expect(parsed.statsCard.showIcons).toBe(false);
+    expect(parsed.statsCard.hideRank).toBe(true);
+    expect(parsed.statsCard.hideMetrics).toEqual(["issues"]);
+    expect(parsed.langsCard.layout).toBe("pie");
+    expect(parsed.langsCard.langsCount).toBe(10);
+    expect(parsed.streakCard.mode).toBe("weekly");
+    expect(parsed.streakCard.fireColor).toBe("FF5500");
+    expect(parsed.activityGraph.color).toBe("4ADE80");
+  });
+
+  it("renders custom stats card settings in Markdown export", () => {
+    const md = toMarkdown({
+      ...testProfile,
+      sections: [{ id: "stats", hidden: false }],
+    });
+    expect(md).toContain("## GitHub Stats");
+    expect(md).toContain("https://github-readme-stats.vercel.app/api?username=octocat&show_icons=true&theme=radical");
+    expect(md).toContain("https://github-readme-stats.vercel.app/api/top-langs/?username=octocat&layout=donut&langs_count=8&include_forks=true&theme=tokyonight");
+    expect(md).toContain("https://streak-stats.demolab.com/?user=octocat&theme=dracula");
+    expect(md).toContain("https://ghchart.rshah.org/22D3EE/octocat");
+  });
+
+  it("automatically changes stats colors when theme is changed from editor", () => {
+    // 1. Default / Classic Blue theme
+    const pClassic = { ...seedProfile, username: "octocat", appearanceId: "classic-blue" };
+    const statsClassic = statsCardUrl(pClassic);
+    const streakClassic = streakCardUrl(pClassic);
+    expect(statsClassic).toContain("bg_color=080B14");
+    expect(statsClassic).toContain("title_color=58A6FF");
+    expect(streakClassic).toContain("sideNums=58A6FF");
+    expect(streakClassic).toContain("ring=58A6FF");
+
+    // 2. Switch to Terminal Hacker theme
+    const pHacker = applyAppearance(pClassic, "terminal-hacker");
+    const statsHacker = statsCardUrl(pHacker);
+    const streakHacker = streakCardUrl(pHacker);
+    expect(statsHacker).toContain("bg_color=020202");
+    expect(statsHacker).toContain("title_color=4ADE80");
+    expect(streakHacker).toContain("sideNums=4ADE80");
+    expect(streakHacker).toContain("ring=4ADE80");
+
+    // 3. Switch to Neon Cyber theme
+    const pCyber = applyAppearance(pClassic, "neon-cyber");
+    const statsCyber = statsCardUrl(pCyber);
+    const streakCyber = streakCardUrl(pCyber);
+    expect(statsCyber).toContain("bg_color=020617");
+    expect(statsCyber).toContain("title_color=22D3EE");
+    expect(streakCyber).toContain("ring=22D3EE");
+
+    // 4. Switch to Sunset Horizon theme
+    const pSunset = applyAppearance(pClassic, "sunset-horizon");
+    const statsSunset = statsCardUrl(pSunset);
+    const streakSunset = streakCardUrl(pSunset);
+    expect(statsSunset).toContain("bg_color=1E0B14");
+    expect(statsSunset).toContain("title_color=F97316");
+    expect(streakSunset).toContain("sideNums=F97316");
+  });
+});
+
