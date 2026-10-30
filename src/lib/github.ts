@@ -22,6 +22,43 @@ export type GitHubRepo = {
   forks_count: number;
   fork: boolean;
   language: string | null;
+  size?: number;
+};
+
+export type LanguageStat = {
+  name: string;
+  count: number;
+  percent: number;
+  color: string;
+};
+
+export const GITHUB_LANG_COLORS: Record<string, string> = {
+  JavaScript: "F1E05A",
+  TypeScript: "3178C6",
+  Python: "3572A5",
+  Java: "B07219",
+  HTML: "E34C26",
+  CSS: "563D7C",
+  "C++": "F34B7D",
+  C: "555555",
+  "C#": "178600",
+  PHP: "4F5D95",
+  Go: "00ADD8",
+  Rust: "DEA584",
+  Ruby: "701516",
+  Kotlin: "A97BFF",
+  Swift: "F05138",
+  Dart: "00B4AB",
+  Shell: "89E051",
+  Bash: "89E051",
+  Vue: "41B883",
+  Svelte: "FF3E00",
+  SCSS: "C6538C",
+  R: "198CE7",
+  Lua: "000080",
+  Dockerfile: "384D54",
+  Markdown: "083FA1",
+  "Jupyter Notebook": "DA5B0B",
 };
 
 const CACHE_PREFIX = "gps-github-public:v1:";
@@ -116,19 +153,40 @@ export async function fetchGitHubProfile(username: string) {
 
   const owned = repos.filter((repo) => !repo.fork && repo.name.toLowerCase() !== name.toLowerCase());
   const top = [...owned].sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 4);
-  const languageCounts = new Map<string, number>();
-  for (const repo of owned) {
-    if (repo.language) languageCounts.set(repo.language, (languageCounts.get(repo.language) ?? 0) + 1);
+
+  // Compute real language percentages based on actual repo sizes / code frequency
+  const targetRepos = owned.length > 0 ? owned : repos;
+  const langMap = new Map<string, { count: number; weight: number }>();
+  let totalWeight = 0;
+
+  for (const repo of targetRepos) {
+    if (repo.language) {
+      // Use repo.size (KB) if available, with a reasonable floor so small repos count
+      const weight = Math.max(repo.size || 50, 10);
+      const existing = langMap.get(repo.language) || { count: 0, weight: 0 };
+      existing.count += 1;
+      existing.weight += weight;
+      langMap.set(repo.language, existing);
+      totalWeight += weight;
+    }
   }
-  const languages = [...languageCounts]
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .map(([language]) => language);
+
+  const sortedLangs = [...langMap.entries()].sort((a, b) => b[1].weight - a[1].weight);
+  const languages = sortedLangs.map(([lang]) => lang);
+
+  const languageStats: LanguageStat[] = sortedLangs.map(([langName, data]) => ({
+    name: langName,
+    count: data.count,
+    percent: totalWeight > 0 ? Number(((data.weight / totalWeight) * 100).toFixed(2)) : 0,
+    color: GITHUB_LANG_COLORS[langName] || "58A6FF",
+  }));
 
   return {
     user,
     repos,
     top,
     languages,
+    languageStats,
     warning,
     followers: user.followers,
     following: user.following,

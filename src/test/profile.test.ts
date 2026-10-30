@@ -324,5 +324,33 @@ describe("GitHub Stats Cards URL generators", () => {
     expect(statsSunset).toContain("title_color=F97316");
     expect(streakSunset).toContain("sideNums=F97316");
   });
+
+  it("renders real language percentages from fetched profile data instead of equal shares", async () => {
+    const { generateLangsCardSvg } = await import("@/lib/appearance");
+    const profileWithRealLangs = {
+      ...seedProfile,
+      githubStats: {
+        repos: [],
+        languages: ["TypeScript", "Python"],
+        languageStats: [
+          { name: "TypeScript", percent: 78.45, color: "3178C6" },
+          { name: "Python", percent: 21.55, color: "3572A5" },
+        ],
+        totalStars: 10,
+        totalForks: 2,
+        followers: 5,
+        following: 3,
+        publicRepos: 4,
+        warning: null,
+      },
+    };
+
+    const svg = generateLangsCardSvg(profileWithRealLangs);
+    expect(svg).toContain("TypeScript");
+    expect(svg).toContain("78.45%");
+    expect(svg).toContain("Python");
+    expect(svg).toContain("21.55%");
+    expect(svg).not.toContain("50.00%");
+  });
 });
 

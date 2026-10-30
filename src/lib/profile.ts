@@ -319,6 +319,12 @@ export type GitHubStatsData = {
     language: string | null;
   }>;
   languages: string[];
+  languageStats?: Array<{
+    name: string;
+    percent: number;
+    color: string;
+    count?: number;
+  }>;
   totalStars: number;
   totalForks: number;
   followers: number;

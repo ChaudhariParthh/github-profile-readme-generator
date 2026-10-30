@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { BookOpen, Github } from "lucide-react";
 import { toMarkdown, type Profile } from "@/lib/profile";
+import { generateStatsCardDataUri, generateLangsCardDataUri } from "@/lib/appearance";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,6 +82,19 @@ export function ReadmePreview({
       img.src = `/banners/${bannerMatch[1]}.svg`;
       return;
     }
+
+    // Graceful fallback for external GitHub stats card service outages or rate limits
+    if (!img.dataset["retriedStatsFallback"] && img.src.includes("github-readme-stats.vercel.app")) {
+      img.dataset["retriedStatsFallback"] = "1";
+      if (img.src.includes("/top-langs")) {
+        img.src = generateLangsCardDataUri(p);
+        return;
+      } else {
+        img.src = generateStatsCardDataUri(p);
+        return;
+      }
+    }
+
     img.dataset["failed"] = "1";
     const span = document.createElement("span");
     span.className = "readme-broken";

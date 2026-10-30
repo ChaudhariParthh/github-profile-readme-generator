@@ -20,6 +20,8 @@ import {
   resolveThemePalette,
   type ThemeStatsPalette,
   applyStatsTheme,
+  generateStatsCardDataUri,
+  generateLangsCardDataUri,
 } from "@/lib/appearance";
 import { fetchGitHubProfile } from "@/lib/github";
 import { StatsThemeGallery } from "@/components/builder/ThemeGalleries";
@@ -124,7 +126,7 @@ function generateLocalStatsSvg(
     <circle cx="${logoX}" cy="${logoY}" r="32" fill="none" stroke="#${borderColor}" stroke-width="2.5"/>
     <circle cx="${logoX}" cy="${logoY}" r="28" fill="none" stroke="#${iconColor}" stroke-width="1.5" opacity="0.3"/>
     <g transform="translate(${logoX - 12}, ${logoY - 12}) scale(1)">
-      <path d="${ghLogoPath}" fill="#${iconColor}" opacity="0.85"/>
+      <path d="${ghLogoPath}" fill="#FFFFFF" opacity="0.95"/>
     </g>
   </svg>`;
 }
@@ -263,9 +265,9 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
   const getSelectedCardUrl = (): string => {
     switch (selectedCard) {
       case "stats":
-        return localStatsDataUri;
+        return generateStatsCardDataUri(p);
       case "langs":
-        return langsUrl;
+        return useCustomLangs ? customLangsDataUri : generateLangsCardDataUri(p);
       case "streak":
         return streakUrl;
       case "graph":
@@ -296,8 +298,13 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
   // Reset image states when card URL changes
   useEffect(() => {
     if (selectedCard !== "layout" && selectedCard !== "all-stacked" && selectedCard !== "repos") {
-      setImageLoading(true);
-      setImageError(false);
+      if (cardUrl.startsWith("data:")) {
+        setImageLoading(false);
+        setImageError(false);
+      } else {
+        setImageLoading(true);
+        setImageError(false);
+      }
     }
   }, [cardUrl, selectedCard, previewKey]);
 
@@ -458,12 +465,22 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
       const totalStars = (data.repos || []).reduce((sum, r) => sum + r.stargazers_count, 0);
       const totalForks = (data.repos || []).reduce((sum, r) => sum + r.forks_count, 0);
 
+      const realLangs: CustomLanguage[] = (data.languageStats || []).slice(0, 6).map((l) => ({
+        name: l.name,
+        percent: l.percent,
+        color: l.color,
+      }));
+
       onChange((prev) => ({
         ...prev,
         username: data.user.login,
         name: prev.name || data.user.name || data.user.login,
         bio: prev.bio || data.user.bio || "",
         location: prev.location || data.user.location || "",
+        langsCard: {
+          ...prev.langsCard,
+          customLanguages: realLangs.length > 0 ? realLangs : prev.langsCard.customLanguages,
+        },
         githubStats: {
           repos: (data.repos || []).map((r) => ({
             name: r.name,
@@ -474,6 +491,7 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
             language: r.language,
           })),
           languages: data.languages,
+          languageStats: data.languageStats,
           totalStars,
           totalForks,
           followers: data.followers,
@@ -861,7 +879,7 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
             {p.addons.stats && (
               <img
                 key={`stacked-stats-local-${previewKey}`}
-                src={localStatsDataUri}
+                src={generateStatsCardDataUri(p)}
                 alt="GitHub Stats"
                 className="max-w-full rounded-xl shadow-sm transition-all hover:scale-[1.01]"
               />
@@ -876,8 +894,8 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
             )}
             {p.addons.langs && (
               <img
-                key={`stacked-langs-${langsUrl}-${previewKey}`}
-                src={langsUrl}
+                key={`stacked-langs-${previewKey}`}
+                src={useCustomLangs ? customLangsDataUri : generateLangsCardDataUri(p)}
                 alt="Top Languages"
                 className="max-w-full rounded-xl shadow-sm transition-all hover:scale-[1.01]"
               />
@@ -1373,14 +1391,49 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
                 <div className="flex items-center gap-1.5 bg-background border border-border p-0.5 rounded-lg">
                   <button
                     type="button"
-                    onClick={() => updateLangsCard((c) => ({ ...c, useCustomLanguages: false }))}
+                    onClick={() => {
+                      if (p.githubStats?.languageStats && p.githubStats.languageStats.length > 0) {
+                        const newLangs = p.githubStats.languageStats.slice(0, 6).map((l) => ({
+                          name: l.name,
+                          percent: l.percent,
+                          color: l.color,
+                        }));
+                        updateLangsCard((c) => ({
+                          ...c,
+                          useCustomLanguages: false,
+                          customLanguages: newLangs,
+                        }));
+                        toast.success(`Auto-filled ${newLangs.length} languages with real repository percentages!`);
+                      } else if (p.githubStats?.languages && p.githubStats.languages.length > 0) {
+                        const count = Math.min(p.githubStats.languages.length, 6);
+                        const equal = Number((100 / count).toFixed(1));
+                        const colors = ["E34F26", "1572B6", "ED8B00", "F7DF1E", "3776AB", "2496ED", "A855F7"];
+                        const newLangs = p.githubStats.languages.slice(0, 6).map((langName, i) => {
+                          const found = SKILL_CATEGORIES["Languages"]?.find((s) => s[0].toLowerCase() === langName.toLowerCase());
+                          return {
+                            name: langName,
+                            percent: equal,
+                            color: found ? found[2] : colors[i % colors.length]!,
+                          };
+                        });
+                        updateLangsCard((c) => ({
+                          ...c,
+                          useCustomLanguages: false,
+                          customLanguages: newLangs,
+                        }));
+                        toast.success(`Auto-filled ${newLangs.length} languages from your repositories!`);
+                      } else {
+                        updateLangsCard((c) => ({ ...c, useCustomLanguages: false }));
+                        toast.success("Switched to Auto-fill from Repositories");
+                      }
+                    }}
                     className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
                       !useCustomLangs
                         ? "bg-primary text-primary-foreground shadow-sm"
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    GitHub Live
+                    Auto-fill from Repositories
                   </button>
                   <button
                     type="button"
@@ -1396,7 +1449,7 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
                 </div>
               </div>
 
-              {/* GitHub Live Mode settings */}
+              {/* Auto-fill from Repositories Mode settings */}
               {!useCustomLangs && (
                 <div className="space-y-2 pt-1 border-t border-border/40">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
@@ -1430,62 +1483,6 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
                 <div className="space-y-3 pt-2 border-t border-border/40">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-foreground">Languages Shown in Card:</span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-7 text-xs gap-1"
-                      onClick={() => {
-                        // If p.githubStats has languages, use them!
-                        if (p.githubStats?.languages && p.githubStats.languages.length > 0) {
-                          const equal = Number((100 / p.githubStats.languages.length).toFixed(1));
-                          const newLangs = p.githubStats.languages.slice(0, 6).map((langName) => {
-                            const found = SKILL_CATEGORIES["Languages"]?.find((s) => s[0].toLowerCase() === langName.toLowerCase());
-                            return {
-                              name: langName,
-                              percent: equal,
-                              color: found ? found[2] : "58A6FF",
-                            };
-                          });
-                          updateLangsCard((c) => ({
-                            ...c,
-                            useCustomLanguages: true,
-                            customLanguages: newLangs,
-                          }));
-                          toast.success(`Loaded ${newLangs.length} languages from your fetched GitHub repositories!`);
-                          return;
-                        }
-
-                        // Otherwise from Tech Stack
-                        const langSkills = (p.skills || [])
-                          .map((s) => {
-                            const found = SKILL_CATEGORIES["Languages"]?.find((item) => item[0] === s);
-                            return found ? { name: found[0], color: found[2] } : null;
-                          })
-                          .filter((item): item is { name: string; color: string } => item !== null);
-
-                        if (langSkills.length === 0) {
-                          toast.error("Fetch your GitHub profile above or select languages in the Tech Stack tab first.");
-                          return;
-                        }
-
-                        const equalPercent = Number((100 / langSkills.length).toFixed(1));
-                        const newLangs: CustomLanguage[] = langSkills.map((l) => ({
-                          name: l.name,
-                          percent: equalPercent,
-                          color: l.color,
-                        }));
-
-                        updateLangsCard((c) => ({
-                          ...c,
-                          useCustomLanguages: true,
-                          customLanguages: newLangs,
-                        }));
-                        toast.success(`Loaded ${newLangs.length} languages from your Tech Stack!`);
-                      }}
-                    >
-                      <Sparkles className="h-3 w-3 text-primary" />
-                      Auto-fill from Repositories
-                    </Button>
                   </div>
 
                   <div className="space-y-2">
