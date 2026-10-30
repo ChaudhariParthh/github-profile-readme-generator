@@ -142,13 +142,8 @@ function Index() {
               </h3>
               <ul className="flex flex-col gap-3 lg:mt-2">
                 <li>
-                  <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
+                  <Link to="/builder" className="text-sm text-muted-foreground hover:text-foreground">
                     Generator
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
-                    Addons
                   </Link>
                 </li>
                 <li>
@@ -157,9 +152,14 @@ function Index() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
+                  <a
+                    href="https://www.buymeachai.in/parthc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
                     Support
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -171,7 +171,7 @@ function Index() {
               <ul className="flex flex-col gap-3 lg:mt-2">
                 <li>
                   <a
-                    href="https://github.com/Parth-CyberParth/github-profile-readme-generator"
+                    href="https://github.com/ChaudhariParthh/github-profile-readme-generator"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-muted-foreground hover:text-foreground"
@@ -181,7 +181,7 @@ function Index() {
                 </li>
                 <li>
                   <a
-                    href="https://github.com/Parth-CyberParth/github-profile-readme-generator/issues"
+                    href="https://github.com/ChaudhariParthh/github-profile-readme-generator/issues"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-muted-foreground hover:text-foreground"
@@ -209,7 +209,7 @@ function Index() {
               <ul className="flex flex-col gap-3 lg:mt-2">
                 <li>
                   <a
-                    href="https://github.com/Parth-CyberParth"
+                    href="https://github.com/ChaudhariParthh"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-muted-foreground hover:text-foreground"
@@ -219,7 +219,7 @@ function Index() {
                 </li>
                 <li>
                   <a
-                    href="https://www.linkedin.com/in/parth-chaudhari/"
+                    href="https://www.linkedin.com/in/chaudhariparth"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-muted-foreground hover:text-foreground"
@@ -236,7 +236,7 @@ function Index() {
               © 2026 GitProfile Studio. Made with{" "}
               <span className="text-foreground">❤️</span> by{" "}
               <a
-                href="https://github.com/Parth-CyberParth"
+                href="https://github.com/ChaudhariParthh"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-accent hover:text-accent/90"

@@ -21,7 +21,7 @@ import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ReadmePreview } from "@/components/ReadmePreview";
 import { SkillPicker } from "@/components/builder/SkillPicker";
-import { BackgroundGallery, StatsGallery } from "@/components/builder/ThemeGalleries";
+import { BackgroundGallery } from "@/components/builder/ThemeGalleries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -62,7 +62,7 @@ import {
   type Profile,
   type Work,
 } from "@/lib/profile";
-import { applyAppearance, applyStatsTheme, appearanceById } from "@/lib/appearance";
+import { applyAppearance, appearanceById } from "@/lib/appearance";
 import { renderStatsSection } from "@/lib/profile";
 import { mdToHtml } from "@/components/ReadmePreview";
 import { sanitizeHtml } from "@/lib/sanitize";
@@ -1263,7 +1263,6 @@ function Builder() {
           value={p.appearanceId}
           onChange={(id) => setP((s) => applyAppearance(s, id))}
         />
-        <StatsGallery value={p.statsTheme} onChange={(id) => setP((s) => applyStatsTheme(s, id))} />
       </div>
 
       <BannerAdjustDialog

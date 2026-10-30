@@ -1,10 +1,7 @@
 import {
   BACKGROUND_THEMES,
-  STATS_THEMES,
   type AppearanceTheme,
-  type StatsTheme,
 } from "@/lib/appearance";
-import { StatsCard } from "@/components/builder/StatsThemePreviews";
 
 export function BackgroundGallery({
   value,
@@ -26,32 +23,6 @@ export function BackgroundGallery({
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {BACKGROUND_THEMES.map((t) => (
           <ThemeCard key={t.id} theme={t} active={value === t.id} onSelect={() => onChange(t.id)} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-export function StatsGallery({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (id: string) => void;
-}) {
-  return (
-    <section className="space-y-3 mt-6">
-      <div>
-        <h3 className="text-sm font-semibold">
-          10 GitHub Stats Section Themes{" "}
-          <span className="font-normal text-muted-foreground">
-            Unique, non-generic stats layouts to make your GitHub profile stand out.
-          </span>
-        </h3>
-      </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        {STATS_THEMES.map((t) => (
-          <StatsCard key={t.id} theme={t} active={value === t.id} onSelect={() => onChange(t.id)} />
         ))}
       </div>
     </section>

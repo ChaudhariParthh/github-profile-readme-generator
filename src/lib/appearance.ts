@@ -160,95 +160,79 @@ export type StatsTheme = {
   id: string;
   n: string;
   name: string;
-  blurb: string;
+  description: string;
   accent: string;
-  widgetTheme: string; // GitHub readme-stats theme name for badge widgets
+  layout: "glassmorphism" | "neon-glow" | "minimalist" | "gradient-waves" | "card-stack" | "timeline" | "hexagon" | "isometric";
 };
 
 export const STATS_THEMES: StatsTheme[] = [
   {
-    id: "command-center",
+    id: "glassmorphism",
     n: "01",
-    name: "Developer Command Center",
-    blurb: "Dashboard with metric cards, top repos table, and language list.",
-    accent: "8B5CF6",
-    widgetTheme: "tokyonight",
-  },
-  {
-    id: "terminal-analytics",
-    n: "02",
-    name: "Terminal Analytics",
-    blurb: "Terminal-inspired monospace layout with repo stats.",
-    accent: "4ADE80",
-    widgetTheme: "chartreuse",
-  },
-  {
-    id: "contribution-heatmap",
-    n: "03",
-    name: "Contribution Heatmap",
-    blurb: "Contribution graph hero with summary metrics below.",
-    accent: "22D3EE",
-    widgetTheme: "github_dark",
-  },
-  {
-    id: "neon-pulse",
-    n: "04",
-    name: "Neon Pulse",
-    blurb: "Four neon metric cards in a 2x2 grid.",
-    accent: "DB2777",
-    widgetTheme: "radical",
-  },
-  {
-    id: "minimal-editorial",
-    n: "05",
-    name: "Minimal Editorial",
-    blurb: "Typography-first layout with horizontal stats and repo list.",
-    accent: "57534E",
-    widgetTheme: "default",
-  },
-  {
-    id: "glass-dashboard",
-    n: "06",
-    name: "Glass Dashboard",
-    blurb: "Two-column translucent dashboard with user info and repo pins.",
+    name: "Glassmorphism",
+    description: "Frosted glass blur effect with semi-transparent backgrounds and soft shadows",
     accent: "A78BFA",
-    widgetTheme: "react",
+    layout: "glassmorphism",
   },
   {
-    id: "language-spotlight",
+    id: "neon-glow",
+    n: "02",
+    name: "Neon Glow Matrix",
+    description: "Cyberpunk aesthetic with bright neon borders and terminal fonts",
+    accent: "22D3EE",
+    layout: "neon-glow",
+  },
+  {
+    id: "minimalist",
+    n: "03",
+    name: "Minimalist Metrics",
+    description: "Ultra-clean with large typography and minimal colors",
+    accent: "18181B",
+    layout: "minimalist",
+  },
+  {
+    id: "gradient-waves",
+    n: "04",
+    name: "Gradient Waves",
+    description: "Flowing gradient backgrounds with wave patterns",
+    accent: "8B5CF6",
+    layout: "gradient-waves",
+  },
+  {
+    id: "card-stack",
+    n: "05",
+    name: "Card Stack",
+    description: "Multiple cards with depth and layered shadows",
+    accent: "6366F1",
+    layout: "card-stack",
+  },
+  {
+    id: "timeline",
+    n: "06",
+    name: "Timeline View",
+    description: "Horizontal timeline with chronological hierarchy",
+    accent: "F59E0B",
+    layout: "timeline",
+  },
+  {
+    id: "hexagon",
     n: "07",
-    name: "Language Spotlight",
-    blurb: "Languages first, then top repositories table.",
-    accent: "F59E0B",
-    widgetTheme: "tokyonight",
+    name: "Hexagon Grid",
+    description: "Stats in hexagonal shapes with honeycomb pattern",
+    accent: "10B981",
+    layout: "hexagon",
   },
   {
-    id: "oss-impact",
+    id: "isometric",
     n: "08",
-    name: "Open Source Impact",
-    blurb: "Impact metrics (stars/forks) with featured repositories.",
-    accent: "F59E0B",
-    widgetTheme: "radical",
-  },
-  {
-    id: "compact-strip",
-    n: "09",
-    name: "Compact Metrics Strip",
-    blurb: "Single horizontal row of three key metric badges.",
-    accent: "4ADE80",
-    widgetTheme: "dark",
-  },
-  {
-    id: "retro-pixel",
-    n: "10",
-    name: "Retro Pixel Terminal",
-    blurb: "Pixel-style monospace terminal layout with text metrics.",
-    accent: "4ADE80",
-    widgetTheme: "chartreuse",
+    name: "3D Isometric",
+    description: "Isometric perspective with pseudo-3D depth",
+    accent: "EC4899",
+    layout: "isometric",
   },
 ];
 
-export const DEFAULT_STATS_THEME_ID = "command-center";
+export const DEFAULT_STATS_THEME_ID = "glassmorphism";
 
 export function statsThemeById(id: string | undefined): StatsTheme {
   return (
@@ -261,33 +245,4 @@ export function statsThemeById(id: string | undefined): StatsTheme {
 export function applyStatsTheme(p: Profile, id: string): Profile {
   const theme = statsThemeById(id);
   return { ...p, statsTheme: theme.id };
-}
-
-// ---------- Stats widget URL builders (public, no API token) ----------
-
-export function statsCardUrl(p: Profile): string {
-  const u = user(p);
-  if (!u) return "";
-  const theme = statsThemeById(p.statsTheme);
-  return `https://github-readme-stats.vercel.app/api?username=${u}&show_icons=true&theme=${theme.widgetTheme}&hide_border=true`;
-}
-
-export function langsCardUrl(p: Profile): string {
-  const u = user(p);
-  if (!u) return "";
-  const theme = statsThemeById(p.statsTheme);
-  return `https://github-readme-stats.vercel.app/api/top-langs/?username=${u}&layout=compact&theme=${theme.widgetTheme}&hide_border=true`;
-}
-
-export function streakUrl(p: Profile): string {
-  const u = user(p);
-  if (!u) return "";
-  const theme = statsThemeById(p.statsTheme);
-  return `https://github-readme-stats.vercel.app/api/top-langs/?username=${u}&layout=compact&theme=${theme.widgetTheme}&hide_border=true`;
-}
-
-export function contributionsGraphUrl(p: Profile): string {
-  const u = user(p);
-  if (!u) return "";
-  return `https://ghchart.rshah.org/${hexOk(resolvedAccent(p))}/${u}`;
 }

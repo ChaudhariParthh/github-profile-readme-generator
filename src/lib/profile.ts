@@ -2,13 +2,9 @@ import {
   appearanceById,
   DEFAULT_APPEARANCE_ID,
   DEFAULT_STATS_THEME_ID,
-  contributionsGraphUrl,
-  langsCardUrl,
   resolvedAccent,
   resolvedBanner,
-  statsCardUrl,
   statsThemeById,
-  streakUrl,
   trophyCardUrl,
 } from "./appearance";
 
@@ -258,15 +254,6 @@ export const SOCIAL_META: Record<
 };
 
 // ---------- Types ----------
-export const STATS_THEMES = [
-  "tokyonight",
-  "radical",
-  "dracula",
-  "github_dark",
-  "transparent",
-  "onedark",
-  "gruvbox",
-];
 export const BADGE_STYLES = ["for-the-badge", "flat", "flat-square", "plastic"] as const;
 export type BadgeStyle = (typeof BADGE_STYLES)[number];
 export const TECH_DISPLAYS = ["badges", "icons", "compact"] as const;
@@ -518,118 +505,36 @@ export const typingUrl = (p: Profile) => {
 
 // ---------- Stats section renderer ----------
 
-/** Render the GitHub Stats section as Markdown lines, based on the selected stats theme. */
+/** Render the GitHub Stats section as Markdown lines with a simple default layout. */
 export function renderStatsSection(p: Profile): string[] {
   const { stats, langs, streak } = p.addons;
   const data = p.githubStats;
   const username = u(p);
   if (!username || !data) return [];
 
-  const theme = statsThemeById(p.statsTheme);
-  const statsImg = stats ? imgTag(statsCardUrl(p), "GitHub stats") : "";
-  const langsImg = langs ? imgTag(langsCardUrl(p), "Top languages") : "";
-  const streakImg = streak ? imgTag(streakUrl(p), "GitHub streak") : "";
-  const graphImg = contributionsGraphUrl(p)
-    ? imgTag(contributionsGraphUrl(p), "Contribution graph", "100%")
-    : "";
-  const badges = stats
-    ? [
-        imgTag(metricBadge(p, "public_repos", "Repos", theme.accent), "public repositories"),
-        imgTag(metricBadge(p, "followers", "Followers", theme.accent), "followers"),
-        imgTag(metricBadge(p, "following", "Following", "22D3EE"), "following"),
-      ].join(" ")
-    : "";
-
   const out: string[] = [];
-  const addTitle = (t: string) => {
-    if (!t) return;
-    out.push(`## ${t}`, "");
-  };
-  const addBadges = () => {
-    if (badges) out.push(`<p align="left">${badges}</p>`, "");
-  };
+  out.push("## GitHub Stats", "");
 
-  switch (theme.id) {
-    case "command-center":
-      out.push("## GitHub Activity", "");
-      addBadges();
-      out.push(...table([[statsImg, langsImg].filter(Boolean)]));
-      if (streakImg) out.push("", `<p align="left">${streakImg}</p>`);
-      break;
-    case "terminal-analytics":
-      out.push("## GITHUB_ANALYTICS.exe", "");
-      out.push(`<p align="left"><code>// building. learning. contributing...</code></p>`, "");
-      out.push(`<pre><code>Public repos: ${data.repos.length}</code></pre>`, "");
-      out.push(`<pre><code>Total stars: ${data.totalStars}</code></pre>`, "");
-      out.push(`<pre><code>Followers: ${username ? data.totalStars : "N/A"}</code></pre>`, "");
-      out.push(`<pre><code>Languages: ${data.languages.join(", ") || "—"}</code></pre>`, "");
-      break;
-    case "contribution-heatmap":
-      out.push("## Contributions", "");
-      out.push(`<p align="center">${graphImg}</p>`, "");
-      out.push(...table([[statsImg, langsImg].filter(Boolean)]));
-      if (streakImg) out.push("", `<p align="center">${streakImg}</p>`);
-      break;
-    case "neon-pulse":
-      out.push("## GitHub Stats", "");
-      out.push(`<p align="center">${badges}</p>`, "");
-      out.push(
-        `<table><tr><td valign="top">${statsImg}</td><td valign="top">${langsImg}</td></tr></table>`,
-        "",
-      );
-      out.push(`<table><tr><td valign="top">${streakImg}</td></tr></table>`);
-      break;
-    case "minimal-editorial":
-      out.push("## GitHub Statistics", "");
-      addBadges();
-      out.push(`<p align="center">${statsImg}</p>`, "");
-      out.push(
-        `<table><tr><td valign="top">${langsImg}</td><td valign="top">${streakImg}</td></tr></table>`,
-      );
-      break;
-    case "glass-dashboard":
-      out.push("## GitHub Overview", "");
-      out.push(`<table><tr><td valign="top">${statsImg}</td></tr></table>`, "");
-      out.push(
-        `<table><tr><td valign="top">${langsImg}</td><td valign="top">${streakImg}</td></tr></table>`,
-      );
-      break;
-    case "language-spotlight":
-      out.push("## Most Used Languages", "");
-      out.push(`<p align="center">${langsImg}</p>`, "");
-      out.push(
-        `<table><tr><td valign="top">${statsImg}</td><td valign="top">${streakImg}</td></tr></table>`,
-      );
-      break;
-    case "oss-impact":
-      out.push("## Open Source Impact", "");
-      addBadges();
-      out.push(
-        `<table><tr><td valign="top">${statsImg}</td><td valign="top">${langsImg}</td></tr></table>`,
-        "",
-      );
-      if (streakImg) out.push("", `<p align="center">${streakImg}</p>`);
-      break;
-    case "compact-strip":
-      out.push("## Compact Metrics", "");
-      if (badges) out.push(`<p align="center">${badges}</p>`);
-      if (streakImg) out.push(`<p align="center">${streakImg}</p>`);
-      break;
-    case "retro-pixel":
-      out.push("## [ GITHUB STATS ]", "");
-      out.push(`<p align="left"><code>&gt; live data · never guessed</code></p>`, "");
-      out.push(`<table><tr><td valign="top">${streakImg}</td></tr></table>`, "");
-      out.push(
-        `<table><tr><td valign="top">${statsImg}</td><td valign="top">${langsImg}</td></tr></table>`,
-      );
-      break;
-    default:
-      out.push("## GitHub Stats", "");
-      addBadges();
-      out.push(...table([[statsImg, langsImg].filter(Boolean)]));
-      if (streakImg) out.push("", `<p align="left">${streakImg}</p>`);
-      break;
+  // Simple default layout
+  const images: string[] = [];
+  if (stats) {
+    const statsUrl = `https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=default&hide_border=true`;
+    images.push(imgTag(statsUrl, "GitHub stats"));
   }
+  if (langs) {
+    const langsUrl = `https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=default&hide_border=true`;
+    images.push(imgTag(langsUrl, "Top languages"));
+  }
+
+  if (images.length > 0) {
+    out.push(...table([images]));
+  }
+
+  if (streak) {
+    const streakUrl = `https://github-readme-streak-stats.herokuapp.com/?user=${username}&theme=default&hide_border=true`;
+    out.push("", `<p align="left">${imgTag(streakUrl, "GitHub streak")}</p>`);
+  }
+
   return out.filter((line, i, arr) => !(line === "" && arr[i - 1] === ""));
 }
 
@@ -650,15 +555,6 @@ function table(rows: string[][]): string[] {
   }
   if (!html.length) return [];
   return ["<table>", ...html, "</table>"];
-}
-
-/** Build a Shields.io metric badge URL. */
-function metricBadge(p: Profile, query: string, label: string, color: string): string {
-  if (!u(p)) return "";
-  const endpoint = encodeURIComponent(`https://api.github.com/users/${p.username.trim()}`);
-  return `https://img.shields.io/badge/dynamic/json?url=${endpoint}&query=${encodeURIComponent(
-    query,
-  )}&label=${encodeURIComponent(label)}&style=for-the-badge&color=${hexOk(color)}&logo=github&logoColor=white`;
 }
 
 const mdLink = (text: string, href: string) => {
@@ -950,9 +846,6 @@ export function parseConfig(raw: unknown): Profile {
     ),
     customBanner: input["customBanner"] === true,
     bannerMotion: input["bannerMotion"] === "none" ? "none" : "svg-anim",
-    statsTheme: statsThemeById(
-      typeof input["statsTheme"] === "string" ? input["statsTheme"] : seedProfile.statsTheme,
-    ).id,
     typing: {
       lines: text(typingInput["lines"], seedProfile.typing.lines, 1000),
       font: TYPING_FONTS.includes(typingInput["font"] as TypingFont)
