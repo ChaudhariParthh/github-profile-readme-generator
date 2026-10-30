@@ -1,13 +1,14 @@
 import {
   appearanceById,
   DEFAULT_APPEARANCE_ID,
-  DEFAULT_STATS_LAYOUT_ID,
-  graphCardUrl,
-  pinCardUrl,
-  renderStatsSection,
+  DEFAULT_STATS_THEME_ID,
+  contributionsGraphUrl,
+  langsCardUrl,
   resolvedAccent,
   resolvedBanner,
-  statsLayoutById,
+  statsCardUrl,
+  statsThemeById,
+  streakUrl,
   trophyCardUrl,
 } from "./appearance";
 
@@ -315,7 +316,22 @@ export type Work = {
   blog: string;
   resume: string;
 };
-export type Project = { name: string; url: string; description: string };
+export type Project = { name: string; url: string; description: string; gradientStart?: string; gradientEnd?: string };
+
+export type GitHubStatsData = {
+  repos: Array<{
+    name: string;
+    url: string;
+    description: string | null;
+    stars: number;
+    forks: number;
+    language: string | null;
+  }>;
+  languages: string[];
+  totalStars: number;
+  totalForks: number;
+  warning: string | null;
+};
 
 export type Profile = {
   name: string;
@@ -326,10 +342,11 @@ export type Profile = {
   avatarUrl: string;
   bannerUrl: string; // static image or GIF
   appearanceId: string;
-  statsLayout: string;
   accentColor: string;
   customBanner: boolean;
   bannerMotion: BannerMotion;
+  statsTheme: string;
+  githubStats: GitHubStatsData | null;
   typing: { lines: string; font: TypingFont; size: number; color: string; center: boolean };
   work: Work;
   skills: string[];
@@ -337,8 +354,15 @@ export type Profile = {
   badgeStyle: BadgeStyle;
   socials: Record<string, string>;
   projects: Project[];
-  addons: { stats: boolean; langs: boolean; streak: boolean; blog: BlogSource; blogHandle: string };
-  statsTheme: string;
+  addons: { 
+    blog: BlogSource; 
+    blogHandle: string; 
+    stats: boolean; 
+    langs: boolean; 
+    streak: boolean;
+    statsOverview: boolean;
+    contributionGraph: boolean;
+  };
   support: { bmc: string; kofi: string; chai: string; sponsors: boolean };
   sections: SectionEntry[];
   custom: Record<string, CustomSection>;
@@ -370,10 +394,11 @@ export const seedProfile: Profile = {
   avatarUrl: "",
   bannerUrl: appearanceById(DEFAULT_APPEARANCE_ID).bannerUrl,
   appearanceId: DEFAULT_APPEARANCE_ID,
-  statsLayout: DEFAULT_STATS_LAYOUT_ID,
   accentColor: appearanceById(DEFAULT_APPEARANCE_ID).accent,
   customBanner: false,
   bannerMotion: "svg-anim",
+  statsTheme: DEFAULT_STATS_THEME_ID,
+  githubStats: null,
   typing: {
     lines: "",
     font: "Fira Code",
@@ -387,124 +412,10 @@ export const seedProfile: Profile = {
   badgeStyle: "for-the-badge",
   socials: {},
   projects: [],
-  addons: { stats: true, langs: true, streak: true, blog: "none", blogHandle: "" },
-  statsTheme: statsLayoutById(DEFAULT_STATS_LAYOUT_ID).widgetTheme,
+  addons: { blog: "none", blogHandle: "", stats: true, langs: true, streak: true, statsOverview: true, contributionGraph: true },
   support: { bmc: "", kofi: "", chai: "", sponsors: false },
   sections: ALL_SECTIONS(["trophies", "graph", "blog", "support", "projects"]),
   custom: {},
-};
-
-export const PRESETS: Record<string, Profile> = {
-  Minimal: {
-    ...seedProfile,
-    bio: "",
-    work: { ...emptyWork, working: "something new" },
-    skills: ["TypeScript", "React", "Node.js"],
-    techDisplay: "compact",
-    badgeStyle: "flat-square",
-    socials: { GitHub: "", Email: "" },
-    addons: { ...seedProfile.addons, langs: false, streak: false },
-    statsTheme: "transparent",
-    sections: ALL_SECTIONS([
-      "typing",
-      "visitors",
-      "trophies",
-      "graph",
-      "blog",
-      "support",
-      "projects",
-      "work",
-    ]),
-  },
-  Professional: {
-    ...seedProfile,
-    techDisplay: "badges",
-    badgeStyle: "flat",
-    statsTheme: "github_dark",
-    sections: ALL_SECTIONS(["typing", "trophies", "graph", "blog", "support"]),
-  },
-  "Animated Developer": {
-    ...seedProfile,
-    bannerUrl:
-      "https://capsule-render.vercel.app/api?type=waving&color=0:8B5CF6,100:22D3EE&height=160&section=header&text=Hello%20World&fontColor=ffffff&animation=fadeIn",
-    typing: { ...seedProfile.typing, font: "Press Start 2P", size: 18, color: "8B5CF6" },
-    techDisplay: "icons",
-    statsTheme: "radical",
-    sections: ALL_SECTIONS(["blog", "support"]),
-  },
-  "AI Engineer": {
-    ...seedProfile,
-    title: "AI / ML Engineer",
-    bio: "Training models, building data pipelines and shipping AI features to production.",
-    typing: { ...seedProfile.typing, lines: "AI / ML Engineer\nLLMs · RAG · MLOps" },
-    work: {
-      ...emptyWork,
-      working: "LLM-powered search",
-      learning: "reinforcement learning",
-      askMe: "PyTorch, RAG, MLOps",
-    },
-    skills: [
-      "Python",
-      "PyTorch",
-      "TensorFlow",
-      "scikit-learn",
-      "Pandas",
-      "NumPy",
-      "Hugging Face",
-      "LangChain",
-      "Jupyter",
-      "Docker",
-    ],
-    techDisplay: "icons",
-    statsTheme: "dracula",
-    sections: ALL_SECTIONS(["trophies", "blog", "support"]),
-  },
-  Cybersecurity: {
-    ...seedProfile,
-    title: "Security Engineer",
-    bio: "Pentesting, CTFs and hardening systems. Breaking things so others can't.",
-    typing: {
-      ...seedProfile.typing,
-      lines: "> whoami\nSecurity Engineer\nCTF player · Bug hunter",
-      font: "JetBrains Mono",
-      color: "9FEF00",
-      center: false,
-    },
-    work: { ...emptyWork, learning: "malware analysis", askMe: "web app security, OWASP Top 10" },
-    skills: [
-      "Python",
-      "Bash",
-      "Kali Linux",
-      "Wireshark",
-      "Metasploit",
-      "Burp Suite",
-      "OWASP",
-      "Linux",
-      "Docker",
-    ],
-    techDisplay: "badges",
-    socials: { GitHub: seedProfile.username, TryHackMe: "", "Hack The Box": "" },
-    statsTheme: "gruvbox",
-    sections: ALL_SECTIONS(["trophies", "blog", "support", "projects"]),
-  },
-  "Student Portfolio": {
-    ...seedProfile,
-    title: "Computer Science Student",
-    bio: "Learning in public. Building projects, contributing to open source and looking for internships.",
-    typing: { ...seedProfile.typing, lines: "CS Student\nOpen to internships\nAlways learning" },
-    work: {
-      ...emptyWork,
-      learning: "Data Structures & Algorithms",
-      collab: "beginner-friendly open source",
-    },
-    skills: ["C", "C++", "Java", "Python", "JavaScript", "React", "Git", "GitHub"],
-    techDisplay: "icons",
-    socials: { GitHub: "", LinkedIn: "", LeetCode: "" },
-    projects: [
-      { name: "My first project", url: "", description: "Describe a project you're proud of" },
-    ],
-    sections: ALL_SECTIONS(["trophies", "blog", "support"]),
-  },
 };
 
 // ---------- Safety helpers ----------
@@ -543,6 +454,13 @@ const hexOk = (h: string) => (/^[0-9a-f]{6}$/i.test(h) ? h.toUpperCase() : "22D3
 const validBadgeStyle = (style: string): BadgeStyle =>
   BADGE_STYLES.includes(style as BadgeStyle) ? (style as BadgeStyle) : "for-the-badge";
 const validHandle = (value: string) => (/^[a-z\d][a-z\d._-]{0,79}$/i.test(value) ? value : "");
+const hexToRgb = (hex: string): [number, number, number] => {
+  const h = hex.replace(/^#/, "").toUpperCase();
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return [r, g, b];
+};
 
 // ---------- URL builders ----------
 const badge = (label: string, color: string, logo: string, style: BadgeStyle) =>
@@ -559,12 +477,13 @@ const relativeLuminance = (hex: string) => {
   });
   return 0.2126 * channels[0]! + 0.7152 * channels[1]! + 0.0722 * channels[2]!;
 };
-/** Branded, contrast-safe image assets stay legible in GitHub's light and dark themes. */
+/** Clear, branded icons for skill chips — Simple Icons preferred, DevIcons fallback. */
 export const skillIconUrl = (t: string) => {
   const s = SKILL_INDEX[t];
   if (!s) return "";
-  const logoColor = relativeLuminance(s[2]) > 0.179 ? "111827" : "FFFFFF";
-  return `https://img.shields.io/badge/%20-${s[2]}?style=for-the-badge&logo=${encodeURIComponent(s[1])}&logoColor=${logoColor}`;
+  // Simple Icons URL (clear, branded SVG): https://simpleicons.org/
+  const slug = s[1];
+  return `https://cdn.simpleicons.org/${slug}`;
 };
 export const socialBadgeUrl = (p: string, style: BadgeStyle = "for-the-badge") => {
   const m = SOCIAL_META[p];
@@ -575,25 +494,15 @@ const u = (p: Profile) => {
   const username = p.username.trim();
   return /^[a-z\d](?:[a-z\d-]{0,38})$/i.test(username) ? enc(username) : "";
 };
-export const statsUrl = (p: Profile) =>
-  u(p)
-    ? `https://github-readme-stats.vercel.app/api?username=${u(p)}&show_icons=true&theme=${statsLayoutById(p.statsLayout).widgetTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`
-    : "";
-export const langsUrl = (p: Profile) =>
-  u(p)
-    ? `https://github-readme-stats.vercel.app/api/top-langs/?username=${u(p)}&layout=${statsLayoutById(p.statsLayout).langsLayout}&theme=${statsLayoutById(p.statsLayout).widgetTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`
-    : "";
-export const streakUrl = (p: Profile) =>
-  u(p)
-    ? `https://streak-stats.demolab.com?user=${u(p)}&theme=${statsLayoutById(p.statsLayout).streakTheme}&hide_border=${statsLayoutById(p.statsLayout).hideBorder}`
-    : "";
 export const trophyUrl = (p: Profile) => trophyCardUrl(p);
 export const visitorsUrl = (p: Profile) =>
   u(p)
     ? `https://komarev.com/ghpvc/?username=${u(p)}&label=Profile%20views&color=${resolvedAccent(p)}&style=flat`
     : "";
-export const graphUrl = (p: Profile) => graphCardUrl(p);
-export const pinUrl = (p: Profile, owner: string, repo: string) => pinCardUrl(p, owner, repo);
+export const graphUrl = (p: Profile): string =>
+  u(p) ? `https://ghchart.rshah.org/${resolvedAccent(p)}/${u(p)}` : "";
+export const pinUrl = (p: Profile, owner: string, repo: string): string =>
+  `https://github-readme-stats.vercel.app/api/pin/?username=${enc(owner)}&repo=${enc(repo)}&theme=default&hide_border=true`;
 export const typingUrl = (p: Profile) => {
   const lines = p.typing.lines
     .split("\n")
@@ -606,6 +515,151 @@ export const typingUrl = (p: Profile) => {
   const size = Math.min(40, Math.max(12, Number(p.typing.size) || 22));
   return `https://readme-typing-svg.demolab.com?font=${encodeURIComponent(font).replace(/%20/g, "+")}&weight=600&size=${size}&pause=1000&color=${hexOk(p.typing.color)}&center=${p.typing.center}&vCenter=true&width=600&lines=${lines.map(encodeURIComponent).join(";")}`;
 };
+
+// ---------- Stats section renderer ----------
+
+/** Render the GitHub Stats section as Markdown lines, based on the selected stats theme. */
+export function renderStatsSection(p: Profile): string[] {
+  const { stats, langs, streak } = p.addons;
+  const data = p.githubStats;
+  const username = u(p);
+  if (!username || !data) return [];
+
+  const theme = statsThemeById(p.statsTheme);
+  const statsImg = stats ? imgTag(statsCardUrl(p), "GitHub stats") : "";
+  const langsImg = langs ? imgTag(langsCardUrl(p), "Top languages") : "";
+  const streakImg = streak ? imgTag(streakUrl(p), "GitHub streak") : "";
+  const graphImg = contributionsGraphUrl(p)
+    ? imgTag(contributionsGraphUrl(p), "Contribution graph", "100%")
+    : "";
+  const badges = stats
+    ? [
+        imgTag(metricBadge(p, "public_repos", "Repos", theme.accent), "public repositories"),
+        imgTag(metricBadge(p, "followers", "Followers", theme.accent), "followers"),
+        imgTag(metricBadge(p, "following", "Following", "22D3EE"), "following"),
+      ].join(" ")
+    : "";
+
+  const out: string[] = [];
+  const addTitle = (t: string) => {
+    if (!t) return;
+    out.push(`## ${t}`, "");
+  };
+  const addBadges = () => {
+    if (badges) out.push(`<p align="left">${badges}</p>`, "");
+  };
+
+  switch (theme.id) {
+    case "command-center":
+      out.push("## GitHub Activity", "");
+      addBadges();
+      out.push(...table([[statsImg, langsImg].filter(Boolean)]));
+      if (streakImg) out.push("", `<p align="left">${streakImg}</p>`);
+      break;
+    case "terminal-analytics":
+      out.push("## GITHUB_ANALYTICS.exe", "");
+      out.push(`<p align="left"><code>// building. learning. contributing...</code></p>`, "");
+      out.push(`<pre><code>Public repos: ${data.repos.length}</code></pre>`, "");
+      out.push(`<pre><code>Total stars: ${data.totalStars}</code></pre>`, "");
+      out.push(`<pre><code>Followers: ${username ? data.totalStars : "N/A"}</code></pre>`, "");
+      out.push(`<pre><code>Languages: ${data.languages.join(", ") || "—"}</code></pre>`, "");
+      break;
+    case "contribution-heatmap":
+      out.push("## Contributions", "");
+      out.push(`<p align="center">${graphImg}</p>`, "");
+      out.push(...table([[statsImg, langsImg].filter(Boolean)]));
+      if (streakImg) out.push("", `<p align="center">${streakImg}</p>`);
+      break;
+    case "neon-pulse":
+      out.push("## GitHub Stats", "");
+      out.push(`<p align="center">${badges}</p>`, "");
+      out.push(
+        `<table><tr><td valign="top">${statsImg}</td><td valign="top">${langsImg}</td></tr></table>`,
+        "",
+      );
+      out.push(`<table><tr><td valign="top">${streakImg}</td></tr></table>`);
+      break;
+    case "minimal-editorial":
+      out.push("## GitHub Statistics", "");
+      addBadges();
+      out.push(`<p align="center">${statsImg}</p>`, "");
+      out.push(
+        `<table><tr><td valign="top">${langsImg}</td><td valign="top">${streakImg}</td></tr></table>`,
+      );
+      break;
+    case "glass-dashboard":
+      out.push("## GitHub Overview", "");
+      out.push(`<table><tr><td valign="top">${statsImg}</td></tr></table>`, "");
+      out.push(
+        `<table><tr><td valign="top">${langsImg}</td><td valign="top">${streakImg}</td></tr></table>`,
+      );
+      break;
+    case "language-spotlight":
+      out.push("## Most Used Languages", "");
+      out.push(`<p align="center">${langsImg}</p>`, "");
+      out.push(
+        `<table><tr><td valign="top">${statsImg}</td><td valign="top">${streakImg}</td></tr></table>`,
+      );
+      break;
+    case "oss-impact":
+      out.push("## Open Source Impact", "");
+      addBadges();
+      out.push(
+        `<table><tr><td valign="top">${statsImg}</td><td valign="top">${langsImg}</td></tr></table>`,
+        "",
+      );
+      if (streakImg) out.push("", `<p align="center">${streakImg}</p>`);
+      break;
+    case "compact-strip":
+      out.push("## Compact Metrics", "");
+      if (badges) out.push(`<p align="center">${badges}</p>`);
+      if (streakImg) out.push(`<p align="center">${streakImg}</p>`);
+      break;
+    case "retro-pixel":
+      out.push("## [ GITHUB STATS ]", "");
+      out.push(`<p align="left"><code>&gt; live data · never guessed</code></p>`, "");
+      out.push(`<table><tr><td valign="top">${streakImg}</td></tr></table>`, "");
+      out.push(
+        `<table><tr><td valign="top">${statsImg}</td><td valign="top">${langsImg}</td></tr></table>`,
+      );
+      break;
+    default:
+      out.push("## GitHub Stats", "");
+      addBadges();
+      out.push(...table([[statsImg, langsImg].filter(Boolean)]));
+      if (streakImg) out.push("", `<p align="left">${streakImg}</p>`);
+      break;
+  }
+  return out.filter((line, i, arr) => !(line === "" && arr[i - 1] === ""));
+}
+
+/** Build an img tag from a URL, or empty string if URL is blank. */
+function imgTag(src: string, alt: string, width?: string): string {
+  if (!src) return "";
+  return width
+    ? `<img src="${src}" alt="${alt}" width="${width}" />`
+    : `<img src="${src}" alt="${alt}" />`;
+}
+
+/** Build a table row pair from arrays of cells. */
+function table(rows: string[][]): string[] {
+  const html: string[] = [];
+  for (const row of rows) {
+    if (!row.some(Boolean)) continue;
+    html.push(`<tr>` + row.map((c) => `<td valign="top">${c}</td>`).join("") + `</tr>`);
+  }
+  if (!html.length) return [];
+  return ["<table>", ...html, "</table>"];
+}
+
+/** Build a Shields.io metric badge URL. */
+function metricBadge(p: Profile, query: string, label: string, color: string): string {
+  if (!u(p)) return "";
+  const endpoint = encodeURIComponent(`https://api.github.com/users/${p.username.trim()}`);
+  return `https://img.shields.io/badge/dynamic/json?url=${endpoint}&query=${encodeURIComponent(
+    query,
+  )}&label=${encodeURIComponent(label)}&style=for-the-badge&color=${hexOk(color)}&logo=github&logoColor=white`;
+}
 
 const mdLink = (text: string, href: string) => {
   const h = safeUrl(href);
@@ -675,10 +729,10 @@ function renderSection(p: Profile, id: string): string[] {
           out.push(`  <img src="${skillBadgeUrl(t, p.badgeStyle)}" alt="${esc(t)}" />`),
         );
       } else {
-        const size = p.techDisplay === "icons" ? 32 : 24;
+        const size = p.techDisplay === "icons" ? 48 : 24;
         skills.forEach((t) =>
           out.push(
-            `  <img src="${skillIconUrl(t)}" alt="${esc(t)}" title="${esc(t)}" height="${size}" />&nbsp;`,
+            `  <img src="${skillIconUrl(t)}" alt="${esc(t)}" title="${esc(t)}" height="${size}" width="${size}" />`,
           ),
         );
       }
@@ -689,24 +743,17 @@ function renderSection(p: Profile, id: string): string[] {
       const list = p.projects.filter((x) => x.name.trim());
       if (!list.length) break;
       out.push("## Featured Projects", "");
-      const pins = list.map((x) => ({ x, gh: ghRepo(x.url) }));
-      const cards = pins.filter((q) => q.gh);
-      if (cards.length) {
-        out.push(`<p align="left">`);
-        cards.forEach(({ x, gh }) =>
-          out.push(
-            `  <a href="${safeUrl(x.url)}"><img src="${pinUrl(p, gh!.owner, gh!.repo)}" alt="${esc(x.name)}" /></a>`,
-          ),
+      
+      // Render all projects with gradient boxes
+      list.forEach((x) => {
+        const gradStart = x.gradientStart || "8B5CF6";
+        const gradEnd = x.gradientEnd || "22D3EE";
+        const rgb1 = hexToRgb(gradStart);
+        const rgb2 = hexToRgb(gradEnd);
+        out.push(
+          `<div class="project-card" style="background: linear-gradient(135deg, #${gradStart}, #${gradEnd}); background-size: 200% 200%; padding: 2px; border-radius: 10px; margin: 1rem 0; animation: gradient-shift 3s ease infinite;"><div style="background: #0d1117; padding: 1.5rem; border-radius: 8px;"><a href="${safeUrl(x.url)}" style="text-decoration: none; color: inherit;"><h3 style="margin: 0 0 0.5rem; background: linear-gradient(135deg, #${gradStart}, #${gradEnd}); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 0 15px rgba(${rgb1[0]}, ${rgb1[1]}, ${rgb1[2]}, 0.6)) drop-shadow(0 0 30px rgba(${rgb2[0]}, ${rgb2[1]}, ${rgb2[2]}, 0.4)); font-weight: 700; font-size: 1.25rem; animation: text-glow 2s ease-in-out infinite;">${esc(x.name)}</h3>${x.description ? `<p style="margin: 0; color: #8b949e; font-size: 0.9rem; line-height: 1.5;">${esc(x.description)}</p>` : ""}</a></div></div>`,
         );
-        out.push(`</p>`, "");
-      }
-      pins
-        .filter((q) => !q.gh)
-        .forEach(({ x }) =>
-          out.push(
-            `- ${mdLink(x.name, x.url).replace(/^\*\*(.*)\*\*$/, "**$1**")}${x.description ? ` — ${esc(x.description)}` : ""}`,
-          ),
-        );
+      });
       break;
     }
     case "trophies":
@@ -844,7 +891,10 @@ export function parseConfig(raw: unknown): Profile {
   const custom: Record<string, CustomSection> = {};
   for (const id of Object.keys(customInput).slice(0, 20)) {
     const value = source(customInput[id]);
-    custom[id] = { title: text(value["title"], "New section", 80), body: text(value["body"], "", 2000) };
+    custom[id] = {
+      title: text(value["title"], "New section", 80),
+      body: text(value["body"], "", 2000),
+    };
   }
   const validIds = new Set<string>([...Object.keys(BUILTIN_SECTIONS), ...Object.keys(custom)]);
   const sectionInput = Array.isArray(input["sections"]) ? input["sections"] : [];
@@ -878,7 +928,9 @@ export function parseConfig(raw: unknown): Profile {
         .slice(0, 30)
     : [];
   const blog =
-    addonsInput["blog"] === "devto" || addonsInput["blog"] === "medium" || addonsInput["blog"] === "rss"
+    addonsInput["blog"] === "devto" ||
+    addonsInput["blog"] === "medium" ||
+    addonsInput["blog"] === "rss"
       ? addonsInput["blog"]
       : "none";
   return {
@@ -893,14 +945,14 @@ export function parseConfig(raw: unknown): Profile {
     appearanceId: appearanceById(
       typeof input["appearanceId"] === "string" ? input["appearanceId"] : seedProfile.appearanceId,
     ).id,
-    statsLayout: statsLayoutById(
-      typeof input["statsLayout"] === "string" ? input["statsLayout"] : seedProfile.statsLayout,
-    ).id,
     accentColor: hexOk(
       typeof input["accentColor"] === "string" ? input["accentColor"] : seedProfile.accentColor,
     ),
     customBanner: input["customBanner"] === true,
     bannerMotion: input["bannerMotion"] === "none" ? "none" : "svg-anim",
+    statsTheme: statsThemeById(
+      typeof input["statsTheme"] === "string" ? input["statsTheme"] : seedProfile.statsTheme,
+    ).id,
     typing: {
       lines: text(typingInput["lines"], seedProfile.typing.lines, 1000),
       font: TYPING_FONTS.includes(typingInput["font"] as TypingFont)
@@ -919,19 +971,19 @@ export function parseConfig(raw: unknown): Profile {
     socials,
     projects,
     addons: {
+      blog,
+      blogHandle: text(addonsInput["blogHandle"], "", 500),
       stats: addonsInput["stats"] !== false,
       langs: addonsInput["langs"] !== false,
       streak: addonsInput["streak"] !== false,
-      blog,
-      blogHandle: text(addonsInput["blogHandle"], "", 500),
     },
-    statsTheme: text(input["statsTheme"], seedProfile.statsTheme, 40),
     support: {
       bmc: validHandle(supportInput["bmc"]),
       kofi: validHandle(supportInput["kofi"]),
       chai: safeChaiUrl(text(supportInput["chai"], "", 500)),
       sponsors: supportInput["sponsors"] === true,
     },
+    githubStats: null,
     techDisplay: TECH_DISPLAYS.includes(input["techDisplay"] as TechDisplay)
       ? (input["techDisplay"] as TechDisplay)
       : seedProfile.techDisplay,

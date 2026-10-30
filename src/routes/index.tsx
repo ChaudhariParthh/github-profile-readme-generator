@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Copy, Palette, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,7 +34,7 @@ const steps = [
   {
     icon: Palette,
     title: "Pick theme & badges",
-    text: "Choose a preset, tech stack badges, socials and stats cards.",
+    text: "Choose tech stack badges, socials and stats cards.",
   },
   {
     icon: Copy,
@@ -92,9 +93,6 @@ function Index() {
                   Open Builder <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
-                <a href="#themes">Browse themes</a>
-              </Button>
             </div>
           </div>
           <div className="relative">
@@ -120,36 +118,143 @@ function Index() {
         </div>
       </section>
 
-      <section id="themes" className="mx-auto max-w-7xl px-4 pb-24 md:px-6">
-        <p className="font-mono text-sm text-accent">// presets</p>
-        <h2 className="mt-2 text-3xl font-bold">Start from a theme</h2>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {themes.map((t) => (
-            <Link
-              key={t.name}
-              to="/builder"
-              className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary"
-            >
-              <div className={`h-28 rounded-lg bg-gradient-to-br ${t.swatch} p-4`}>
-                <div className="h-2 w-1/2 rounded bg-background/60" />
-                <div className="mt-2 h-2 w-1/3 rounded bg-background/40" />
-                <div className="mt-6 flex gap-1.5">
-                  {[0, 1, 2, 3].map((i) => (
-                    <div key={i} className="h-4 w-10 rounded bg-background/50" />
-                  ))}
-                </div>
+      <footer className="border-t border-border bg-background pt-12 pb-20">
+        <div className="mx-auto max-w-7xl px-4 md:px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+            <div className="lg:col-span-4 flex flex-col items-center text-center lg:text-left lg:items-start">
+              <BrandLogo />
+              <p className="mt-6 max-w-[340px] text-sm text-muted-foreground leading-relaxed lg:mt-8">
+                Build a polished profile README with live preview, tech badges, stats cards and
+                socials — then copy the Markdown.
+              </p>
+              <div className="mt-8 flex items-center gap-2">
+                <Button asChild size="sm" className="bg-gradient-brand shadow-glow hover:opacity-90">
+                  <Link to="/builder">
+                    Open Builder <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
               </div>
-              <div className="mt-4 flex items-center justify-between">
-                <h3 className="font-semibold">{t.name}</h3>
-                <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">{t.desc}</p>
-            </Link>
-          ))}
+            </div>
+
+            <div className="lg:col-span-2 flex flex-col gap-2 lg:pt-2">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Quick Links
+              </h3>
+              <ul className="flex flex-col gap-3 lg:mt-2">
+                <li>
+                  <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
+                    Generator
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
+                    Addons
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
+                    Support
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div className="lg:col-span-3 flex flex-col gap-2 lg:pt-2">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Resources
+              </h3>
+              <ul className="flex flex-col gap-3 lg:mt-2">
+                <li>
+                  <a
+                    href="https://github.com/Parth-CyberParth/github-profile-readme-generator"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    GitHub Repository
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/Parth-CyberParth/github-profile-readme-generator/issues"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    Report Issues
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.apache.org/licenses/LICENSE-2.0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    License
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="lg:col-span-3 flex flex-col gap-2 lg:pt-2">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Connect
+              </h3>
+              <ul className="flex flex-col gap-3 lg:mt-2">
+                <li>
+                  <a
+                    href="https://github.com/Parth-CyberParth"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    GitHub
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/parth-chaudhari/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    LinkedIn
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-border pt-8">
+            <p className="mx-auto max-w-[640px] text-center text-sm text-muted-foreground">
+              © 2026 GitProfile Studio. Made with{" "}
+              <span className="text-foreground">❤️</span> by{" "}
+              <a
+                href="https://github.com/Parth-CyberParth"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:text-accent/90"
+              >
+                Parth Chaudhari
+              </a>{" "}
+              · Open source under the{" "}
+              <a
+                href="https://www.apache.org/licenses/LICENSE-2.0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:text-accent/90"
+              >
+                Apache License 2.0
+              </a>
+            </p>
+          </div>
         </div>
-      </section>
-      <footer className="border-t border-border py-8 text-center font-mono text-xs text-muted-foreground">
-        GitProfile Studio · built for developers
       </footer>
     </div>
   );

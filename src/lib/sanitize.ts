@@ -54,6 +54,8 @@ const ALLOWED_ATTRS = new Set([
   "valign",
   "colspan",
   "rowspan",
+  "style",
+  "class",
 ]);
 
 /** Browser-only allow-list sanitizer: keeps GitHub-README-safe tags, strips every event handler and unsafe URL. */

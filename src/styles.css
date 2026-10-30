@@ -214,8 +214,15 @@
 .readme p img {
   display: inline-block;
   margin: 2px;
-  max-width: 100%;
   vertical-align: middle;
+}
+.readme p img:not([height="24"]) {
+  max-width: 100%;
+}
+/* Compact mode icons - ensure they stay at correct size */
+.readme p img[height="24"] {
+  max-width: 24px;
+  max-height: 24px;
 }
 .readme img[alt="banner"] {
   display: block;
@@ -273,4 +280,39 @@
   font-size: 0.75rem;
   color: var(--muted-foreground);
   font-family: var(--font-mono, monospace);
+}
+
+/* Gradient animated project cards */
+.project-card {
+  animation: gradient-shift 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.project-card h3 {
+  animation: text-glow 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px currentColor);
+}
+
+@keyframes text-glow {
+  0% {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+  }
+  100% {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+  }
 }

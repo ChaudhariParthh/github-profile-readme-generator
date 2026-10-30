@@ -21,10 +21,7 @@ import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ReadmePreview } from "@/components/ReadmePreview";
 import { SkillPicker } from "@/components/builder/SkillPicker";
-import {
-  BackgroundGallery,
-  StatsGallery,
-} from "@/components/builder/ThemeGalleries";
+import { BackgroundGallery, StatsGallery } from "@/components/builder/ThemeGalleries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -52,7 +49,6 @@ import {
 import {
   BADGE_STYLES,
   BUILTIN_SECTIONS,
-  PRESETS,
   SOCIAL_META,
   TECH_DISPLAYS,
   TYPING_FONTS,
@@ -66,12 +62,10 @@ import {
   type Profile,
   type Work,
 } from "@/lib/profile";
-import {
-  applyAppearance,
-  applyStatsLayout,
-  appearanceById,
-} from "@/lib/appearance";
-import { applyTemplate } from "@/lib/templates";
+import { applyAppearance, applyStatsTheme, appearanceById } from "@/lib/appearance";
+import { renderStatsSection } from "@/lib/profile";
+import { mdToHtml } from "@/components/ReadmePreview";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { fetchGitHubProfile } from "@/lib/github";
 import { moveItem } from "@/lib/reorder";
 
@@ -88,7 +82,7 @@ export const Route = createFileRoute("/builder")({
       {
         property: "og:description",
         content:
-          "Live GitHub README builder with tech icons, presets, section manager and Markdown export.",
+          "Live GitHub README builder with tech icons, section manager and Markdown export.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -148,7 +142,13 @@ async function prepareBannerImage(file: File): Promise<string> {
   const scale = Math.max(width / (image.naturalWidth || 1), height / (image.naturalHeight || 1));
   const drawnWidth = image.naturalWidth * scale;
   const drawnHeight = image.naturalHeight * scale;
-  context.drawImage(image, (width - drawnWidth) / 2, (height - drawnHeight) / 2, drawnWidth, drawnHeight);
+  context.drawImage(
+    image,
+    (width - drawnWidth) / 2,
+    (height - drawnHeight) / 2,
+    drawnWidth,
+    drawnHeight,
+  );
   return canvas.toDataURL("image/jpeg", 0.88);
 }
 
@@ -236,7 +236,8 @@ function Builder() {
   };
   const importBannerImage = async (file: File) => {
     try {
-      const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|gif|webp|svg)$/i.test(file.name);
+      const isImage =
+        file.type.startsWith("image/") || /\.(png|jpe?g|gif|webp|svg)$/i.test(file.name);
       if (!isImage || file.size > 10 * 1024 * 1024) {
         throw new Error("Choose an image (PNG, JPG, JPEG, WebP, GIF) smaller than 10 MB.");
       }
@@ -262,7 +263,17 @@ function Builder() {
   const importGitHub = async (username?: string) => {
     setGhLoading(true);
     try {
-      const { user, top } = await fetchGitHubProfile(username ?? p.username);
+      const { user, top, languages, warning } = await fetchGitHubProfile(username ?? p.username);
+      const repos = top.map((r) => ({
+        name: r.name,
+        url: r.html_url,
+        description: r.description ?? null,
+        stars: r.stargazers_count,
+        forks: r.forks_count,
+        language: r.language,
+      }));
+      const totalStars = top.reduce((sum, r) => sum + r.stargazers_count, 0);
+      const totalForks = top.reduce((sum, r) => sum + r.forks_count, 0);
       setP((s) => ({
         ...s,
         username: user.login,
@@ -446,27 +457,10 @@ function Builder() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">
-                    Presets
+                    Config
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  {Object.keys(PRESETS).map((name) => (
-                    <DropdownMenuItem
-                      key={name}
-                      onClick={() => {
-                        setP((s) => ({
-                          ...(PRESETS[name] ?? seedProfile),
-                          name: s.name,
-                          username: s.username,
-                          location: s.location,
-                        }));
-                        toast(`Applied "${name}" preset`);
-                      }}
-                    >
-                      {name}
-                    </DropdownMenuItem>
-                  ))}
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => fileRef.current?.click()}>
                     <Upload className="h-4 w-4" /> Restore config
                   </DropdownMenuItem>
@@ -628,7 +622,11 @@ function Builder() {
                       />
                     )}
                     <div className="flex flex-wrap gap-2">
-                      <Button size="sm" variant="secondary" onClick={() => bannerFileRef.current?.click()}>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => bannerFileRef.current?.click()}
+                      >
                         <Upload className="h-4 w-4" /> Choose photo
                       </Button>
                       {safeUrl(p.bannerUrl) && (
@@ -819,7 +817,7 @@ function Builder() {
                     </Field>
                   )}
                 </div>
-                <SkillPicker value={p.skills} onChange={(v) => set("skills", v)} />
+                <SkillPicker value={p.skills} onChange={(v) => set("skills", v)} techDisplay={p.techDisplay} />
               </>
             )}
 
@@ -890,6 +888,78 @@ function Builder() {
                         )
                       }
                     />
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <Field label="Gradient start color">
+                        <div className="flex gap-2">
+                          <input
+                            type="color"
+                            aria-label="Gradient start color"
+                            value={`#${/^[0-9a-f]{6}$/i.test(pr.gradientStart || "") ? pr.gradientStart : "8B5CF6"}`}
+                            onChange={(e) =>
+                              set(
+                                "projects",
+                                p.projects.map((x, j) =>
+                                  j === i
+                                    ? { ...x, gradientStart: e.target.value.slice(1).toUpperCase() }
+                                    : x,
+                                ),
+                              )
+                            }
+                            className="h-9 w-12 cursor-pointer rounded border border-border bg-transparent"
+                          />
+                          <Input
+                            className="font-mono"
+                            value={pr.gradientStart || "8B5CF6"}
+                            maxLength={6}
+                            onChange={(e) =>
+                              set(
+                                "projects",
+                                p.projects.map((x, j) =>
+                                  j === i
+                                    ? { ...x, gradientStart: e.target.value.replace(/[^0-9a-f]/gi, "") }
+                                    : x,
+                                ),
+                              )
+                            }
+                          />
+                        </div>
+                      </Field>
+                      <Field label="Gradient end color">
+                        <div className="flex gap-2">
+                          <input
+                            type="color"
+                            aria-label="Gradient end color"
+                            value={`#${/^[0-9a-f]{6}$/i.test(pr.gradientEnd || "") ? pr.gradientEnd : "22D3EE"}`}
+                            onChange={(e) =>
+                              set(
+                                "projects",
+                                p.projects.map((x, j) =>
+                                  j === i
+                                    ? { ...x, gradientEnd: e.target.value.slice(1).toUpperCase() }
+                                    : x,
+                                ),
+                              )
+                            }
+                            className="h-9 w-12 cursor-pointer rounded border border-border bg-transparent"
+                          />
+                          <Input
+                            className="font-mono"
+                            value={pr.gradientEnd || "22D3EE"}
+                            maxLength={6}
+                            onChange={(e) =>
+                              set(
+                                "projects",
+                                p.projects.map((x, j) =>
+                                  j === i
+                                    ? { ...x, gradientEnd: e.target.value.replace(/[^0-9a-f]/gi, "") }
+                                    : x,
+                                ),
+                              )
+                            }
+                          />
+                        </div>
+                      </Field>
+                    </div>
                   </div>
                 ))}
                 <Button
@@ -897,7 +967,7 @@ function Builder() {
                   variant="secondary"
                   disabled={p.projects.length >= 8}
                   onClick={() =>
-                    set("projects", [...p.projects, { name: "", url: "", description: "" }])
+                    set("projects", [...p.projects, { name: "", url: "", description: "", gradientStart: "8B5CF6", gradientEnd: "22D3EE" }])
                   }
                 >
                   <Plus className="h-4 w-4" /> Add project
@@ -905,35 +975,61 @@ function Builder() {
               </div>
             )}
 
-            {(active === "stats" || active === "trophies" || active === "graph") && (
+            {(active === "trophies" || active === "graph") && (
               <>
-                {active === "stats" && (
-                  <>
-                    <Toggle
-                      label="Stats card"
-                      checked={p.addons.stats}
-                      onChange={(v) => setAddon("stats", v)}
-                    />
-                    <Toggle
-                      label="Top languages"
-                      checked={p.addons.langs}
-                      onChange={(v) => setAddon("langs", v)}
-                    />
-                    <Toggle
-                      label="Contribution streak"
-                      checked={p.addons.streak}
-                      onChange={(v) => setAddon("streak", v)}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Stats design is independent of the background theme. Pick a layout below â€” it
-                      changes the generated Markdown, not just this editor.
-                    </p>
-                  </>
-                )}
                 <p className="text-xs text-muted-foreground">
                   Widgets are live images from public GitHub stats services. If a service is busy,
                   the preview shows a placeholder. Numbers are never invented.
                 </p>
+              </>
+            )}
+
+            {active === "stats" && (
+              <>
+                <div className="space-y-3">
+                  <p className="text-xs text-muted-foreground">
+                    Select the widgets you want to show in your README stats section:
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <Switch
+                      checked={p.addons.stats}
+                      onCheckedChange={(checked) => setAddon("stats", checked)}
+                    />
+                    <label className="text-sm">Stats card</label>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Switch
+                      checked={p.addons.langs}
+                      onCheckedChange={(checked) => setAddon("langs", checked)}
+                    />
+                    <label className="text-sm">Top languages</label>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Switch
+                      checked={p.addons.streak}
+                      onCheckedChange={(checked) => setAddon("streak", checked)}
+                    />
+                    <label className="text-sm">Contribution streak</label>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Stats design is independent of the background theme. Pick a layout below — it
+                    changes the generated Markdown, not just this editor.
+                  </p>
+                </div>
+                <div className="rounded-xl border border-border bg-card p-4 overflow-auto max-h-[200px]">
+                  {(() => {
+                    const lines = renderStatsSection(p);
+                    if (lines.length === 0) {
+                      return (
+                        <p className="text-xs text-muted-foreground italic">
+                          Stats section is not enabled. Add it in the Sections tab.
+                        </p>
+                      );
+                    }
+                    const html = sanitizeHtml(mdToHtml(lines.join("\n")));
+                    return <div className="text-xs" dangerouslySetInnerHTML={{ __html: html }} />;
+                  })()}
+                </div>
               </>
             )}
 
@@ -1114,7 +1210,8 @@ function Builder() {
                   <div className="space-y-1">
                     <h3 className="text-sm font-semibold">Import from GitHub</h3>
                     <p className="text-xs text-muted-foreground">
-                      Enter your GitHub username to import your public profile bio, social links, and top repositories.
+                      Enter your GitHub username to import your public profile bio, social links,
+                      and top repositories.
                     </p>
                   </div>
                   <div className="relative max-w-sm">
@@ -1166,10 +1263,7 @@ function Builder() {
           value={p.appearanceId}
           onChange={(id) => setP((s) => applyAppearance(s, id))}
         />
-        <StatsGallery
-          value={p.statsLayout}
-          onChange={(id) => setP((s) => applyStatsLayout(s, id))}
-        />
+        <StatsGallery value={p.statsTheme} onChange={(id) => setP((s) => applyStatsTheme(s, id))} />
       </div>
 
       <BannerAdjustDialog

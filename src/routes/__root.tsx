@@ -118,7 +118,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{if(localStorage.getItem('gps-theme')==='light')document.documentElement.classList.add('light')}catch(e){}",
+              "try{const s=localStorage.getItem('gps-theme');if(s==='light'||(s!=='dark'&&window.matchMedia('(prefers-color-scheme: light)').matches))document.documentElement.classList.add('light')}catch(e){}",
           }}
         />
         <HeadContent />

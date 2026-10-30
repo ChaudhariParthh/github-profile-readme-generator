@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { Check, GripVertical, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { SKILL_CATEGORIES, skillIconUrl } from "@/lib/profile";
+import { SKILL_CATEGORIES, skillIconUrl, type TechDisplay } from "@/lib/profile";
 import { moveItem } from "@/lib/reorder";
 
 export function SkillPicker({
   value,
   onChange,
+  techDisplay = "badges",
 }: {
   value: string[];
   onChange: (v: string[]) => void;
+  techDisplay?: TechDisplay;
 }) {
   const [cat, setCat] = useState("All");
   const [query, setQuery] = useState("");
@@ -22,6 +24,13 @@ export function SkillPicker({
     .filter(([n]) => !q || n.toLowerCase().includes(q));
   const toggle = (n: string) =>
     onChange(value.includes(n) ? value.filter((x) => x !== n) : [...value, n]);
+
+  // Determine preview size based on tech display mode
+  const getPreviewSize = () => {
+    if (techDisplay === "badges") return "large";
+    if (techDisplay === "icons") return "large";
+    return "compact"; // "compact" mode uses small icons
+  };
 
   return (
     <div className="space-y-3">
@@ -56,6 +65,27 @@ export function SkillPicker({
           </div>
         </div>
       )}
+
+      {/* Preview section showing how selected skills will look in chosen display mode */}
+      {value.length > 0 && techDisplay !== "badges" && (
+        <div className="space-y-2">
+          <p className="text-xs font-semibold text-muted-foreground">
+            Preview ({techDisplay === "icons" ? "Icons" : "Compact"} mode):
+          </p>
+          <div className="rounded-md border border-border bg-secondary/30 p-3">
+            <div className="flex flex-wrap gap-2">
+              {value.map((n) => (
+                <SkillIcon
+                  key={n}
+                  name={n}
+                  size={techDisplay === "icons" ? "large" : "compact"}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-1">
         {["All", ...Object.keys(SKILL_CATEGORIES)].map((c) => (
           <button
@@ -104,21 +134,26 @@ export function SkillPicker({
   );
 }
 
-function SkillIcon({ name, size }: { name: string; size: "small" | "large" }) {
+function SkillIcon({ name, size }: { name: string; size: "small" | "large" | "compact" }) {
   const [failed, setFailed] = useState(false);
-  const compact = size === "small";
-  return failed ? (
-    <span
-      aria-hidden="true"
-      className={`inline-flex shrink-0 items-center justify-center rounded-md border border-border bg-secondary font-mono font-semibold text-muted-foreground ${compact ? "h-4 w-4 text-[7px]" : "h-7 w-7 text-[9px]"}`}
-    >
-      {name.slice(0, 2).toUpperCase()}
-    </span>
-  ) : (
+  const isSmall = size === "small";
+  const isCompact = size === "compact";
+  
+  if (failed) {
+    return (
+      <span
+        aria-hidden="true"
+        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-border bg-secondary font-mono font-semibold text-muted-foreground ${isSmall ? "h-6 w-6 text-[10px]" : isCompact ? "h-6 w-6 text-[9px]" : "h-12 w-12 text-[14px]"}`}
+      >
+        {name.slice(0, 2).toUpperCase()}
+      </span>
+    );
+  }
+  return (
     <img
       src={skillIconUrl(name)}
       alt=""
-      className={`shrink-0 rounded-md ${compact ? "h-4 w-4" : "h-7 w-7"}`}
+      className={`shrink-0 ${isSmall ? "h-6 w-6" : isCompact ? "h-6 w-6" : "h-12 w-12"}`}
       loading="lazy"
       onError={() => setFailed(true)}
     />

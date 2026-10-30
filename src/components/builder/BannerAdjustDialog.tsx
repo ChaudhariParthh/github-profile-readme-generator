@@ -55,10 +55,7 @@ export function BannerAdjustDialog({
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     // Compute base scale to cover 1600x600 canvas
-    const baseScale = Math.max(
-      CANVAS_WIDTH / img.naturalWidth,
-      CANVAS_HEIGHT / img.naturalHeight,
-    );
+    const baseScale = Math.max(CANVAS_WIDTH / img.naturalWidth, CANVAS_HEIGHT / img.naturalHeight);
     const finalScale = baseScale * zoom;
 
     const drawnWidth = img.naturalWidth * finalScale;
@@ -159,7 +156,8 @@ export function BannerAdjustDialog({
             <Move className="h-4 w-4 text-primary" /> Adjust Banner Photo
           </DialogTitle>
           <DialogDescription className="text-xs">
-            Drag the image or use the sliders to zoom and position your banner to fit GitHub&apos;s 1600 &times; 600 ratio.
+            Drag the image or use the sliders to zoom and position your banner to fit GitHub&apos;s
+            1600 &times; 600 ratio.
           </DialogDescription>
         </DialogHeader>
 
@@ -256,20 +254,10 @@ export function BannerAdjustDialog({
             <RotateCcw className="h-3.5 w-3.5" /> Reset position
           </Button>
           <div className="flex gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" size="sm" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button
-              type="button"
-              size="sm"
-              onClick={handleApply}
-              disabled={loading || !!loadError}
-            >
+            <Button type="button" size="sm" onClick={handleApply} disabled={loading || !!loadError}>
               <Check className="h-4 w-4" /> Apply & Save
             </Button>
           </div>
@@ -278,4 +266,3 @@ export function BannerAdjustDialog({
     </Dialog>
   );
 }
-

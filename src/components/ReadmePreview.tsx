@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 /** Renders the subset of Markdown our generator emits (HTML blocks, ## headings, bullets, bold, links). */
-function mdToHtml(md: string): string {
+export function mdToHtml(md: string): string {
   const inline = (s: string) =>
     s
       .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
@@ -59,7 +59,10 @@ export function ReadmePreview({
   const raw = useMemo(() => {
     const src = compact ? { ...p, sections: p.sections.filter((s) => !COMPACT_HIDE.has(s.id)) } : p;
     let md = toMarkdown(src);
-    md = md.replace(/https:\/\/raw\.githubusercontent\.com\/ChaudhariParthh\/github-profile-readme-generator\/main\/public\/banners\/([a-z-]+)\.svg/g, "/banners/$1.svg");
+    md = md.replace(
+      /https:\/\/raw\.githubusercontent\.com\/ChaudhariParthh\/github-profile-readme-generator\/main\/public\/banners\/([a-z-]+)\.svg/g,
+      "/banners/$1.svg",
+    );
     return mdToHtml(md);
   }, [p, compact]);
 

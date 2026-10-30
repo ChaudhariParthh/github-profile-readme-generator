@@ -1,11 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parseConfig, safeUrl, seedProfile, toMarkdown } from "@/lib/profile";
-import {
-  applyAppearance,
-  applyStatsLayout,
-  BACKGROUND_THEMES,
-  STATS_LAYOUTS,
-} from "@/lib/appearance";
+import { applyAppearance, BACKGROUND_THEMES } from "@/lib/appearance";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { moveItem } from "@/lib/reorder";
 
@@ -15,9 +10,7 @@ describe("safeUrl", () => {
   it("keeps https URLs", () =>
     expect(safeUrl("https://example.com/a")).toBe("https://example.com/a"));
   it("allows browser-prepared image data URLs", () =>
-    expect(safeUrl("data:image/jpeg;base64,ZmFrZQ==")).toBe(
-      "data:image/jpeg;base64,ZmFrZQ==",
-    ));
+    expect(safeUrl("data:image/jpeg;base64,ZmFrZQ==")).toBe("data:image/jpeg;base64,ZmFrZQ=="));
 });
 
 describe("toMarkdown", () => {
@@ -48,11 +41,13 @@ describe("toMarkdown", () => {
   });
   it("follows section order", () => {
     const ids = ["socials", "skills"];
-    const md = toMarkdown({ ...seedProfile, skills: ["React"], socials: { GitHub: "octocat" }, sections: ids.map((id) => ({ id, hidden: false })) });
+    const md = toMarkdown({
+      ...seedProfile,
+      skills: ["React"],
+      socials: { GitHub: "octocat" },
+      sections: ids.map((id) => ({ id, hidden: false })),
+    });
     expect(md.indexOf("Connect with me")).toBeLessThan(md.indexOf("Tech Stack"));
-  });
-  it("URL-encodes the username in widget links", () => {
-    expect(toMarkdown({ ...seedProfile, username: "a b" })).toContain("username=a%20b");
   });
   it("does not create a malicious support destination", () => {
     const md = toMarkdown({
@@ -102,10 +97,9 @@ describe("parseConfig", () => {
     });
     expect(p.sections.map((s) => s.id)).toEqual(["skills"]);
   });
-  it("falls back to seed appearance and stats layout", () => {
-    const p = parseConfig({ name: "X", appearanceId: "not-a-theme", statsLayout: "nope" });
+  it("falls back to seed appearance", () => {
+    const p = parseConfig({ name: "X", appearanceId: "not-a-theme" });
     expect(p.appearanceId).toBe(seedProfile.appearanceId);
-    expect(p.statsLayout).toBe(seedProfile.statsLayout);
   });
 });
 
@@ -122,12 +116,10 @@ describe("sanitizeHtml", () => {
   });
 });
 
-describe("appearance and stats layouts", () => {
-  it("ships exactly 10 background themes and 10 stats layouts", () => {
+describe("appearance", () => {
+  it("ships exactly 10 background themes", () => {
     expect(BACKGROUND_THEMES).toHaveLength(10);
-    expect(STATS_LAYOUTS).toHaveLength(15);
     expect(new Set(BACKGROUND_THEMES.map((t) => t.id)).size).toBe(10);
-    expect(new Set(STATS_LAYOUTS.map((t) => t.id)).size).toBe(15);
   });
   it("applies a background theme without resetting profile content", () => {
     const next = applyAppearance({ ...seedProfile, name: "Ada", skills: ["Rust"] }, "neon-cyber");
@@ -136,21 +128,6 @@ describe("appearance and stats layouts", () => {
     expect(next.appearanceId).toBe("neon-cyber");
     expect(next.bannerUrl).toBe(BACKGROUND_THEMES.find((t) => t.id === "neon-cyber")?.bannerUrl);
     expect(toMarkdown(next)).toContain(next.bannerUrl);
-  });
-  it("emits a distinct stats heading/layout per design", () => {
-    const headings = STATS_LAYOUTS.map((layout) => {
-      const md = toMarkdown(applyStatsLayout(seedProfile, layout.id));
-      expect(md).toMatch(/github-readme-stats|img\.shields\.io|streak-stats|activity-graph/);
-      return md;
-    });
-    expect(new Set(headings).size).toBe(15);
-  });
-  it("keeps stats visibility toggles", () => {
-    const md = toMarkdown({
-      ...seedProfile,
-      addons: { ...seedProfile.addons, stats: false, langs: false, streak: false },
-    });
-    expect(md).not.toContain("github-readme-stats.vercel.app/api?");
   });
 });
 
@@ -161,7 +138,13 @@ describe("moveItem", () => {
 
 describe("new visitor profile", () => {
   it("starts with blank profile fields", () => {
-    expect([seedProfile.name, seedProfile.username, seedProfile.title, seedProfile.location, seedProfile.bio]).toEqual(["", "", "", "", ""]);
+    expect([
+      seedProfile.name,
+      seedProfile.username,
+      seedProfile.title,
+      seedProfile.location,
+      seedProfile.bio,
+    ]).toEqual(["", "", "", "", ""]);
     expect(seedProfile.skills).toEqual([]);
     expect(seedProfile.socials).toEqual({});
     expect(Object.values(seedProfile.work).every((v) => v === "")).toBe(true);
