@@ -1,4 +1,4 @@
-# GitProfile Studio-Github Profile Readme Generator
+# GitProfile Studio
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -6,57 +6,62 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
 [![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-181717?style=for-the-badge&logo=github)](https://pages.github.com/)
 
-GitProfile Studio is a front-end application for creating polished GitHub profile README files. It allows users to tailor layout, typography, badges, stats, social links, and generated Markdown content in a streamlined, browser-based workflow.
+GitProfile Studio is a modern front-end application for creating polished GitHub profile README files. It gives developers a fast, visual way to design a profile that communicates skills, projects, and contact information without writing raw Markdown from scratch.
 
-## Live links
+## Table of contents
 
-- [Live Demo](https://chaudhariparthh.github.io/github-profile-readme-generator/)
-- [Lovable App](https://gitprofilestudio.lovable.app/)
-- [GitHub Repository](https://github.com/ChaudhariParthh/gitprofile-studio)
+- [Overview](#overview)
+- [Key features](#key-features)
+- [How it works](#how-it-works)
+- [Technology stack](#technology-stack)
+- [Project structure](#project-structure)
+- [Getting started](#getting-started)
+- [Deployment](#deployment)
+- [Links](#links)
 
 ## Overview
 
-GitProfile Studio is designed as a lightweight, client-side tool for generating README content without requiring a backend service. The application prioritizes a clean user experience, template-driven customization, and static deployment compatibility.
-<img width="1892" height="896" alt="image" src="https://github.com/user-attachments/assets/ef2727aa-0dc8-44f2-8747-b8dc1d768d08" />
+The project is designed for a streamlined profile-building experience. Instead of hand-crafting README sections and theme details line by line, users can configure layout, typography, badges, social links, project statistics, and generated Markdown in a single interface.
 
-## Tools used
+This app focuses on a clean experience, responsive UI, and static deployment support. It is built to run entirely on the client side, making it easy to generate and preview content without a backend service.
 
-This project was developed using a combination of modern AI-assisted design and development tools:
+## Key features
 
-- Lovable for rapid application prototyping and UI generation
-- Cursor for code implementation, editing, and refinement
-- Bolt.new for additional experimentation and development acceleration
-- Deployment and publishing were handled through the Lovable workflow, with the final project deployed to GitHub Pages
+- Configurable GitHub profile README layouts
+- Flexible theme and styling controls
+- Social links, badges, and status widgets
+- Dynamic Markdown preview panel
+- Responsive layout for desktop and browser-based usage
+- Template-driven generation for consistent output
+- Static hosting support for GitHub Pages
 
-## Features
+## How it works
 
-- GitHub profile README generation
-- Customizable banner and layout styling
-- Badge, stat, and social link configuration
-- Template-based design system
-- Markdown preview of generated output
-- Responsive browser interface
-- Static deployment support for GitHub Pages
+1. Select a profile layout or starting template.
+2. Customize branding, sections, links, and styling.
+3. Preview the generated Markdown in real time.
+4. Copy the final content into your GitHub profile repository.
+
+This workflow helps reduce iteration time while maintaining a high-quality final result.
 
 ## Technology stack
 
-The current project configuration includes:
-
-- React 19
-- TypeScript 5.8
-- Vite 8
-- Tailwind CSS 4
-- TanStack Router and TanStack Start
-- Radix UI and shadcn-style component primitives
-- Vitest for automated testing
-- ESLint and Prettier for code quality and formatting
+| Category | Technology |
+| --- | --- |
+| Frontend | React 19 |
+| Language | TypeScript 5.8 |
+| Build tooling | Vite 8 |
+| Styling | Tailwind CSS 4 |
+| UI primitives | Radix UI and shadcn-style patterns |
+| Routing | TanStack Router and TanStack Start |
+| Testing | Vitest |
+| Quality | ESLint and Prettier |
 
 ## Project structure
 
 ```bash
-gitprofile-studio/
+github-profile-readme-generator/
 ├── .github/
-├── .lovable/
 ├── public/
 ├── scripts/
 ├── src/
@@ -86,10 +91,6 @@ gitprofile-studio/
 └── public/
 ```
 
-## Application architecture
-
-The project is organized as a front-end-only application with file-based routing and static asset generation. The repository includes a dedicated GitHub Pages configuration, which is important because the app is intended to be served from a repository subpath rather than from the root domain.
-
 ## Getting started
 
 Install dependencies:
@@ -98,13 +99,13 @@ Install dependencies:
 npm install
 ```
 
-Run the development server:
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Build the app:
+Create a production build:
 
 ```bash
 npm run build
@@ -122,55 +123,26 @@ Regenerate template fixtures if needed:
 npm run templates:render
 ```
 
-## Important files
+## Deployment
 
-### package.json
-Defines the main scripts and project dependencies, including development, build, lint, format, and test commands.
-
-### vite.config.ts
-Configures the application base path for deployment. In this repository, the configured base is `/gitprofile-studio/`.
-
-### vite.config.github.ts
-Contains the GitHub Pages-friendly static build setup for the project. This file is specifically aligned with repository-hosted deployment.
-
-### tsconfig.json
-Defines the TypeScript compiler configuration and project-level settings used by the application.
-
-### vitest.config.ts
-Configures the Vitest test runner used for validation.
-
-### README.md
-Documents the project and serves as the main project overview for developers and users.
-
-## GitHub Pages deployment
-
-This repository includes configuration for deployment on GitHub Pages using a repository subfolder path.
+The project includes a GitHub Pages-friendly build configuration for static deployment.
 
 - Production base path: `/gitprofile-studio/`
 - Public deployment URL: https://chaudhariparthh.github.io/gitprofile-studio/
-- Lovable prototype URL: https://gitprofilestudio.lovable.app/
+- Lovable prototype: https://gitprofilestudio.lovable.app/
 
-The static hosting setup is designed to work correctly when the app is served from `/gitprofile-studio/`, which is required for a GitHub Pages project site.
+The repository is configured to support deployment in a subfolder environment, which is suitable for GitHub Pages hosting.
 
-## Deployment status
-
-The repository contains a real GitHub Pages build setup and the base path is explicitly configured to match the repository name. This indicates the project is intended to be served from the GitHub Pages URL above.
-
-## Recommended workflow
-
-1. Develop and test locally with `npm run dev`.
-2. Validate the production build with `npm run build`.
-3. Run `npm test` before deployment.
-4. Keep the GitHub Pages base path aligned with the repository name.
-5. Confirm that generated assets and routes work correctly after changes.
-6. Publish the current static build using the GitHub Pages-compatible configuration.
-
-## Notes
-
-This project is a front-end-only application focused on generating and previewing GitHub profile README content in the browser. It does not rely on a server-side backend for core functionality and is well-suited for static hosting.
-
-## Access links
+## Links
 
 - [Live Demo](https://chaudhariparthh.github.io/gitprofile-studio/)
 - [Lovable App](https://gitprofilestudio.lovable.app/)
 - [GitHub Repository](https://github.com/ChaudhariParthh/gitprofile-studio)
+
+## Notes
+
+This project is focused on creating and previewing GitHub profile README content directly in the browser. It does not rely on a server-side backend for core functionality, which keeps the experience lightweight and easy to deploy.
+
+## License
+
+This project does not define a repository license in the current configuration and is intended for use within the project's existing deployment and distribution context.
