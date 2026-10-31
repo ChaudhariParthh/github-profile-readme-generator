@@ -74,60 +74,95 @@ const themes = [
 
 function Index() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background geometry: diagonal panels + purple/blue/cyan glows */}
+      <div className="absolute inset-0" />
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `
+            radial-gradient(700px circle at 15% 25%, color-mix(in oklab, var(--primary) 18%, transparent), transparent),
+            radial-gradient(600px circle at 80% 70%, color-mix(in oklab, var(--accent) 16%, transparent), transparent),
+            radial-gradient(500px circle at 50% -10%, color-mix(in oklab, color-mix(in oklab, var(--primary) 55%, var(--accent) 45%) 14%, transparent), transparent),
+            linear-gradient(135deg, transparent 48%, color-mix(in oklab, var(--primary) 7%, transparent) 50%, transparent 52%),
+            linear-gradient(225deg, transparent 46%, color-mix(in oklab, var(--accent) 6%, transparent) 50%, transparent 54%)
+          `,
+        }}
+      />
+
       <SiteHeader />
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 md:px-6 lg:grid-cols-2 lg:py-28">
-          <div>
-            <h1 className="mt-6 text-4xl font-bold tracking-tight md:text-6xl">
-              Your GitHub profile, <span className="text-gradient">designed in minutes.</span>
-            </h1>
-            <p className="mt-5 max-w-lg text-lg text-muted-foreground">
-              Build a polished profile README with live preview, tech badges, stats cards and
-              socials — then copy the Markdown.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link to="/builder">
-                  Open Builder <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
+
+      {/* Hero */}
+      <section className="relative px-4 pt-20 pb-32 md:px-6 lg:py-40 lg:pt-32 lg:pb-48">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="relative">
+              <h1 className="mt-2 text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl">
+                Your GitHub profile, <span className="text-gradient">designed in minutes.</span>
+              </h1>
+              <p className="mt-6 max-w-lg text-lg text-muted-foreground leading-relaxed">
+                Build a polished profile README with live preview, tech badges, stats cards and
+                socials — then copy the Markdown.
+              </p>
+              <div className="mt-10 flex flex-wrap gap-3">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-gradient-brand shadow-glow hover:opacity-90"
+                >
+                  <Link to="/builder">
+                    Open Builder <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
             </div>
-          </div>
-          <div className="relative">
-            <div className="relative shadow-glow transition-transform duration-500 hover:-translate-y-1 hover:rotate-0 lg:rotate-1" />
+            <div className="relative hidden lg:block">
+              <div
+                className="absolute inset-0 rounded-3xl border border-border/60 bg-card/40 backdrop-blur-sm shadow-2xl"
+                style={{
+                  backgroundImage: `
+                    radial-gradient(600px circle at 10% 10%, color-mix(in oklab, var(--primary) 12%, transparent), transparent),
+                    radial-gradient(500px circle at 90% 90%, color-mix(in oklab, var(--accent) 12%, transparent), transparent)
+                  `,
+                }}
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-20 md:px-6">
-        <p className="font-mono text-sm text-accent">// how it works</p>
-        <h2 className="mt-2 text-3xl font-bold">Three steps to a better first impression</h2>
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+      {/* How it works */}
+      <section className="mx-auto max-w-7xl px-4 py-24 md:px-6 lg:py-32">
+        <div className="text-center mx-auto max-w-3xl">
+          <p className="font-mono text-sm text-accent">// how it works</p>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight">
+            Three steps to a better first impression
+          </h2>
+        </div>
+        <div className="mt-14 grid gap-6 md:grid-cols-3">
           {steps.map((s, i) => (
-            <div key={s.title} className="rounded-lg border border-border bg-card p-6">
+            <div key={s.title} className="rounded-xl border border-border bg-card p-8">
               <div className="flex items-center justify-between">
                 <s.icon className="h-6 w-6 text-primary" />
                 <span className="font-mono text-sm text-muted-foreground">0{i + 1}</span>
               </div>
-              <h3 className="mt-5 font-semibold">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.text}</p>
+              <h3 className="mt-6 font-semibold">{s.title}</h3>
+              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{s.text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <footer className="border-t border-border bg-background pt-12 pb-20">
+      <footer className="border-t border-border bg-background pt-16 pb-24">
         <div className="mx-auto max-w-7xl px-4 md:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-14">
             <div className="lg:col-span-4 flex flex-col items-center text-center lg:text-left lg:items-start">
               <BrandLogo />
-              <p className="mt-6 max-w-[340px] text-sm text-muted-foreground leading-relaxed lg:mt-8">
+              <p className="mt-8 max-w-[340px] text-sm text-muted-foreground leading-relaxed lg:mt-10">
                 Build a polished profile README with live preview, tech badges, stats cards and
                 socials — then copy the Markdown.
               </p>
-              <div className="mt-8 flex items-center gap-2">
+              <div className="mt-10 flex items-center gap-2">
                 <Button
                   asChild
                   size="sm"
@@ -238,7 +273,7 @@ function Index() {
             </div>
           </div>
 
-          <div className="border-t border-border pt-8">
+          <div className="border-t border-border pt-10">
             <p className="mx-auto max-w-[640px] text-center text-sm text-muted-foreground">
               © 2026 GitProfile Studio. Made with <span className="text-foreground">❤️</span> by{" "}
               <a
