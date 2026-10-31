@@ -102,7 +102,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
       },
-      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "icon", href: `${import.meta.env.BASE_URL}favicon.svg`, type: "image/svg+xml" },
+      { rel: "icon", href: `${import.meta.env.BASE_URL}favicon.png`, type: "image/png" },
+      { rel: "apple-touch-icon", href: `${import.meta.env.BASE_URL}favicon.png` },
+      { rel: "shortcut icon", href: `${import.meta.env.BASE_URL}favicon.png` },
     ],
   }),
   shellComponent: RootShell,
@@ -118,7 +121,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{const s=localStorage.getItem('gps-theme');if(s==='light'||(s!=='dark'&&window.matchMedia('(prefers-color-scheme: light)').matches))document.documentElement.classList.add('light')}catch(e){}",
+              "try{const s=localStorage.getItem('gps-theme');if(s==='light'||(s!=='dark'&&window.matchMedia('(prefers-color-scheme: light)').matches))document.documentElement.classList.add('light');else document.documentElement.classList.add('dark');}catch(e){}",
           }}
         />
         <HeadContent />
