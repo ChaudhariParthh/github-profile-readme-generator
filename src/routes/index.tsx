@@ -106,7 +106,7 @@ function Index() {
         <h2 className="mt-2 text-3xl font-bold">Three steps to a better first impression</h2>
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {steps.map((s, i) => (
-            <div key={s.title} className="rounded-xl border border-border bg-card p-6">
+            <div key={s.title} className="rounded-lg border border-border bg-card p-6">
               <div className="flex items-center justify-between">
                 <s.icon className="h-6 w-6 text-primary" />
                 <span className="font-mono text-sm text-muted-foreground">0{i + 1}</span>
@@ -128,7 +128,11 @@ function Index() {
                 socials — then copy the Markdown.
               </p>
               <div className="mt-8 flex items-center gap-2">
-                <Button asChild size="sm" className="bg-gradient-brand shadow-glow hover:opacity-90">
+                <Button
+                  asChild
+                  size="sm"
+                  className="bg-gradient-brand shadow-glow hover:opacity-90"
+                >
                   <Link to="/builder">
                     Open Builder <ArrowRight className="h-4 w-4" />
                   </Link>
@@ -142,7 +146,10 @@ function Index() {
               </h3>
               <ul className="flex flex-col gap-3 lg:mt-2">
                 <li>
-                  <Link to="/builder" className="text-sm text-muted-foreground hover:text-foreground">
+                  <Link
+                    to="/builder"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
                     Generator
                   </Link>
                 </li>
@@ -233,8 +240,7 @@ function Index() {
 
           <div className="border-t border-border pt-8">
             <p className="mx-auto max-w-[640px] text-center text-sm text-muted-foreground">
-              © 2026 GitProfile Studio. Made with{" "}
-              <span className="text-foreground">❤️</span> by{" "}
+              © 2026 GitProfile Studio. Made with <span className="text-foreground">❤️</span> by{" "}
               <a
                 href="https://github.com/ChaudhariParthh"
                 target="_blank"

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Check, GripVertical, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { SKILL_CATEGORIES, skillIconUrl, type TechDisplay } from "@/lib/profile";
+import { SKILL_CATEGORIES, skillDeviconUrl, skillSimpleIconUrl, type TechDisplay } from "@/lib/profile";
 import { moveItem } from "@/lib/reorder";
 
 export function SkillPicker({
@@ -136,10 +136,15 @@ export function SkillPicker({
 
 function SkillIcon({ name, size }: { name: string; size: "small" | "large" | "compact" }) {
   const [failed, setFailed] = useState(false);
+  const [triedDevicon, setTriedDevicon] = useState(false);
   const isSmall = size === "small";
   const isCompact = size === "compact";
-  
-  if (failed) {
+
+  const deviconUrl = skillDeviconUrl(name);
+  const simpleUrl = skillSimpleIconUrl(name);
+  const hasAnySource = Boolean(deviconUrl || simpleUrl);
+
+  if (failed || !hasAnySource) {
     return (
       <span
         aria-hidden="true"
@@ -151,11 +156,17 @@ function SkillIcon({ name, size }: { name: string; size: "small" | "large" | "co
   }
   return (
     <img
-      src={skillIconUrl(name)}
+      src={triedDevicon ? deviconUrl : simpleUrl}
       alt=""
       className={`shrink-0 ${isSmall ? "h-6 w-6" : isCompact ? "h-6 w-6" : "h-12 w-12"}`}
       loading="lazy"
-      onError={() => setFailed(true)}
+      onError={() => {
+        if (!triedDevicon && deviconUrl) {
+          setTriedDevicon(true);
+        } else {
+          setFailed(true);
+        }
+      }}
     />
   );
 }

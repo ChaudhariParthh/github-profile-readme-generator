@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { BookOpen, Github } from "lucide-react";
-import { toMarkdown, type Profile } from "@/lib/profile";
+import { toMarkdown, SKILL_INDEX, skillDeviconUrl, type Profile } from "@/lib/profile";
 import { generateStatsCardDataUri, generateLangsCardDataUri } from "@/lib/appearance";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { Button } from "@/components/ui/button";
@@ -84,13 +84,27 @@ export function ReadmePreview({
     }
 
     // Graceful fallback for external GitHub stats card service outages or rate limits
-    if (!img.dataset["retriedStatsFallback"] && img.src.includes("github-readme-stats.vercel.app")) {
+    if (
+      !img.dataset["retriedStatsFallback"] &&
+      (img.src.includes("github-readme-stats") || img.src.includes("github-stats-extended"))
+    ) {
       img.dataset["retriedStatsFallback"] = "1";
       if (img.src.includes("/top-langs")) {
         img.src = generateLangsCardDataUri(p);
         return;
       } else {
         img.src = generateStatsCardDataUri(p);
+        return;
+      }
+    }
+
+    // Devicon fallback for skill icons whose Simple Icons slug is unavailable
+    if (!img.dataset["retriedDevicon"]) {
+      const skillName = img.alt || "";
+      const s = SKILL_INDEX[skillName];
+      if (s) {
+        img.dataset["retriedDevicon"] = "1";
+        img.src = skillDeviconUrl(skillName);
         return;
       }
     }
@@ -111,7 +125,7 @@ export function ReadmePreview({
   };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card">
+    <div className="overflow-hidden rounded-lg border border-border bg-card">
       {!compact && (
         <div className="flex items-center gap-2 border-b border-border px-4 py-3 font-mono text-xs text-muted-foreground">
           <BookOpen className="h-4 w-4" />

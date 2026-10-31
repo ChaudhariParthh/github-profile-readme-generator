@@ -13,7 +13,6 @@ type BuilderActions = {
 
 const nav = [
   { to: "/", label: "Dashboard", hash: "" },
-  { to: "/", label: "Templates", hash: "themes" },
   { to: "/builder", label: "Builder", hash: "" },
 ] as const;
 
@@ -32,7 +31,7 @@ export function SiteHeader({ builder }: { builder?: BuilderActions }) {
                   key={item.label}
                   to={item.to}
                   {...(item.hash ? { hash: item.hash } : {})}
-                  className={`rounded-md px-3 py-1.5 text-sm ${item.label === "Builder" ? "bg-secondary font-medium text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                  className={`rounded-lg px-3 py-1.5 text-sm ${item.label === "Builder" ? "bg-secondary font-medium text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   {item.label}
                 </Link>
@@ -40,14 +39,14 @@ export function SiteHeader({ builder }: { builder?: BuilderActions }) {
               <button
                 type="button"
                 onClick={builder.onPreview}
-                className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+                className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
               >
                 Preview
               </button>
               <button
                 type="button"
                 onClick={builder.onExport}
-                className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+                className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
               >
                 Export
               </button>
@@ -58,7 +57,9 @@ export function SiteHeader({ builder }: { builder?: BuilderActions }) {
                 <Save className="h-4 w-4" /> <span className="hidden sm:inline">Save</span>
               </Button>
               <Button size="sm" onClick={builder.onDownload}>
-                <Download className="h-4 w-4" /> <span className="hidden sm:inline">Download README.md</span><span className="sm:hidden">README</span>
+                <Download className="h-4 w-4" />{" "}
+                <span className="hidden sm:inline">Download README.md</span>
+                <span className="sm:hidden">README</span>
               </Button>
             </div>
           </>

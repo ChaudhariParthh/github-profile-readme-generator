@@ -151,7 +151,9 @@ export async function fetchGitHubProfile(username: string) {
         : "GitHub couldn't return repositories right now. Try again later.";
   }
 
-  const owned = repos.filter((repo) => !repo.fork && repo.name.toLowerCase() !== name.toLowerCase());
+  const owned = repos.filter(
+    (repo) => !repo.fork && repo.name.toLowerCase() !== name.toLowerCase(),
+  );
   const top = [...owned].sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 4);
 
   // Compute real language percentages based on actual repo sizes / code frequency

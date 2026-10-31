@@ -1,9 +1,7 @@
 import {
-  appearanceById,
-  DEFAULT_APPEARANCE_ID,
+  DEFAULT_ACCENT,
   DEFAULT_STATS_THEME_ID,
   resolvedAccent,
-  resolvedBanner,
   statsThemeById,
   trophyCardUrl,
   statsCardUrl,
@@ -20,71 +18,99 @@ const DEV = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/";
 
 export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
   Languages: [
-    ["JavaScript", "javascript", "F7DF1E"],
-    ["TypeScript", "typescript", "3178C6"],
-    ["Python", "python", "3776AB"],
-    ["C", "c", "A8B9CC"],
-    ["C++", "cplusplus", "00599C"],
+    ["JavaScript", "javascript", "F7DF1E", "javascript/javascript-original.svg"],
+    ["TypeScript", "typescript", "3178C6", "typescript/typescript-original.svg"],
+    ["Python", "python", "3776AB", "python/python-original.svg"],
+    ["C", "c", "A8B9CC", "c/c-original.svg"],
+    ["C++", "cplusplus", "00599C", "cplusplus/cplusplus-original.svg"],
     ["C#", "csharp", "512BD4", "csharp/csharp-original.svg"],
-    ["Go", "go", "00ADD8"],
-    ["Rust", "rust", "000000"],
+    ["Go", "go", "00ADD8", "go/go-original.svg"],
+    ["Rust", "rust", "000000", "rust/rust-plain.svg"],
     ["Java", "openjdk", "ED8B00", "java/java-original.svg"],
-    ["Kotlin", "kotlin", "7F52FF"],
-    ["Swift", "swift", "F05138"],
-    ["Dart", "dart", "0175C2"],
-    ["PHP", "php", "777BB4"],
-    ["Ruby", "ruby", "CC342D"],
-    ["Scala", "scala", "DC322F"],
-    ["Elixir", "elixir", "4B275F"],
-    ["Haskell", "haskell", "5D4F85"],
-    ["Lua", "lua", "2C2D72"],
-    ["Bash", "gnubash", "4EAA25"],
+    ["Kotlin", "kotlin", "7F52FF", "kotlin/kotlin-original.svg"],
+    ["Swift", "swift", "F05138", "swift/swift-original.svg"],
+    ["Dart", "dart", "0175C2", "dart/dart-plain.svg"],
+    ["PHP", "php", "777BB4", "php/php-original.svg"],
+    ["Ruby", "ruby", "CC342D", "ruby/ruby-original.svg"],
+    ["Scala", "scala", "DC322F", "scala/scala-original.svg"],
+    ["Elixir", "elixir", "4B275F", "elixir/elixir-original.svg"],
+    ["Haskell", "haskell", "5D4F85", "haskell/haskell-original.svg"],
+    ["Lua", "lua", "2C2D72", "lua/lua-original.svg"],
+    ["Bash", "gnubash", "4EAA25", "gnubash/gnubash-original.svg"],
+    ["Perl", "perl", "2E457B", "perl/perl-original.svg"],
+    ["Objective-C", "objectivec", "098AC1", "objectivec/objectivec-original.svg"],
+    ["Clojure", "clojure", "83A13E", "clojure/clojure-original.svg"],
+    ["CoffeeScript", "coffeescript", "E58B34", "coffeescript/coffeescript-original.svg"],
+    ["Erlang", "erlang", "B83998", "erlang/erlang-original.svg"],
+    ["Nim", "nim", "39785C", "nim/nim-original.svg"],
   ],
   Frontend: [
-    ["React", "react", "61DAFB"],
-    ["Next.js", "nextdotjs", "000000"],
-    ["Vue.js", "vuedotjs", "4FC08D"],
-    ["Nuxt", "nuxtdotjs", "00DC82"],
-    ["Svelte", "svelte", "FF3E00"],
-    ["Angular", "angular", "DD0031"],
-    ["Tailwind CSS", "tailwindcss", "06B6D4"],
-    ["Bootstrap", "bootstrap", "7952B3"],
-    ["HTML5", "html5", "E34F26"],
+    ["React", "react", "61DAFB", "react/react-original.svg"],
+    ["Next.js", "nextdotjs", "000000", "nextdotjs/nextdotjs-original.svg"],
+    ["Vue.js", "vuedotjs", "4FC08D", "vuedotjs/vuedotjs-original.svg"],
+    ["Nuxt", "nuxtdotjs", "00DC82", "nuxtdotjs/nuxtdotjs-original.svg"],
+    ["Svelte", "svelte", "FF3E00", "svelte/svelte-original.svg"],
+    ["Angular", "angular", "DD0031", "angular/angular-original.svg"],
+    ["Tailwind CSS", "tailwindcss", "06B6D4", "tailwindcss/tailwindcss-plain.svg"],
+    ["Bootstrap", "bootstrap", "7952B3", "bootstrap/bootstrap-plain.svg"],
+    ["HTML5", "html5", "E34F26", "html5/html5-original.svg"],
     ["CSS3", "css3", "1572B6", "css3/css3-original.svg"],
-    ["Sass", "sass", "CC6699"],
-    ["Redux", "redux", "764ABC"],
-    ["Vite", "vite", "646CFF"],
-    ["Webpack", "webpack", "8DD6F9"],
-    ["Three.js", "threedotjs", "000000"],
+    ["Sass", "sass", "CC6699", "sass/sass-original.svg"],
+    ["Redux", "redux", "764ABC", "redux/redux-original.svg"],
+    ["Vite", "vite", "646CFF", "vite/vite-original.svg"],
+    ["Webpack", "webpack", "8DD6F9", "webpack/webpack-original.svg"],
+    ["Three.js", "threedotjs", "000000", "threedotjs/threedotjs-original.svg"],
+    ["AngularJS", "angularjs", "E23237", "angularjs/angularjs-original.svg"],
+    ["Backbone.js", "backbone", "C8BB8B", "backbone/backbone-original.svg"],
+    ["Vuetify", "vuetify", "1867C0", "vuetify/vuetify-original.svg"],
+    ["Pug", "pug", "A86454", "pug/pug-original.svg"],
+    ["Gulp", "gulp", "CB3837", "gulp/gulp-original.svg"],
+    ["Babel", "babel", "F9DC3E", "babel/babel-original.svg"],
+    ["Materialize", "materializecss", "E2232A", "materializecss/materialize-original.svg"],
+    ["Bulma", "bulma", "00D1B2", "bulma/bulma-original.svg"],
+    ["GTK", "gtk", "3584E4", "gtk/gtk-original.svg"],
+    ["Qt", "qt", "41CD52", "qt/qt-original.svg"],
+    ["wxWidgets", "wxwidgets", "2F87CB", "wxwidgets/wxwidgets-original.svg"],
+    ["Ember", "emberdotjs", "E04E3D", "emberdotjs/emberdotjs-original.svg"],
   ],
   Backend: [
-    ["Node.js", "nodedotjs", "339933"],
-    ["Express", "express", "000000"],
-    ["NestJS", "nestjs", "E0234E"],
-    ["Django", "django", "092E20"],
-    ["FastAPI", "fastapi", "009688"],
-    ["Flask", "flask", "000000"],
-    ["Spring Boot", "springboot", "6DB33F"],
-    ["Laravel", "laravel", "FF2D20"],
-    ["GraphQL", "graphql", "E10098"],
-    ["tRPC", "trpc", "2596BE"],
-    [".NET", "dotnet", "512BD4"],
-    ["Rails", "rubyonrails", "D30001"],
-    ["Flutter", "flutter", "02569B"],
-    ["React Native", "react", "61DAFB"],
-    ["Android", "android", "3DDC84"],
+    ["Node.js", "nodedotjs", "339933", "nodedotjs/nodedotjs-original.svg"],
+    ["Express", "express", "000000", "express/express-original.svg"],
+    ["NestJS", "nestjs", "E0234E", "nestjs/nestjs-original.svg"],
+    ["Django", "django", "092E20", "django/django-original.svg"],
+    ["FastAPI", "fastapi", "009688", "fastapi/fastapi-original.svg"],
+    ["Flask", "flask", "000000", "flask/flask-original.svg"],
+    ["Spring Boot", "springboot", "6DB33F", "springboot/springboot-original.svg"],
+    ["Laravel", "laravel", "FF2D20", "laravel/laravel-original.svg"],
+    ["GraphQL", "graphql", "E10098", "graphql/graphql-original.svg"],
+    ["tRPC", "trpc", "2596BE", "trpc/trpc-original.svg"],
+    [".NET", "dotnet", "512BD4", "dotnet/dotnet-original.svg"],
+    ["Rails", "rubyonrails", "D30001", "rubyonrails/rails-original.svg"],
+    ["Flutter", "flutter", "02569B", "flutter/flutter-original.svg"],
+    ["React Native", "react", "61DAFB", "react/react-original.svg"],
+    ["Electron", "electron", "47848F", "electron/electron-original.svg"],
+    ["Symfony", "symfony", "1A1718", "symfony/symfony-original.svg"],
+    ["CodeIgniter", "codeigniter", "F04E23", "codeigniter/codeigniter-original.svg"],
+    ["Quasar", "quasar", "017BE6", "quasar/quasar-original.svg"],
+    ["Android", "android", "3DDC84", "android/android-original.svg"],
+    ["Kafka", "kafka", "231F20", "kafka/kafka-original.svg"],
+    ["Solr", "solr", "DC5B22", "solr/solr-original.svg"],
+    ["RabbitMQ", "rabbitmq", "FF6600", "rabbitmq/rabbitmq-original.svg"],
+    ["Hadoop", "hadoop", "FFC72D", "hadoop/hadoop-original.svg"],
+    ["OpenResty", "openresty", "F75024", "openresty/openresty-original.svg"],
   ],
   "AI / ML": [
-    ["PyTorch", "pytorch", "EE4C2C"],
-    ["TensorFlow", "tensorflow", "FF6F00"],
-    ["scikit-learn", "scikitlearn", "F7931E"],
-    ["Pandas", "pandas", "150458"],
-    ["NumPy", "numpy", "013243"],
-    ["OpenCV", "opencv", "5C3EE8"],
-    ["Hugging Face", "huggingface", "FFD21E"],
-    ["LangChain", "langchain", "1C3C3C"],
-    ["Jupyter", "jupyter", "F37626"],
-    ["Keras", "keras", "D00000"],
+    ["PyTorch", "pytorch", "EE4C2C", "pytorch/pytorch-original.svg"],
+    ["TensorFlow", "tensorflow", "FF6F00", "tensorflow/tensorflow-original.svg"],
+    ["scikit-learn", "scikitlearn", "F7931E", "scikitlearn/scikitlearn-original.svg"],
+    ["Pandas", "pandas", "150458", "pandas/pandas-original.svg"],
+    ["NumPy", "numpy", "013243", "numpy/numpy-original.svg"],
+    ["OpenCV", "opencv", "5C3EE8", "opencv/opencv-original.svg"],
+    ["Seaborn", "seaborn", "6A629E", "seaborn/seaborn-original.svg"],
+    ["Hugging Face", "huggingface", "FFD21E", "huggingface/huggingface-original.svg"],
+    ["LangChain", "langchain", "1C3C3C", "langchain/langchain-original.svg"],
+    ["Jupyter", "jupyter", "F37626", "jupyter/jupyter-original.svg"],
+    ["Keras", "keras", "D00000", "keras/keras-original.svg"],
     ["OpenAI", "openai", "412991", "openai/openai-original.svg"],
   ],
   Cybersecurity: [
@@ -106,50 +132,74 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
       "232F3E",
       "amazonwebservices/amazonwebservices-original-wordmark.svg",
     ],
-    ["Google Cloud", "googlecloud", "4285F4"],
+    ["Google Cloud", "googlecloud", "4285F4", "googlecloud/googlecloud-original.svg"],
     ["Azure", "microsoftazure", "0078D4", "azure/azure-original.svg"],
-    ["Vercel", "vercel", "000000"],
-    ["Netlify", "netlify", "00C7B7"],
-    ["Cloudflare", "cloudflare", "F38020"],
-    ["Firebase", "firebase", "FFCA28"],
-    ["Supabase", "supabase", "3FCF8E"],
-    ["Heroku", "heroku", "430098"],
+    ["Vercel", "vercel", "000000", "vercel/vercel-original.svg"],
+    ["Netlify", "netlify", "00C7B7", "netlify/netlify-original.svg"],
+    ["Cloudflare", "cloudflare", "F38020", "cloudflare/cloudflare-original.svg"],
+    ["Firebase", "firebase", "FFCA28", "firebase/firebase-original.svg"],
+    ["Supabase", "supabase", "3FCF8E", "supabase/supabase-original.svg"],
+    ["Heroku", "heroku", "430098", "heroku/heroku-original.svg"],
+    ["Appwrite", "appwrite", "FD503D", "appwrite/appwrite-original.svg"],
+    ["AWS Amplify", "amplify", "FF9900", "amplify/amplify-original.svg"],
   ],
   Databases: [
-    ["PostgreSQL", "postgresql", "4169E1"],
-    ["MongoDB", "mongodb", "47A248"],
-    ["MySQL", "mysql", "4479A1"],
-    ["Redis", "redis", "DC382D"],
-    ["SQLite", "sqlite", "003B57"],
-    ["MariaDB", "mariadb", "003545"],
-    ["Elasticsearch", "elasticsearch", "005571"],
-    ["DynamoDB", "amazondynamodb", "4053D6"],
-    ["Prisma", "prisma", "2D3748"],
+    ["PostgreSQL", "postgresql", "4169E1", "postgresql/postgresql-original.svg"],
+    ["MongoDB", "mongodb", "47A248", "mongodb/mongodb-original.svg"],
+    ["MySQL", "mysql", "4479A1", "mysql/mysql-original.svg"],
+    ["Redis", "redis", "DC382D", "redis/redis-original.svg"],
+    ["SQLite", "sqlite", "003B57", "sqlite/sqlite-original.svg"],
+    ["MariaDB", "mariadb", "003545", "mariadb/mariadb-original.svg"],
+    ["Elasticsearch", "elasticsearch", "005571", "elasticsearch/elasticsearch-original.svg"],
+    ["Oracle", "oracledatabase", "F80000", "oracledatabase/oracledatabase-original.svg"],
+    ["Cassandra", "cassandra", "2A9AD9", "cassandra/cassandra-original.svg"],
+    ["CouchDB", "couchdb", "D44444", "couchdb/couchdb-original.svg"],
+    ["Hive", "hive", "FDB515", "hive/hive-original.svg"],
+    ["Realm", "realm", "D93A2A", "realm/realm-original.svg"],
+    ["CockroachDB", "cockroachdb", "F18237", "cockroachdb/cockroachdb-original.svg"],
+    ["MSSQL", "mssql", "CC2927", "mssql/mssql-original.svg"],
+    ["DynamoDB", "amazondynamodb", "4053D6", "amazondynamodb/amazondynamodb-original.svg"],
+    ["Prisma", "prisma", "2D3748", "prisma/prisma-original.svg"],
   ],
   DevOps: [
-    ["Docker", "docker", "2496ED"],
-    ["Kubernetes", "kubernetes", "326CE5"],
-    ["Linux", "linux", "FCC624"],
-    ["Nginx", "nginx", "009639"],
-    ["GitHub Actions", "githubactions", "2088FF"],
-    ["Terraform", "terraform", "844FBA"],
-    ["Jenkins", "jenkins", "D24939"],
-    ["Ansible", "ansible", "EE0000"],
-    ["Git", "git", "F05032"],
-    ["GitHub", "github", "181717"],
-    ["Grafana", "grafana", "F46800"],
-    ["Prometheus", "prometheus", "E6522C"],
+    ["Docker", "docker", "2496ED", "docker/docker-original.svg"],
+    ["Kubernetes", "kubernetes", "326CE5", "kubernetes/kubernetes-original.svg"],
+    ["Linux", "linux", "FCC624", "linux/linux-original.svg"],
+    ["Nginx", "nginx", "009639", "nginx/nginx-original.svg"],
+    ["GitHub Actions", "githubactions", "2088FF", "githubactions/githubactions-original.svg"],
+    ["Terraform", "terraform", "844FBA", "terraform/terraform-original.svg"],
+    ["Jenkins", "jenkins", "D24939", "jenkins/jenkins-original.svg"],
+    ["Ansible", "ansible", "EE0000", "ansible/ansible-original.svg"],
+    ["Git", "git", "F05032", "git/git-original.svg"],
+    ["GitHub", "github", "181717", "github/github-original.svg"],
+    ["Grafana", "grafana", "F46800", "grafana/grafana-original.svg"],
+    ["Prometheus", "prometheus", "E6522C", "prometheus/prometheus-original.svg"],
+    ["Vagrant", "vagrant", "1563FF", "vagrant/vagrant-original.svg"],
+    ["CircleCI", "circleci", "343434", "circleci/circleci-original.svg"],
+    ["Travis CI", "travisci", "006BD6", "travisci/travisci-original.svg"],
   ],
   Tools: [
-    ["Figma", "figma", "F24E1E"],
-    ["Postman", "postman", "FF6C37"],
+    ["Figma", "figma", "F24E1E", "figma/figma-original.svg"],
+    ["Postman", "postman", "FF6C37", "postman/postman-original.svg"],
     ["VS Code", "visualstudiocode", "007ACC", "vscode/vscode-original.svg"],
-    ["Jest", "jest", "C21325"],
-    ["Vitest", "vitest", "6E9F18"],
-    ["Cypress", "cypress", "17202C"],
+    ["Jest", "jest", "C21325", "jest/jest-original.svg"],
+    ["Vitest", "vitest", "6E9F18", "vitest/vitest-original.svg"],
+    ["Selenium", "selenium", "00A1D3", "selenium/selenium-original.svg"],
+    ["Mocha", "mocha", "8D6748", "mocha/mocha-original.svg"],
+    ["Puppeteer", "puppeteer", "4080C0", "puppeteer/puppeteer-original.svg"],
+    ["Karma", "karma", "D3D3D3", "karma/karma-original.svg"],
+    ["Jasmine", "jasmine", "8A4182", "jasmine/jasmine-original.svg"],
+    ["Cypress", "cypress", "17202C", "cypress/cypress-original.svg"],
     ["Playwright", "playwright", "2EAD33", "playwright/playwright-original.svg"],
-    ["Blender", "blender", "F5792A"],
-    ["Notion", "notion", "000000"],
+    ["Blender", "blender", "F5792A", "blender/blender-original.svg"],
+    ["Notion", "notion", "000000", "notion/notion-original.svg"],
+    ["Illustrator", "illustrator", "FA6424", "illustrator/illustrator-original.svg"],
+    ["Photoshop", "photoshop", "00A8E1", "photoshop/photoshop-original.svg"],
+    ["Adobe XD", "adobexd", "FF7440", "adobexd/adobexd-original.svg"],
+    ["Sketch", "sketch", "F7ADE4", "sketch/sketch-original.svg"],
+    ["InVision", "invision", "F82749", "invision/invision-original.svg"],
+    ["Framer", "framer", "0055FF", "framer/framer-original.svg"],
+    ["MATLAB", "matlab", "DD11CF", "matlab/matlab-original.svg"],
   ],
 };
 
@@ -273,7 +323,6 @@ export const TYPING_FONTS = [
   "Source Code Pro",
 ] as const;
 export type TypingFont = (typeof TYPING_FONTS)[number];
-export type BannerMotion = "none" | "svg-anim";
 export type BlogSource = "none" | "devto" | "medium" | "rss";
 
 export const BUILTIN_SECTIONS = {
@@ -307,7 +356,13 @@ export type Work = {
   blog: string;
   resume: string;
 };
-export type Project = { name: string; url: string; description: string; gradientStart?: string; gradientEnd?: string };
+export type Project = {
+  name: string;
+  url: string;
+  description: string;
+  gradientStart?: string;
+  gradientEnd?: string;
+};
 
 export type GitHubStatsData = {
   repos: Array<{
@@ -340,6 +395,11 @@ export type StatsCardConfig = {
   textColor: string;
   accentColor: string;
   borderColor: string;
+  statColorCommits: string;
+  statColorStars: string;
+  statColorPrs: string;
+  statColorIssues: string;
+  statColorForks: string;
   borderRadius: number;
   showIcons: boolean;
   hideRank: boolean;
@@ -347,6 +407,8 @@ export type StatsCardConfig = {
   countPrivate: boolean;
   hideMetrics: string[];
   customTitle: string;
+  apiProvider?: "extended" | "official" | "custom";
+  customApiUrl?: string;
 };
 
 export type CustomLanguage = {
@@ -366,6 +428,8 @@ export type LangsCardConfig = {
   countPrivate: boolean;
   customLanguages: CustomLanguage[];
   useCustomLanguages: boolean;
+  apiProvider?: "extended" | "official" | "custom";
+  customApiUrl?: string;
 };
 
 export type StreakCardConfig = {
@@ -393,13 +457,20 @@ export const defaultStatsCardConfig: StatsCardConfig = {
   textColor: "",
   accentColor: "",
   borderColor: "",
+  statColorCommits: "",
+  statColorStars: "",
+  statColorPrs: "",
+  statColorIssues: "",
+  statColorForks: "",
   borderRadius: 8,
   showIcons: true,
   hideRank: false,
-  includeAllCommits: true,
+  includeAllCommits: false,
   countPrivate: false,
   hideMetrics: [],
   customTitle: "",
+  apiProvider: "extended",
+  customApiUrl: "",
 };
 
 export const defaultLangsCardConfig: LangsCardConfig = {
@@ -409,7 +480,7 @@ export const defaultLangsCardConfig: LangsCardConfig = {
   hideProgress: false,
   borderRadius: 12,
   cardWidth: 400,
-  includeForks: true,
+  includeForks: false,
   countPrivate: false,
   useCustomLanguages: false,
   customLanguages: [
@@ -420,6 +491,8 @@ export const defaultLangsCardConfig: LangsCardConfig = {
     { name: "Python", percent: 4.0, color: "3776AB" },
     { name: "Dockerfile", percent: 0.3, color: "2496ED" },
   ],
+  apiProvider: "extended",
+  customApiUrl: "",
 };
 
 export const defaultStreakCardConfig: StreakCardConfig = {
@@ -447,11 +520,8 @@ export type Profile = {
   location: string;
   bio: string;
   avatarUrl: string;
-  bannerUrl: string; // static image or GIF
   appearanceId: string;
   accentColor: string;
-  customBanner: boolean;
-  bannerMotion: BannerMotion;
   statsTheme: string;
   statsCard: StatsCardConfig;
   langsCard: LangsCardConfig;
@@ -465,11 +535,11 @@ export type Profile = {
   badgeStyle: BadgeStyle;
   socials: Record<string, string>;
   projects: Project[];
-  addons: { 
-    blog: BlogSource; 
-    blogHandle: string; 
-    stats: boolean; 
-    langs: boolean; 
+  addons: {
+    blog: BlogSource;
+    blogHandle: string;
+    stats: boolean;
+    langs: boolean;
     streak: boolean;
     statsOverview: boolean;
     contributionGraph: boolean;
@@ -506,11 +576,8 @@ export const seedProfile: Profile = {
   location: "",
   bio: "",
   avatarUrl: "",
-  bannerUrl: appearanceById(DEFAULT_APPEARANCE_ID).bannerUrl,
-  appearanceId: DEFAULT_APPEARANCE_ID,
-  accentColor: appearanceById(DEFAULT_APPEARANCE_ID).accent,
-  customBanner: false,
-  bannerMotion: "svg-anim",
+  appearanceId: "",
+  accentColor: DEFAULT_ACCENT,
   statsTheme: DEFAULT_STATS_THEME_ID,
   statsCard: { ...defaultStatsCardConfig },
   langsCard: { ...defaultLangsCardConfig },
@@ -530,7 +597,18 @@ export const seedProfile: Profile = {
   badgeStyle: "for-the-badge",
   socials: {},
   projects: [],
-  addons: { blog: "none", blogHandle: "", stats: true, langs: true, streak: true, statsOverview: true, contributionGraph: true, followersBadge: false, reposBadge: false, followingBadge: false },
+  addons: {
+    blog: "none",
+    blogHandle: "",
+    stats: true,
+    langs: true,
+    streak: true,
+    statsOverview: true,
+    contributionGraph: true,
+    followersBadge: false,
+    reposBadge: false,
+    followingBadge: false,
+  },
   support: { bmc: "", kofi: "", chai: "", sponsors: false },
   sections: ALL_SECTIONS(["trophies", "graph", "blog", "support", "projects"]),
   custom: {},
@@ -545,7 +623,8 @@ export const esc = (s: string) =>
 export function safeUrl(raw: string | undefined | null): string {
   const s = (raw ?? "").trim();
   if (!s) return "";
-  if (s.startsWith("/") && !s.startsWith("//")) return s;
+  if (s.startsWith("./") || s.startsWith("../") || (s.startsWith("/") && !s.startsWith("//")))
+    return s;
   if (/^mailto:[^\s<>"]+$/i.test(s)) return s;
   if (/^data:image\/(?:png|jpeg|gif|webp);base64,[a-z0-9+/]+=*$/i.test(s)) return s;
   try {
@@ -595,13 +674,33 @@ const relativeLuminance = (hex: string) => {
   });
   return 0.2126 * channels[0]! + 0.7152 * channels[1]! + 0.0722 * channels[2]!;
 };
-/** Clear, branded icons for skill chips — Simple Icons preferred, DevIcons fallback. */
-export const skillIconUrl = (t: string) => {
+/** Resolve a skill icon URL — Simple Icons primary (reliable slug-based URL),
+ *  Devicon fallback (explicit SVG path from the 4th tuple field, then slug guess).
+ *  Returns "" when the skill is unknown or no icon source is available. */
+export const skillIconUrl = (t: string): string => {
   const s = SKILL_INDEX[t];
   if (!s) return "";
-  // Simple Icons URL (clear, branded SVG): https://simpleicons.org/
   const slug = s[1];
-  return `https://cdn.simpleicons.org/${slug}`;
+  // Simple Icons: reliable URL pattern https://cdn.simpleicons.org/{slug}
+  const simpleUrl = `https://cdn.simpleicons.org/${slug}`;
+  // Devicon: explicit 4th tuple field when present, else the standard slug/slug-original.svg layout.
+  const deviconUrl = s[3] ? `${DEV}${s[3]}` : `${DEV}${slug}/${slug}-original.svg`;
+  return simpleUrl;
+};
+
+/** Devicon icon URL for a skill (explicit 4th tuple field or slug guess). Returns "" when unknown. */
+export const skillDeviconUrl = (t: string): string => {
+  const s = SKILL_INDEX[t];
+  if (!s) return "";
+  const slug = s[1];
+  return s[3] ? `${DEV}${s[3]}` : `${DEV}${slug}/${slug}-original.svg`;
+};
+
+/** Simple Icons URL for a skill. Returns "" when the skill is unknown. */
+export const skillSimpleIconUrl = (t: string): string => {
+  const s = SKILL_INDEX[t];
+  if (!s) return "";
+  return `https://cdn.simpleicons.org/${s[1]}`;
 };
 export const socialBadgeUrl = (p: string, style: BadgeStyle = "for-the-badge") => {
   const m = SOCIAL_META[p];
@@ -636,7 +735,8 @@ export const typingUrl = (p: Profile) => {
 
 // ---------- Stats section renderer ----------
 
-const STATS_IMG = (src: string, alt: string) => (src ? `<img src="${src}" alt="${esc(alt)}" />` : "");
+const STATS_IMG = (src: string, alt: string) =>
+  src ? `<img src="${src}" alt="${esc(alt)}" />` : "";
 
 /** Render the GitHub Stats section as Markdown lines using the selected stats theme and live widget data. */
 export function renderStatsSection(p: Profile): string[] {
@@ -658,17 +758,23 @@ export function renderStatsSection(p: Profile): string[] {
 
   const badges: string[] = [];
   if (p.addons.followersBadge) {
-    badges.push(`<a href="https://github.com/${username}?tab=followers"><img src="https://img.shields.io/github/followers/${username}?label=Followers&style=for-the-badge&logo=github&color=${accent}" alt="GitHub Followers" /></a>`);
+    badges.push(
+      `<a href="https://github.com/${username}?tab=followers"><img src="https://img.shields.io/github/followers/${username}?label=Followers&style=for-the-badge&logo=github&color=${accent}" alt="GitHub Followers" /></a>`,
+    );
   }
   if (p.addons.reposBadge) {
     const repoCount = data?.publicRepos ?? "";
     const repoLabel = repoCount !== "" ? `Repositories-${repoCount}` : "Repositories";
-    badges.push(`<a href="https://github.com/${username}?tab=repositories"><img src="https://img.shields.io/badge/${encodeURIComponent(repoLabel)}-${accent}?style=for-the-badge&logo=github" alt="GitHub Repositories" /></a>`);
+    badges.push(
+      `<a href="https://github.com/${username}?tab=repositories"><img src="https://img.shields.io/badge/${encodeURIComponent(repoLabel)}-${accent}?style=for-the-badge&logo=github" alt="GitHub Repositories" /></a>`,
+    );
   }
   if (p.addons.followingBadge) {
     const followCount = data?.following ?? "";
     const followLabel = followCount !== "" ? `Following-${followCount}` : "Following";
-    badges.push(`<a href="https://github.com/${username}?tab=following"><img src="https://img.shields.io/badge/${encodeURIComponent(followLabel)}-555555?style=for-the-badge&logo=github" alt="GitHub Following" /></a>`);
+    badges.push(
+      `<a href="https://github.com/${username}?tab=following"><img src="https://img.shields.io/badge/${encodeURIComponent(followLabel)}-555555?style=for-the-badge&logo=github" alt="GitHub Following" /></a>`,
+    );
   }
   if (badges.length > 0) {
     out.push(`<p align="center">${badges.join(" ")}</p>`, "");
@@ -721,36 +827,72 @@ function row(inner: string, gap = "12px"): string {
   return `<div style="display:flex;flex-wrap:wrap;gap:${gap};align-items:flex-start;">${inner}</div>`;
 }
 
-function glassmorphismTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+function glassmorphismTheme(
+  statsUrl: string,
+  langsUrl: string,
+  streakUrl: string,
+  graphUrl: string,
+  accent: string,
+): string[] {
   const a = `#${accent}`;
   const body = [
     STATS_IMG(statsUrl, "GitHub stats"),
     STATS_IMG(streakUrl, "GitHub streak"),
     STATS_IMG(langsUrl, "Top languages"),
     STATS_IMG(graphUrl, "Contribution graph"),
-  ].filter(Boolean).join("");
-  return ["", wrap(`display:flex;flex-direction:column;gap:14px;background:rgba(255,255,255,0.04);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.2);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.45),inset 0 0 0 1px rgba(255,255,255,0.1);padding:20px;`, body), ""];
-}
-
-function neonGlowTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
-  const a = `#${accent}`;
-  const body = [
-    STATS_IMG(statsUrl, "GitHub stats"),
-    STATS_IMG(streakUrl, "GitHub streak"),
-    STATS_IMG(langsUrl, "Top languages"),
-    STATS_IMG(graphUrl, "Contribution graph"),
-  ].filter(Boolean).join("");
+  ]
+    .filter(Boolean)
+    .join("");
   return [
     "",
-    wrap(`font-family:'Courier New',Courier,monospace;display:flex;flex-direction:column;gap:14px;background:#0a0a0a;border:2px solid ${a};border-radius:12px;box-shadow:0 0 22px ${a}44,inset 0 0 18px ${a}22;color:#fff;padding:18px;`, body),
+    wrap(
+      `display:flex;flex-direction:column;gap:14px;background:rgba(255,255,255,0.04);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.2);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.45),inset 0 0 0 1px rgba(255,255,255,0.1);padding:20px;`,
+      body,
+    ),
     "",
   ];
 }
 
-function minimalistTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string, metrics: Array<{ label: string; value: number }>): string[] {
+function neonGlowTheme(
+  statsUrl: string,
+  langsUrl: string,
+  streakUrl: string,
+  graphUrl: string,
+  accent: string,
+): string[] {
+  const a = `#${accent}`;
+  const body = [
+    STATS_IMG(statsUrl, "GitHub stats"),
+    STATS_IMG(streakUrl, "GitHub streak"),
+    STATS_IMG(langsUrl, "Top languages"),
+    STATS_IMG(graphUrl, "Contribution graph"),
+  ]
+    .filter(Boolean)
+    .join("");
+  return [
+    "",
+    wrap(
+      `font-family:'Courier New',Courier,monospace;display:flex;flex-direction:column;gap:14px;background:#0a0a0a;border:2px solid ${a};border-radius:12px;box-shadow:0 0 22px ${a}44,inset 0 0 18px ${a}22;color:#fff;padding:18px;`,
+      body,
+    ),
+    "",
+  ];
+}
+
+function minimalistTheme(
+  statsUrl: string,
+  langsUrl: string,
+  streakUrl: string,
+  graphUrl: string,
+  accent: string,
+  metrics: Array<{ label: string; value: number }>,
+): string[] {
   const a = `#${accent}`;
   const metricHtml = metrics
-    .map((m) => `<div style="display:flex;flex-direction:column;gap:2px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.6;">${esc(m.label)}</div><div style="font-size:24px;font-weight:800;color:${a};">${m.value}</div></div>`)
+    .map(
+      (m) =>
+        `<div style="display:flex;flex-direction:column;gap:2px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.6;">${esc(m.label)}</div><div style="font-size:24px;font-weight:800;color:${a};">${m.value}</div></div>`,
+    )
     .join("");
   const metricsBlock = metrics.length ? wrap(`display:flex;gap:26px;`, metricHtml) : "";
   const cards = [
@@ -758,11 +900,26 @@ function minimalistTheme(statsUrl: string, langsUrl: string, streakUrl: string, 
     STATS_IMG(streakUrl, "GitHub streak"),
     STATS_IMG(langsUrl, "Top languages"),
     STATS_IMG(graphUrl, "Contribution graph"),
-  ].filter(Boolean).join("");
-  return ["", wrap(`display:flex;flex-direction:column;gap:18px;background:#ffffff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.06);padding:26px;color:#111;`, metricsBlock + wrap(`display:flex;flex-wrap:wrap;gap:14px;`, cards)), ""];
+  ]
+    .filter(Boolean)
+    .join("");
+  return [
+    "",
+    wrap(
+      `display:flex;flex-direction:column;gap:18px;background:#ffffff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.06);padding:26px;color:#111;`,
+      metricsBlock + wrap(`display:flex;flex-wrap:wrap;gap:14px;`, cards),
+    ),
+    "",
+  ];
 }
 
-function gradientWavesTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+function gradientWavesTheme(
+  statsUrl: string,
+  langsUrl: string,
+  streakUrl: string,
+  graphUrl: string,
+  accent: string,
+): string[] {
   const a = `#${accent}`;
   const b = accent === "8B5CF6" ? "F472B6" : accent;
   const body = [
@@ -770,70 +927,119 @@ function gradientWavesTheme(statsUrl: string, langsUrl: string, streakUrl: strin
     STATS_IMG(streakUrl, "GitHub streak"),
     STATS_IMG(langsUrl, "Top languages"),
     STATS_IMG(graphUrl, "Contribution graph"),
-  ].filter(Boolean).join("");
+  ]
+    .filter(Boolean)
+    .join("");
   return [
     "",
-    wrap(`position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px;border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,0.45);padding:22px;background:linear-gradient(135deg,${a}22,${b}22);border:1px solid rgba(255,255,255,0.15);`, `<div style="position:absolute;inset:-20%;z-index:0;border-radius:inherit;background:conic-gradient(from 0deg,transparent,${a}40,transparent,${b}40,transparent);opacity:0.55;"></div><div style="position:relative;z-index:1;">${body}</div>`),
+    wrap(
+      `position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px;border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,0.45);padding:22px;background:linear-gradient(135deg,${a}22,${b}22);border:1px solid rgba(255,255,255,0.15);`,
+      `<div style="position:absolute;inset:-20%;z-index:0;border-radius:inherit;background:conic-gradient(from 0deg,transparent,${a}40,transparent,${b}40,transparent);opacity:0.55;"></div><div style="position:relative;z-index:1;">${body}</div>`,
+    ),
     "",
   ];
 }
 
-function cardStackTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+function cardStackTheme(
+  statsUrl: string,
+  langsUrl: string,
+  streakUrl: string,
+  graphUrl: string,
+  accent: string,
+): string[] {
   const a = `#${accent}`;
   const body = [
     STATS_IMG(statsUrl, "GitHub stats"),
     STATS_IMG(streakUrl, "GitHub streak"),
     STATS_IMG(langsUrl, "Top languages"),
     STATS_IMG(graphUrl, "Contribution graph"),
-  ].filter(Boolean).join("");
+  ]
+    .filter(Boolean)
+    .join("");
   return [
     "",
-    wrap(`perspective:1200px;display:flex;flex-direction:column;gap:8px;padding:26px;border-radius:18px;background:#111;border:1px solid #333;box-shadow:0 30px 60px rgba(0,0,0,0.5);`, `<div style="transform:rotateX(8deg) rotateY(-4deg) scale(0.98);transform-origin:center;box-shadow:0 25px 50px -12px rgba(0,0,0,0.6);border:1px solid ${a}55;border-radius:14px;overflow:hidden;">${body}</div>`),
+    wrap(
+      `perspective:1200px;display:flex;flex-direction:column;gap:8px;padding:26px;border-radius:18px;background:#111;border:1px solid #333;box-shadow:0 30px 60px rgba(0,0,0,0.5);`,
+      `<div style="transform:rotateX(8deg) rotateY(-4deg) scale(0.98);transform-origin:center;box-shadow:0 25px 50px -12px rgba(0,0,0,0.6);border:1px solid ${a}55;border-radius:14px;overflow:hidden;">${body}</div>`,
+    ),
     "",
   ];
 }
 
-function timelineTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+function timelineTheme(
+  statsUrl: string,
+  langsUrl: string,
+  streakUrl: string,
+  graphUrl: string,
+  accent: string,
+): string[] {
   const a = `#${accent}`;
   const body = [
     STATS_IMG(statsUrl, "GitHub stats"),
     STATS_IMG(streakUrl, "GitHub streak"),
     STATS_IMG(langsUrl, "Top languages"),
     STATS_IMG(graphUrl, "Contribution graph"),
-  ].filter(Boolean).join("");
+  ]
+    .filter(Boolean)
+    .join("");
   return [
     "",
-    wrap(`display:flex;flex-direction:column;gap:10px;border-radius:16px;background:#0b1120;border:1px solid ${a}55;box-shadow:0 0 30px ${a}22;padding:18px;color:#e5e7eb;`, `<div style="height:3px;background:linear-gradient(90deg,${a},transparent);border-radius:2px;margin-bottom:10px;"></div><div style="display:flex;flex-wrap:wrap;gap:10px;opacity:0.95;">${body}</div>`),
+    wrap(
+      `display:flex;flex-direction:column;gap:10px;border-radius:16px;background:#0b1120;border:1px solid ${a}55;box-shadow:0 0 30px ${a}22;padding:18px;color:#e5e7eb;`,
+      `<div style="height:3px;background:linear-gradient(90deg,${a},transparent);border-radius:2px;margin-bottom:10px;"></div><div style="display:flex;flex-wrap:wrap;gap:10px;opacity:0.95;">${body}</div>`,
+    ),
     "",
   ];
 }
 
-function hexagonTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+function hexagonTheme(
+  statsUrl: string,
+  langsUrl: string,
+  streakUrl: string,
+  graphUrl: string,
+  accent: string,
+): string[] {
   const a = `#${accent}`;
   const body = [
     STATS_IMG(statsUrl, "GitHub stats"),
     STATS_IMG(streakUrl, "GitHub streak"),
     STATS_IMG(langsUrl, "Top languages"),
     STATS_IMG(graphUrl, "Contribution graph"),
-  ].filter(Boolean).join("");
+  ]
+    .filter(Boolean)
+    .join("");
   return [
     "",
-    wrap(`display:flex;flex-wrap:wrap;gap:16px;justify-content:center;border-radius:16px;background:#0a0a0a;border:1px solid ${a}44;box-shadow:0 0 40px ${a}20;padding:20px;`, body),
+    wrap(
+      `display:flex;flex-wrap:wrap;gap:16px;justify-content:center;border-radius:16px;background:#0a0a0a;border:1px solid ${a}44;box-shadow:0 0 40px ${a}20;padding:20px;`,
+      body,
+    ),
     "",
   ];
 }
 
-function isometricTheme(statsUrl: string, langsUrl: string, streakUrl: string, graphUrl: string, accent: string): string[] {
+function isometricTheme(
+  statsUrl: string,
+  langsUrl: string,
+  streakUrl: string,
+  graphUrl: string,
+  accent: string,
+): string[] {
   const a = `#${accent}`;
   const body = [
     STATS_IMG(statsUrl, "GitHub stats"),
     STATS_IMG(streakUrl, "GitHub streak"),
     STATS_IMG(langsUrl, "Top languages"),
     STATS_IMG(graphUrl, "Contribution graph"),
-  ].filter(Boolean).join("");
+  ]
+    .filter(Boolean)
+    .join("");
   return [
     "",
-    wrap(`transform:rotateX(45deg) scale(0.92);transform-origin:center;display:flex;flex-direction:column;gap:10px;border-radius:16px;background:linear-gradient(135deg,#161b22,#1f2937);border:1px solid ${a}55;box-shadow:0 40px 80px rgba(0,0,0,0.6);padding:24px;`, body),
+    wrap(
+      `transform:rotateX(45deg) scale(0.92);transform-origin:center;display:flex;flex-direction:column;gap:10px;border-radius:16px;background:linear-gradient(135deg,#161b22,#1f2937);border:1px solid ${a}55;box-shadow:0 40px 80px rgba(0,0,0,0.6);padding:24px;`,
+      body,
+    ),
     "",
   ];
 }
@@ -853,9 +1059,6 @@ function renderSection(p: Profile, id: string): string[] {
   const out: string[] = [];
   switch (id) {
     case "header": {
-      const banner = safeUrl(resolvedBanner(p));
-      if (banner)
-        out.push(`<p align="center"><img src="${banner}" alt="banner" width="100%" /></p>`, "");
       const avatar = safeUrl(p.avatarUrl);
       if (avatar)
         out.push(
@@ -920,15 +1123,12 @@ function renderSection(p: Profile, id: string): string[] {
       const list = p.projects.filter((x) => x.name.trim());
       if (!list.length) break;
       out.push("## Featured Projects", "");
-      
-      // Render all projects with gradient boxes
+
+      // Render projects as plain markdown links (renders correctly on GitHub)
       list.forEach((x) => {
-        const gradStart = x.gradientStart || "8B5CF6";
-        const gradEnd = x.gradientEnd || "22D3EE";
-        const rgb1 = hexToRgb(gradStart);
-        const rgb2 = hexToRgb(gradEnd);
+        const url = safeUrl(x.url);
         out.push(
-          `<div class="project-card" style="background: linear-gradient(135deg, #${gradStart}, #${gradEnd}); background-size: 200% 200%; padding: 2px; border-radius: 10px; margin: 1rem 0; animation: gradient-shift 3s ease infinite;"><div style="background: #0d1117; padding: 1.5rem; border-radius: 8px;"><a href="${safeUrl(x.url)}" style="text-decoration: none; color: inherit;"><h3 style="margin: 0 0 0.5rem; background: linear-gradient(135deg, #${gradStart}, #${gradEnd}); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 0 15px rgba(${rgb1[0]}, ${rgb1[1]}, ${rgb1[2]}, 0.6)) drop-shadow(0 0 30px rgba(${rgb2[0]}, ${rgb2[1]}, ${rgb2[2]}, 0.4)); font-weight: 700; font-size: 1.25rem; animation: text-glow 2s ease-in-out infinite;">${esc(x.name)}</h3>${x.description ? `<p style="margin: 0; color: #8b949e; font-size: 0.9rem; line-height: 1.5;">${esc(x.description)}</p>` : ""}</a></div></div>`,
+          `- [**${esc(x.name)}**](${url})${x.description ? `\n  ${esc(x.description)}` : ""}`,
         );
       });
       break;
@@ -1063,11 +1263,12 @@ export function parseConfig(raw: unknown): Profile {
   const typingInput = source(input["typing"]);
   const workInput = source(input["work"]);
   const addonsInput = source(input["addons"]);
-    const statsCardInput = source(input["statsCard"]);
-    const langsCardInput = source(input["langsCard"]);
-    const streakCardInput = source(input["streakCard"]);
-    const activityGraphInput = source(input["activityGraph"]);
-    const hexOkOrEmpty = (h: unknown) => (typeof h === "string" && /^[0-9a-f]{6}$/i.test(h.replace(/^#/, "")) ? h.replace(/^#/, "") : "");
+  const statsCardInput = source(input["statsCard"]);
+  const langsCardInput = source(input["langsCard"]);
+  const streakCardInput = source(input["streakCard"]);
+  const activityGraphInput = source(input["activityGraph"]);
+  const hexOkOrEmpty = (h: unknown) =>
+    typeof h === "string" && /^[0-9a-f]{6}$/i.test(h.replace(/^#/, "")) ? h.replace(/^#/, "") : "";
 
   const supportInput = source(input["support"]);
   const customInput = source(input["custom"]);
@@ -1124,15 +1325,11 @@ export function parseConfig(raw: unknown): Profile {
     location: text(input["location"], seedProfile.location, 60),
     bio: text(input["bio"], seedProfile.bio, 500),
     avatarUrl: safeUrl(text(input["avatarUrl"], "", 500)),
-    bannerUrl: text(input["bannerUrl"], seedProfile.bannerUrl, 500),
-    appearanceId: appearanceById(
+    appearanceId:
       typeof input["appearanceId"] === "string" ? input["appearanceId"] : seedProfile.appearanceId,
-    ).id,
     accentColor: hexOk(
       typeof input["accentColor"] === "string" ? input["accentColor"] : seedProfile.accentColor,
     ),
-    customBanner: input["customBanner"] === true,
-    bannerMotion: input["bannerMotion"] === "none" ? "none" : "svg-anim",
     statsTheme: statsThemeById(
       typeof input["statsTheme"] === "string" ? input["statsTheme"] : seedProfile.statsTheme,
     ).id,
@@ -1143,33 +1340,68 @@ export function parseConfig(raw: unknown): Profile {
       textColor: hexOkOrEmpty(statsCardInput["textColor"]),
       accentColor: hexOkOrEmpty(statsCardInput["accentColor"]),
       borderColor: hexOkOrEmpty(statsCardInput["borderColor"]),
-      borderRadius: typeof statsCardInput["borderRadius"] === "number" ? Math.max(0, Math.min(30, statsCardInput["borderRadius"])) : seedProfile.statsCard.borderRadius,
+      statColorCommits: hexOkOrEmpty(statsCardInput["statColorCommits"]),
+      statColorStars: hexOkOrEmpty(statsCardInput["statColorStars"]),
+      statColorPrs: hexOkOrEmpty(statsCardInput["statColorPrs"]),
+      statColorIssues: hexOkOrEmpty(statsCardInput["statColorIssues"]),
+      statColorForks: hexOkOrEmpty(statsCardInput["statColorForks"]),
+      borderRadius:
+        typeof statsCardInput["borderRadius"] === "number"
+          ? Math.max(0, Math.min(30, statsCardInput["borderRadius"]))
+          : seedProfile.statsCard.borderRadius,
       showIcons: statsCardInput["showIcons"] !== false,
       hideRank: statsCardInput["hideRank"] === true,
-      includeAllCommits: statsCardInput["includeAllCommits"] !== false,
+      includeAllCommits: statsCardInput["includeAllCommits"] === true,
       countPrivate: statsCardInput["countPrivate"] === true,
       hideMetrics: Array.isArray(statsCardInput["hideMetrics"])
-        ? statsCardInput["hideMetrics"].filter((m) => typeof m === "string" && /^[a-z_]+$/i.test(m)).slice(0, 10)
+        ? statsCardInput["hideMetrics"]
+            .filter((m) => typeof m === "string" && /^[a-z_]+$/i.test(m))
+            .slice(0, 10)
         : seedProfile.statsCard.hideMetrics,
       customTitle: text(statsCardInput["customTitle"], "", 100),
+      apiProvider:
+        statsCardInput["apiProvider"] === "official" || statsCardInput["apiProvider"] === "custom"
+          ? statsCardInput["apiProvider"]
+          : "extended",
+      customApiUrl: text(statsCardInput["customApiUrl"], "", 200),
     },
     langsCard: {
       theme: text(langsCardInput["theme"], seedProfile.langsCard.theme, 50),
-      layout: langsCardInput["layout"] === "donut" || langsCardInput["layout"] === "pie" ? langsCardInput["layout"] : "compact",
-      langsCount: typeof langsCardInput["langsCount"] === "number" ? Math.max(1, Math.min(10, langsCardInput["langsCount"])) : seedProfile.langsCard.langsCount,
+      layout:
+        langsCardInput["layout"] === "donut" || langsCardInput["layout"] === "pie"
+          ? langsCardInput["layout"]
+          : "compact",
+      langsCount:
+        typeof langsCardInput["langsCount"] === "number"
+          ? Math.max(1, Math.min(10, langsCardInput["langsCount"]))
+          : seedProfile.langsCard.langsCount,
       hideProgress: langsCardInput["hideProgress"] === true,
-      borderRadius: typeof langsCardInput["borderRadius"] === "number" ? Math.max(0, Math.min(30, langsCardInput["borderRadius"])) : seedProfile.langsCard.borderRadius,
-      cardWidth: typeof langsCardInput["cardWidth"] === "number" ? Math.max(200, Math.min(600, langsCardInput["cardWidth"])) : seedProfile.langsCard.cardWidth,
-      includeForks: langsCardInput["includeForks"] !== false,
+      borderRadius:
+        typeof langsCardInput["borderRadius"] === "number"
+          ? Math.max(0, Math.min(30, langsCardInput["borderRadius"]))
+          : seedProfile.langsCard.borderRadius,
+      cardWidth:
+        typeof langsCardInput["cardWidth"] === "number"
+          ? Math.max(200, Math.min(600, langsCardInput["cardWidth"]))
+          : seedProfile.langsCard.cardWidth,
+      includeForks: langsCardInput["includeForks"] === true,
       countPrivate: langsCardInput["countPrivate"] === true,
       useCustomLanguages: langsCardInput["useCustomLanguages"] === true,
       customLanguages: Array.isArray(langsCardInput["customLanguages"])
         ? (langsCardInput["customLanguages"] as CustomLanguage[]).slice(0, 10)
         : seedProfile.langsCard.customLanguages,
+      apiProvider:
+        langsCardInput["apiProvider"] === "official" || langsCardInput["apiProvider"] === "custom"
+          ? langsCardInput["apiProvider"]
+          : "extended",
+      customApiUrl: text(langsCardInput["customApiUrl"], "", 200),
     },
     streakCard: {
       theme: text(streakCardInput["theme"], seedProfile.streakCard.theme, 50),
-      borderRadius: typeof streakCardInput["borderRadius"] === "number" ? Math.max(0, Math.min(30, streakCardInput["borderRadius"])) : seedProfile.streakCard.borderRadius,
+      borderRadius:
+        typeof streakCardInput["borderRadius"] === "number"
+          ? Math.max(0, Math.min(30, streakCardInput["borderRadius"]))
+          : seedProfile.streakCard.borderRadius,
       mode: streakCardInput["mode"] === "weekly" ? "weekly" : "daily",
       fireColor: hexOkOrEmpty(streakCardInput["fireColor"]),
       ringColor: hexOkOrEmpty(streakCardInput["ringColor"]),
@@ -1180,8 +1412,12 @@ export function parseConfig(raw: unknown): Profile {
       lineColor: hexOkOrEmpty(activityGraphInput["lineColor"]),
       pointColor: hexOkOrEmpty(activityGraphInput["pointColor"]),
       area: activityGraphInput["area"] !== false,
-      radius: typeof activityGraphInput["radius"] === "number" ? Math.max(0, Math.min(30, activityGraphInput["radius"])) : seedProfile.activityGraph.radius,
-      graphType: activityGraphInput["graphType"] === "activity-graph" ? "activity-graph" : "heatmap",
+      radius:
+        typeof activityGraphInput["radius"] === "number"
+          ? Math.max(0, Math.min(30, activityGraphInput["radius"]))
+          : seedProfile.activityGraph.radius,
+      graphType:
+        activityGraphInput["graphType"] === "activity-graph" ? "activity-graph" : "heatmap",
     },
     typing: {
       lines: text(typingInput["lines"], seedProfile.typing.lines, 1000),

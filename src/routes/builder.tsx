@@ -6,6 +6,7 @@ import {
   Check,
   Code2,
   Copy,
+  Download,
   Eye,
   FileJson,
   GithubIcon,
@@ -20,14 +21,13 @@ import {
 import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ReadmePreview } from "@/components/ReadmePreview";
+import { createZipBlob, dataUrlToUint8Array } from "@/lib/zip";
 import { SkillPicker } from "@/components/builder/SkillPicker";
-import { BackgroundGallery } from "@/components/builder/ThemeGalleries";
 import { StatsCardSection } from "@/components/builder/StatsCardSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { BannerAdjustDialog } from "@/components/builder/BannerAdjustDialog";
 import { Switch } from "@/components/ui/switch";
 import {
   AlertDialog,
@@ -63,7 +63,6 @@ import {
   type Profile,
   type Work,
 } from "@/lib/profile";
-import { applyAppearance, appearanceById, applyStatsTheme } from "@/lib/appearance";
 import { renderStatsSection } from "@/lib/profile";
 import { mdToHtml } from "@/components/ReadmePreview";
 import { sanitizeHtml } from "@/lib/sanitize";
@@ -82,8 +81,7 @@ export const Route = createFileRoute("/builder")({
       { property: "og:title", content: "Builder â€” GitProfile Studio" },
       {
         property: "og:description",
-        content:
-          "Live GitHub README builder with tech icons, section manager and Markdown export.",
+        content: "Live GitHub README builder with tech icons, section manager and Markdown export.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -96,6 +94,17 @@ const DRAFT_KEY = "gitprofile-studio:draft";
 
 function downloadFile(name: string, content: string, type: string) {
   const url = URL.createObjectURL(new Blob([content], { type }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 30_000);
+}
+
+function downloadBlob(name: string, blob: Blob) {
+  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = name;
@@ -180,9 +189,6 @@ function Builder() {
   const [ghLoading, setGhLoading] = useState(false);
   const [ghInfo, setGhInfo] = useState<{ repos: number } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-  const bannerFileRef = useRef<HTMLInputElement>(null);
-  const [adjustDialogOpen, setAdjustDialogOpen] = useState(false);
-  const [adjustImageSrc, setAdjustImageSrc] = useState<string | null>(null);
   const md = useMemo(() => toMarkdown(p), [p]);
 
   // Restore a saved draft after mount (browser storage isn't available during server render).
@@ -206,17 +212,39 @@ function Builder() {
   const setTyping = <K extends keyof Profile["typing"]>(k: K, v: Profile["typing"][K]) =>
     setP((s) => ({ ...s, typing: { ...s.typing, [k]: v } }));
 
-  const copy = async (text: string, msg: string) => {
+  const copy = async (text: string, msg: string): Promise<boolean> => {
     try {
       await navigator.clipboard.writeText(text);
       toast.success(msg);
+      return true;
     } catch {
-      toast.error("Your browser blocked copying. Use the Markdown view and copy manually.");
+      /* fall back to execCommand for browsers that block the Clipboard API */
     }
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "absolute";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      if (ok) {
+        toast.success(msg);
+        return true;
+      }
+    } catch {
+      /* fall through to manual copy */
+    }
+    toast.error("Copy blocked. Select the text and press Ctrl+C / Cmd+C.");
+    return false;
   };
   const copyMd = async () => {
-    await copy(md, "Markdown copied");
-    setCopied(true);
+    const msg = "Markdown copied";
+    const ok = await copy(md, msg);
+    setCopied(ok);
     setTimeout(() => setCopied(false), 1500);
   };
   const saveDraft = () => {
@@ -235,36 +263,19 @@ function Builder() {
       toast.error("That file isn't a valid GitProfile Studio config");
     }
   };
-  const importBannerImage = async (file: File) => {
-    try {
-      const isImage =
-        file.type.startsWith("image/") || /\.(png|jpe?g|gif|webp|svg)$/i.test(file.name);
-      if (!isImage || file.size > 10 * 1024 * 1024) {
-        throw new Error("Choose an image (PNG, JPG, JPEG, WebP, GIF) smaller than 10 MB.");
-      }
-      const dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          if (typeof reader.result === "string") resolve(reader.result);
-          else reject(new Error("That image could not be read."));
-        };
-        reader.onerror = () => reject(new Error("That image could not be read."));
-        reader.readAsDataURL(file);
-      });
-      // Apply default crop
-      const defaultCropped = await prepareBannerImage(file);
-      setP((s) => ({ ...s, bannerUrl: defaultCropped, customBanner: true }));
-      // Open adjustment dialog for fine-tuning position & zoom
-      setAdjustImageSrc(dataUrl);
-      setAdjustDialogOpen(true);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "That image could not be used.");
-    }
-  };
   const importGitHub = async (username?: string) => {
     setGhLoading(true);
     try {
-      const { user, top, languages, repos: allRepos, followers, following, publicRepos, warning } = await fetchGitHubProfile(username ?? p.username);
+      const {
+        user,
+        top,
+        languages,
+        repos: allRepos,
+        followers,
+        following,
+        publicRepos,
+        warning,
+      } = await fetchGitHubProfile(username ?? p.username);
       const totalStars = top.reduce((sum, r) => sum + r.stargazers_count, 0);
       const totalForks = top.reduce((sum, r) => sum + r.forks_count, 0);
       setP((s) => ({
@@ -391,22 +402,11 @@ function Builder() {
           e.target.value = "";
         }}
       />
-      <input
-        ref={bannerFileRef}
-        type="file"
-        accept="image/png,image/jpeg,image/gif,image/webp,.png,.jpg,.jpeg,.webp,.gif"
-        className="hidden"
-        onChange={(e) => {
-          const f = e.target.files?.[0];
-          if (f) importBannerImage(f);
-          e.target.value = "";
-        }}
-      />
 
       <main className="mx-auto grid max-w-[1680px] gap-3 p-3 md:p-4 xl:grid-cols-[220px_minmax(0,1fr)_minmax(0,1.15fr)]">
         {/* Section manager */}
         <nav className={`${tab === "editor" ? "" : "hidden"} xl:block`}>
-          <div className="space-y-1 rounded-xl border border-border bg-card p-2 xl:sticky xl:top-[4.25rem]">
+          <div className="space-y-1 rounded-lg border border-border bg-card p-2 xl:sticky xl:top-[4.25rem]">
             <p className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Customize Sections
             </p>
@@ -461,7 +461,7 @@ function Builder() {
 
         {/* Section editor */}
         <section className={`${tab === "editor" ? "" : "hidden"} xl:block`}>
-          <div className="space-y-4 rounded-xl border border-border bg-card p-4">
+          <div className="space-y-4 rounded-lg border border-border bg-card p-4">
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="mr-auto text-base font-semibold">{sectionLabel(p, active)}</h2>
               <DropdownMenu>
@@ -552,7 +552,7 @@ function Builder() {
               )}
             </div>
             {activeEntry?.hidden && (
-              <p className="rounded-md bg-secondary px-3 py-2 text-xs text-muted-foreground">
+              <p className="rounded-lg bg-secondary px-3 py-2 text-xs text-muted-foreground">
                 This section is hidden and won't appear in your README.
               </p>
             )}
@@ -623,84 +623,26 @@ function Builder() {
                   />
                 </Field>
                 <div>
-                  <Field label="Banner / Cover">
-                    {safeUrl(p.bannerUrl) && (
-                      <img
-                        src={safeUrl(p.bannerUrl)}
-                        alt=""
-                        className="mb-2 h-16 w-full rounded-lg object-cover"
+                  <Field label="Custom accent color">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        aria-label="Accent color"
+                        value={`#${/^[0-9a-f]{6}$/i.test(p.accentColor) ? p.accentColor : "8B5CF6"}`}
+                        onChange={(e) => set("accentColor", e.target.value.slice(1).toUpperCase())}
+                        className="h-9 w-12 cursor-pointer rounded border border-border bg-transparent"
                       />
-                    )}
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => bannerFileRef.current?.click()}
-                      >
-                        <Upload className="h-4 w-4" /> Choose photo
-                      </Button>
-                      {safeUrl(p.bannerUrl) && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            setAdjustImageSrc(p.bannerUrl);
-                            setAdjustDialogOpen(true);
-                          }}
-                        >
-                          <Pencil className="h-4 w-4" /> Edit / Adjust
-                        </Button>
-                      )}
-                    </div>
-                    <UrlField
-                      label="Or paste a custom banner image URL"
-                      value={p.bannerUrl}
-                      onChange={(v) => setP((s) => ({ ...s, bannerUrl: v, customBanner: true }))}
-                      hint="Photos are center-cropped to a 1600 Ã— 600 banner and kept in this browser."
-                      placeholder="https://example.com/banner.jpg"
-                    />
-                    <div className="mt-1.5 flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() =>
-                          setP((s) => {
-                            const theme = appearanceById(s.appearanceId);
-                            return { ...s, bannerUrl: theme.bannerUrl, customBanner: false };
-                          })
+                      <Input
+                        className="font-mono"
+                        value={p.accentColor}
+                        maxLength={6}
+                        onChange={(e) =>
+                          set("accentColor", e.target.value.replace(/[^0-9a-f]/gi, ""))
                         }
-                      >
-                        Use theme banner
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => setP((s) => ({ ...s, bannerUrl: "", customBanner: true }))}
-                      >
-                        Remove
-                      </Button>
+                      />
                     </div>
                   </Field>
                 </div>
-                <Field label="Custom accent color">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      aria-label="Accent color"
-                      value={`#${/^[0-9a-f]{6}$/i.test(p.accentColor) ? p.accentColor : "8B5CF6"}`}
-                      onChange={(e) => set("accentColor", e.target.value.slice(1).toUpperCase())}
-                      className="h-9 w-12 cursor-pointer rounded border border-border bg-transparent"
-                    />
-                    <Input
-                      className="font-mono"
-                      value={p.accentColor}
-                      maxLength={6}
-                      onChange={(e) =>
-                        set("accentColor", e.target.value.replace(/[^0-9a-f]/gi, ""))
-                      }
-                    />
-                  </div>
-                </Field>
               </>
             )}
 
@@ -827,7 +769,11 @@ function Builder() {
                     </Field>
                   )}
                 </div>
-                <SkillPicker value={p.skills} onChange={(v) => set("skills", v)} techDisplay={p.techDisplay} />
+                <SkillPicker
+                  value={p.skills}
+                  onChange={(v) => set("skills", v)}
+                  techDisplay={p.techDisplay}
+                />
               </>
             )}
 
@@ -926,7 +872,10 @@ function Builder() {
                                 "projects",
                                 p.projects.map((x, j) =>
                                   j === i
-                                    ? { ...x, gradientStart: e.target.value.replace(/[^0-9a-f]/gi, "") }
+                                    ? {
+                                        ...x,
+                                        gradientStart: e.target.value.replace(/[^0-9a-f]/gi, ""),
+                                      }
                                     : x,
                                 ),
                               )
@@ -961,7 +910,10 @@ function Builder() {
                                 "projects",
                                 p.projects.map((x, j) =>
                                   j === i
-                                    ? { ...x, gradientEnd: e.target.value.replace(/[^0-9a-f]/gi, "") }
+                                    ? {
+                                        ...x,
+                                        gradientEnd: e.target.value.replace(/[^0-9a-f]/gi, ""),
+                                      }
                                     : x,
                                 ),
                               )
@@ -977,7 +929,16 @@ function Builder() {
                   variant="secondary"
                   disabled={p.projects.length >= 8}
                   onClick={() =>
-                    set("projects", [...p.projects, { name: "", url: "", description: "", gradientStart: "8B5CF6", gradientEnd: "22D3EE" }])
+                    set("projects", [
+                      ...p.projects,
+                      {
+                        name: "",
+                        url: "",
+                        description: "",
+                        gradientStart: "8B5CF6",
+                        gradientEnd: "22D3EE",
+                      },
+                    ])
                   }
                 >
                   <Plus className="h-4 w-4" /> Add project
@@ -994,9 +955,7 @@ function Builder() {
               </>
             )}
 
-                        {active === "stats" && (
-              <StatsCardSection profile={p} onChange={setP} />
-            )}
+            {active === "stats" && <StatsCardSection profile={p} onChange={setP} />}
 
             {active === "blog" && (
               <>
@@ -1169,9 +1128,9 @@ function Builder() {
                 </Button>
               </div>
             </div>
-            <div className="max-h-[calc(100vh-8.5rem)] overflow-auto rounded-xl">
+            <div className="max-h-[calc(100vh-8.5rem)] overflow-auto rounded-lg">
               {previewTab === "import" ? (
-                <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+                <div className="rounded-lg border border-border bg-card p-6 space-y-4">
                   <div className="space-y-1">
                     <h3 className="text-sm font-semibold">Import from GitHub</h3>
                     <p className="text-xs text-muted-foreground">
@@ -1210,7 +1169,7 @@ function Builder() {
                   </div>
                 </div>
               ) : previewTab === "markdown" ? (
-                <pre className="whitespace-pre-wrap break-all rounded-xl border border-border bg-card p-5 font-mono text-xs leading-relaxed text-muted-foreground">
+                <pre className="whitespace-pre-wrap break-all rounded-lg border border-border bg-card p-5 font-mono text-xs leading-relaxed text-muted-foreground">
                   {md}
                 </pre>
               ) : (
@@ -1220,25 +1179,6 @@ function Builder() {
           </div>
         </section>
       </main>
-
-      <div
-        className={`${tab === "editor" ? "" : "hidden"} xl:block mx-auto max-w-[1680px] space-y-6 px-3 pb-8 md:px-4`}
-      >
-        <BackgroundGallery
-          value={p.appearanceId}
-          onChange={(id) => setP((s) => applyAppearance(s, id))}
-        />
-      </div>
-
-      <BannerAdjustDialog
-        open={adjustDialogOpen}
-        onOpenChange={setAdjustDialogOpen}
-        imageSrc={adjustImageSrc}
-        onSave={(newBannerUrl) => {
-          setP((s) => ({ ...s, bannerUrl: newBannerUrl, customBanner: true }));
-          toast.success("Banner updated");
-        }}
-      />
     </div>
   );
 }
@@ -1317,7 +1257,7 @@ function Chips({
         <button
           key={t}
           onClick={() => onChange(t)}
-          className={`rounded-md border px-2.5 py-1 font-mono text-xs ${value === t ? "border-accent text-accent" : "border-border text-muted-foreground hover:text-foreground"}`}
+          className={`rounded-lg border px-2.5 py-1 font-mono text-xs ${value === t ? "border-accent text-accent" : "border-border text-muted-foreground hover:text-foreground"}`}
         >
           {t}
         </button>

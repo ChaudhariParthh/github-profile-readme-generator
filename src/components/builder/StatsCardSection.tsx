@@ -380,9 +380,30 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
     return `[![${cardAlt}](${exportUrl})](${linkTarget})`;
   };
 
-  const handleCopyMarkdown = () => {
+  const handleCopyMarkdown = async () => {
     const md = generateMarkdown();
-    navigator.clipboard.writeText(md).then(() => {
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(md);
+      ok = true;
+    } catch {
+      /* fall back to execCommand for browsers that block the Clipboard API */
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = md;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "absolute";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+      } catch {
+        /* fall through to manual copy */
+      }
+    }
+    if (ok) {
       setCopied(true);
       toast.success(
         selectedCard === "all-stacked"
@@ -392,7 +413,9 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
             : "Stats card Markdown copied to clipboard!"
       );
       setTimeout(() => setCopied(false), 2000);
-    });
+    } else {
+      toast.error("Copy blocked. Select the text and press Ctrl+C / Cmd+C.");
+    }
   };
 
   // Updaters for configs
@@ -1174,6 +1197,64 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
               </div>
             </div>
 
+            {/* API Service Provider */}
+            <div className="p-3 rounded-lg border border-primary/20 bg-primary/5 space-y-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <span className="text-xs font-semibold text-foreground block">Stats Card API Service</span>
+                  <span className="text-[11px] text-muted-foreground">
+                    Select endpoint to avoid GitHub image proxy rate limits &amp; 504 timeouts
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 bg-background border border-border p-0.5 rounded-lg">
+                  <button
+                    type="button"
+                    onClick={() => updateStatsCard((c) => ({ ...c, apiProvider: "extended" }))}
+                    className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${
+                      (p.statsCard?.apiProvider ?? "extended") === "extended"
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Extended (Fast &amp; Cached)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => updateStatsCard((c) => ({ ...c, apiProvider: "official" }))}
+                    className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${
+                      p.statsCard?.apiProvider === "official"
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Official Vercel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => updateStatsCard((c) => ({ ...c, apiProvider: "custom" }))}
+                    className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${
+                      p.statsCard?.apiProvider === "custom"
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Custom
+                  </button>
+                </div>
+              </div>
+              {p.statsCard?.apiProvider === "custom" && (
+                <div className="pt-2">
+                  <label className="text-xs font-medium text-foreground mb-1 block">Custom API Base URL</label>
+                  <Input
+                    value={p.statsCard?.customApiUrl || ""}
+                    onChange={(e) => updateStatsCard((c) => ({ ...c, customApiUrl: e.target.value }))}
+                    placeholder="https://your-custom-stats.vercel.app"
+                    className="h-8 text-xs font-mono"
+                  />
+                </div>
+              )}
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <div className="flex items-center justify-between p-2.5 rounded-lg border border-border/70 bg-background/50">
                 <div className="text-xs">
@@ -1189,10 +1270,10 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
               <div className="flex items-center justify-between p-2.5 rounded-lg border border-border/70 bg-background/50">
                 <div className="text-xs">
                   <div className="font-medium text-foreground">Count All Commits</div>
-                  <div className="text-muted-foreground text-[11px]">Include all-time commits, not just yearly</div>
+                  <div className="text-muted-foreground text-[11px]">Include all-time commits (may timeout if large)</div>
                 </div>
                 <Switch
-                  checked={p.statsCard?.includeAllCommits ?? true}
+                  checked={p.statsCard?.includeAllCommits ?? false}
                   onCheckedChange={(val) => updateStatsCard((c) => ({ ...c, includeAllCommits: val }))}
                 />
               </div>
@@ -1379,6 +1460,64 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
               </div>
             </div>
 
+            {/* API Service Provider for Languages */}
+            <div className="p-3 rounded-lg border border-primary/20 bg-primary/5 space-y-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <span className="text-xs font-semibold text-foreground block">Languages Card API Service</span>
+                  <span className="text-[11px] text-muted-foreground">
+                    Select endpoint to avoid GitHub image proxy rate limits &amp; 504 timeouts
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 bg-background border border-border p-0.5 rounded-lg">
+                  <button
+                    type="button"
+                    onClick={() => updateLangsCard((c) => ({ ...c, apiProvider: "extended" }))}
+                    className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${
+                      (p.langsCard?.apiProvider ?? "extended") === "extended"
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Extended (Fast &amp; Cached)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => updateLangsCard((c) => ({ ...c, apiProvider: "official" }))}
+                    className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${
+                      p.langsCard?.apiProvider === "official"
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Official Vercel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => updateLangsCard((c) => ({ ...c, apiProvider: "custom" }))}
+                    className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${
+                      p.langsCard?.apiProvider === "custom"
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Custom
+                  </button>
+                </div>
+              </div>
+              {p.langsCard?.apiProvider === "custom" && (
+                <div className="pt-2">
+                  <label className="text-xs font-medium text-foreground mb-1 block">Custom API Base URL</label>
+                  <Input
+                    value={p.langsCard?.customApiUrl || ""}
+                    onChange={(e) => updateLangsCard((c) => ({ ...c, customApiUrl: e.target.value }))}
+                    placeholder="https://your-custom-stats.vercel.app"
+                    className="h-8 text-xs font-mono"
+                  />
+                </div>
+              )}
+            </div>
+
             {/* Language Mode Selector */}
             <div className="p-3 rounded-lg border border-primary/20 bg-primary/5 space-y-3">
               <div className="flex items-center justify-between">
@@ -1456,10 +1595,10 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
                     <div className="flex items-center justify-between p-2 rounded-md border border-border/60 bg-background/50">
                       <div>
                         <div className="font-medium text-foreground">Include Forked Repositories</div>
-                        <div className="text-[10px] text-muted-foreground">Fixes "Top Languages Unavailable" for forks</div>
+                        <div className="text-[10px] text-muted-foreground">Search forks (may cause Camo timeout if large)</div>
                       </div>
                       <Switch
-                        checked={p.langsCard?.includeForks ?? true}
+                        checked={p.langsCard?.includeForks ?? false}
                         onCheckedChange={(val) => updateLangsCard((c) => ({ ...c, includeForks: val }))}
                       />
                     </div>
