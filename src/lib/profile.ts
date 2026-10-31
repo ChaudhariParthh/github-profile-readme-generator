@@ -200,6 +200,12 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
     ["InVision", "invision", "F82749", "invision/invision-original.svg"],
     ["Framer", "framer", "0055FF", "framer/framer-original.svg"],
     ["MATLAB", "matlab", "DD11CF", "matlab/matlab-original.svg"],
+    ["Lovable", "lovable", "7C3AED"],
+    ["Cursor IDE", "cursor", "000000"],
+    ["Antigravity IDE", "antigravity", "6366F1"],
+    ["Bolt.new", "bolt", "F59E0B"],
+    ["Replit", "replit", "00CC66"],
+    ["Trae", "trae", "2563EB"],
   ],
 };
 
