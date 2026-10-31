@@ -75,17 +75,42 @@ const themes = [
 function Index() {
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Background geometry: diagonal panels + purple/blue/cyan glows */}
+      {/* Background geometry: stepped diagonal panels + purple/cyan glows, matching reference */}
       <div className="absolute inset-0" />
       <div
         className="absolute inset-0"
         style={{
           backgroundImage: `
-            radial-gradient(700px circle at 15% 25%, color-mix(in oklab, var(--primary) 18%, transparent), transparent),
-            radial-gradient(600px circle at 80% 70%, color-mix(in oklab, var(--accent) 16%, transparent), transparent),
-            radial-gradient(500px circle at 50% -10%, color-mix(in oklab, color-mix(in oklab, var(--primary) 55%, var(--accent) 45%) 14%, transparent), transparent),
-            linear-gradient(135deg, transparent 48%, color-mix(in oklab, var(--primary) 7%, transparent) 50%, transparent 52%),
-            linear-gradient(225deg, transparent 46%, color-mix(in oklab, var(--accent) 6%, transparent) 50%, transparent 54%)
+            /* corner dot grids */
+            radial-gradient(1px 1px at 62% 16%, color-mix(in oklab, var(--border) 50%, transparent), transparent),
+            radial-gradient(1px 1px at 64% 16%, color-mix(in oklab, var(--border) 50%, transparent), transparent),
+            radial-gradient(1px 1px at 64% 18%, color-mix(in oklab, var(--border) 50%, transparent), transparent),
+            radial-gradient(1px 1px at 66% 16%, color-mix(in oklab, var(--border) 50%, transparent), transparent),
+            radial-gradient(1px 1px at 66% 18%, color-mix(in oklab, var(--border) 50%, transparent), transparent),
+            radial-gradient(1px 1px at 38% 76%, color-mix(in oklab, var(--border) 45%, transparent), transparent),
+            radial-gradient(1px 1px at 36% 78%, color-mix(in oklab, var(--border) 45%, transparent), transparent),
+            radial-gradient(1px 1px at 38% 80%, color-mix(in oklab, var(--border) 45%, transparent), transparent),
+            radial-gradient(1px 1px at 40% 76%, color-mix(in oklab, var(--border) 45%, transparent), transparent),
+            radial-gradient(1px 1px at 40% 78%, color-mix(in oklab, var(--border) 45%, transparent), transparent),
+            radial-gradient(1px 1px at 42% 76%, color-mix(in oklab, var(--border) 45%, transparent), transparent),
+            radial-gradient(1px 1px at 42% 80%, color-mix(in oklab, var(--border) 45%, transparent), transparent),
+            radial-gradient(1px 1px at 44% 78%, color-mix(in oklab, var(--border) 45%, transparent), transparent),
+
+            /* stepped panel fills - right panel */
+            linear-gradient(135deg, transparent 36%, color-mix(in oklab, var(--primary) 6%, transparent) 38%, transparent 40%),
+            linear-gradient(135deg, transparent 44%, color-mix(in oklab, var(--accent) 6%, transparent) 46%, transparent 48%),
+            linear-gradient(135deg, transparent 52%, color-mix(in oklab, var(--primary) 5%, transparent) 54%, transparent 56%),
+
+            /* middle stepped panel fill */
+            linear-gradient(135deg, transparent 58%, color-mix(in oklab, color-mix(in oklab, var(--primary) 60%, var(--accent) 40%) 5%, transparent) 60%, transparent 62%),
+
+            /* glowing panel borders - cyan/blue */
+            linear-gradient(135deg, transparent 39%, oklch(0.82 0.16 212) 40%, oklch(0.82 0.16 212) 41%, transparent 42%),
+            linear-gradient(135deg, transparent 47%, oklch(0.8 0.15 211.5) 48%, oklch(0.8 0.15 211.5) 49%, transparent 50%),
+
+            /* glowing panel borders - purple */
+            linear-gradient(135deg, transparent 53%, oklch(0.62 0.22 295) 54%, oklch(0.62 0.22 295) 55%, transparent 56%),
+            linear-gradient(135deg, transparent 61%, oklch(0.6 0.24 295) 62%, oklch(0.6 0.24 295) 63%, transparent 64%),
           `,
         }}
       />
