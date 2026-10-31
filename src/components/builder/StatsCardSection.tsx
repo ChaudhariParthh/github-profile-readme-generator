@@ -469,6 +469,11 @@ export function StatsCardSection({ profile: p, onChange }: StatsCardSectionProps
       accentColor: "",
       textColor: "",
       borderColor: "",
+      statColorCommits: "",
+      statColorStars: "",
+      statColorPrs: "",
+      statColorIssues: "",
+      statColorForks: "",
     }));
     updateLangsCard((c) => ({ ...c, theme: "default" }));
     updateStreakCard((c) => ({ ...c, theme: "default", fireColor: "", ringColor: "" }));

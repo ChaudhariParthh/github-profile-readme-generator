@@ -170,6 +170,63 @@ export const THEME_STATS_PALETTES: Record<string, ThemeStatsPalette> = {
     statColorIssues: "F85149",
     statColorForks: "A371F7",
   },
+  "sunset-orange": {
+    id: "sunset-orange",
+    name: "Sunset Orange",
+    bg: "0C0A04",
+    title: "FB923C",
+    text: "FDBA74",
+    icon: "FB923C",
+    border: "3B1A03",
+    ring: "FB923C",
+    fire: "FB923C",
+    sideNums: "FB923C",
+    currStreakNum: "FFFFFF",
+    graphColor: "FB923C",
+    statColorCommits: "FB923C",
+    statColorStars: "A3E635",
+    statColorPrs: "FBBF24",
+    statColorIssues: "F87171",
+    statColorForks: "C084FC",
+  },
+  "emerald-green": {
+    id: "emerald-green",
+    name: "Emerald Green",
+    bg: "020C0A",
+    title: "10B981",
+    text: "6EE7B7",
+    icon: "10B981",
+    border: "064E3B",
+    ring: "10B981",
+    fire: "10B981",
+    sideNums: "10B981",
+    currStreakNum: "FFFFFF",
+    graphColor: "10B981",
+    statColorCommits: "10B981",
+    statColorStars: "4ADE80",
+    statColorPrs: "FBBF24",
+    statColorIssues: "F87171",
+    statColorForks: "C084FC",
+  },
+  "rose-pink": {
+    id: "rose-pink",
+    name: "Rose Pink",
+    bg: "0A0306",
+    title: "F472B6",
+    text: "FBCFE8",
+    icon: "F472B6",
+    border: "831843",
+    ring: "F472B6",
+    fire: "F472B6",
+    sideNums: "F472B6",
+    currStreakNum: "FFFFFF",
+    graphColor: "F472B6",
+    statColorCommits: "F472B6",
+    statColorStars: "86EFAC",
+    statColorPrs: "FCD34D",
+    statColorIssues: "FCA5A5",
+    statColorForks: "D8B4FE",
+  },
 };
 
 export function resolveThemePalette(p: Profile): ThemeStatsPalette {
@@ -340,10 +397,16 @@ export function generateStatsCardSvg(p: Profile): string {
   const textColor = (cfg?.textColor || palette.text).replace(/^#/, "");
   const iconColor = palette.icon.replace(/^#/, "");
   const borderColor = (cfg?.borderColor || palette.border).replace(/^#/, "");
+  // Five distinct stat value colors
+  const statColorCommits = (cfg?.statColorCommits || palette.statColorCommits).replace(/^#/, "");
+  const statColorStars = (cfg?.statColorStars || palette.statColorStars).replace(/^#/, "");
+  const statColorPrs = (cfg?.statColorPrs || palette.statColorPrs).replace(/^#/, "");
+  const statColorIssues = (cfg?.statColorIssues || palette.statColorIssues).replace(/^#/, "");
+  const statColorForks = (cfg?.statColorForks || palette.statColorForks).replace(/^#/, "");
   const radius = cfg?.borderRadius ?? 12;
 
   const width = 495;
-  const height = 195;
+  const height = 245;
   const pad = 25;
   const fontFamily = `-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif`;
 
@@ -369,31 +432,49 @@ export function generateStatsCardSvg(p: Profile): string {
   <text x="${pad}" y="42" font-family="${fontFamily}" font-size="18" font-weight="700" fill="#${titleColor}">${xmlEsc(title)}</text>
   
   <!-- Row 1: Total Commits -->
-  <g transform="translate(${pad}, 68)" fill="#${iconColor}">
+  <g transform="translate(${pad}, 68)" fill="#${statColorCommits}">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
       <path fill-rule="evenodd" d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM8 0a8 8 0 100 16A8 8 0 008 0zm.5 4.75a.75.75 0 00-1.5 0v3.5a.75.75 0 00.375.65l2.5 1.5a.75.75 0 00.75-1.3L8.5 7.91V4.75z"></path>
     </svg>
     <text x="28" y="14" font-family="${fontFamily}" font-size="14" font-weight="600" fill="#${textColor}">${xmlEsc(commitsLabel)}</text>
-    <text x="210" y="14" font-family="${fontFamily}" font-size="14" font-weight="700" fill="#${textColor}">${commitsVal.toLocaleString()}</text>
+    <text x="210" y="14" font-family="${fontFamily}" font-size="14" font-weight="700" fill="#${statColorCommits}">${commitsVal.toLocaleString()}</text>
   </g>
 
   <!-- Row 2: Total PRs -->
-  <g transform="translate(${pad}, 104)" fill="#${iconColor}">
+  <g transform="translate(${pad}, 104)" fill="#${statColorPrs}">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
       <path fill-rule="evenodd" d="M7.177 3.073L9.573.677A.25.25 0 0110 .854v4.792a.25.25 0 01-.427.177L7.177 3.427a.25.25 0 010-.354zM3.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25zM11 2.5h-1V4h1a1 1 0 011 1v5.628a2.251 2.251 0 101.5 0V5A2.5 2.5 0 0011 2.5zm1 10.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0zM3.75 12a.75.75 0 100 1.5.75.75 0 000-1.5z"></path>
     </svg>
     <text x="28" y="14" font-family="${fontFamily}" font-size="14" font-weight="600" fill="#${textColor}">Total PRs:</text>
-    <text x="210" y="14" font-family="${fontFamily}" font-size="14" font-weight="700" fill="#${textColor}">${prsVal.toLocaleString()}</text>
+    <text x="210" y="14" font-family="${fontFamily}" font-size="14" font-weight="700" fill="#${statColorPrs}">${prsVal.toLocaleString()}</text>
   </g>
 
   <!-- Row 3: Total Issues -->
-  <g transform="translate(${pad}, 140)" fill="#${iconColor}">
+  <g transform="translate(${pad}, 140)" fill="#${statColorIssues}">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
       <path d="M8 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
       <path fill-rule="evenodd" d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"></path>
     </svg>
     <text x="28" y="14" font-family="${fontFamily}" font-size="14" font-weight="600" fill="#${textColor}">Total Issues:</text>
-    <text x="210" y="14" font-family="${fontFamily}" font-size="14" font-weight="700" fill="#${textColor}">${issuesVal.toLocaleString()}</text>
+    <text x="210" y="14" font-family="${fontFamily}" font-size="14" font-weight="700" fill="#${statColorIssues}">${issuesVal.toLocaleString()}</text>
+  </g>
+
+  <!-- Row 4: Total Stars -->
+  <g transform="translate(${pad}, 176)" fill="#${statColorStars}">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+      <path fill-rule="evenodd" d="M16 6.31a.498.498 0 00-.76-.439l-2.74-.956 1.09-4.235a.499.499 0 00-1.395-.29l-1.54 2.363-2.74-.956a.499.499 0 00-.61 0l-2.74.956 1.09 4.235a.5.5 0 001.395.29l1.54-2.362 2.74.956a.5.5 0 00.76-.439zM8 10.625a.5.5 0 01-.5-.5V8a.5.5 0 00-1 0v2.125a.5.5 0 01-1 0V8a.5.5 0 00-1 0v2.125a.5.5 0 01-1 0V8a.5.5 0 00-1 0v2.125a.5.5 0 01-1 0V8a.5.5 0 00-1 0v2.125a.5.5 0 01-1 0V8a.5.5 0 00-1 0V7a.5.5 0 011 0v1a.5.5 0 001 0v1a.5.5 0 011 0v1a.5.5 0 001 0v1a.5.5 0 011 0v1a.5.5 0 001 0v1a.5.5 0 011 0v1a.5.5 0 001 0z"></path>
+    </svg>
+    <text x="28" y="14" font-family="${fontFamily}" font-size="14" font-weight="600" fill="#${textColor}">Total Stars:</text>
+    <text x="210" y="14" font-family="${fontFamily}" font-size="14" font-weight="700" fill="#${statColorStars}">${(data?.totalStars ?? stars).toLocaleString()}</text>
+  </g>
+
+  <!-- Row 5: Total Forks -->
+  <g transform="translate(${pad}, 212)" fill="#${statColorForks}">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+      <path fill-rule="evenodd" d="M7.25 1H5.5A2.75 2.75 0 002.75 3.75v1.168c0 .437.156.847.416 1.169l.858 1.072a1.75 1.75 0 012.434 0l.858-1.072A1.75 1.75 0 016.334 4.918V3.75C6.334 3.336 6.747 3 7.25 3s.916.336.916.75v1.168a1.75 1.75 0 012.434 0l.858 1.072a1.75 1.75 0 012.434 0l.858-1.072A1.75 1.75 0 019.416 4.918V3.75c0-.414.414-.75.916-.75S10.25 3.336 10.25 3.75v1.168a1.75 1.75 0 012.434 0l.858 1.072a1.75 1.75 0 012.434 0l.858-1.072A2.75 2.75 0 0013.25 3.75V1.75C13.25.784 12.466 0 11.5 0H7.25C6.354 0 5.566.784 5.566 1.75zM4.25 4c0-.69.56-1.25 1.25-1.25s1.25.56 1.25 1.25v1.373c0 .324-.145.634-.383.84l-.922.784c-.299.254-.437.604-.345.945l.108.402c.121.455.573.74 1.019.74s.899-.285 1.019-.74l.108-.402c.092-.34-.046-.69-.345-.945l-.922-.784c-.238-.205-.383-.516-.383-.84V4zM11.25 4c0-.69.56-1.25 1.25-1.25s1.25.56 1.25 1.25v1.373c0 .324-.145.634-.383.84l-.922.784c-.299.254-.437.604-.345.945l.108.402c.121.455.573.74 1.019.74s.899-.285 1.019-.74l.108-.402c.092-.34-.046-.69-.345-.945l-.922-.784c-.238-.205-.383-.516-.383-.84V4zM8.25 8c0-.69.56-1.25 1.25-1.25s1.25.56 1.25 1.25v1.373c0 .324-.145.634-.383.84l-.922.784c-.299.254-.437.604-.345.945l.108.402c.121.455.573.74 1.019.74s.899-.285 1.019-.74l.108-.402c.092-.34-.046-.69-.345-.945l-.922-.784c-.238-.205-.383-.516-.383-.84V8z"></path>
+    </svg>
+    <text x="28" y="14" font-family="${fontFamily}" font-size="14" font-weight="600" fill="#${textColor}">Total Forks:</text>
+    <text x="210" y="14" font-family="${fontFamily}" font-size="14" font-weight="700" fill="#${statColorForks}">${(data?.totalForks ?? forks).toLocaleString()}</text>
   </g>
 
   <!-- Right side Octocat Circle Gauge -->
