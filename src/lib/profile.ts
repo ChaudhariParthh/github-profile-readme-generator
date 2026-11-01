@@ -70,7 +70,7 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
     ["Bulma", "bulma", "00D1B2", "bulma/bulma-original.svg"],
     ["GTK", "gtk", "3584E4", "gtk/gtk-original.svg"],
     ["Qt", "qt", "41CD52", "qt/qt-original.svg"],
-    ["wxWidgets", "wxwidgets", "2F87CB", "https://github.com/wxWidgets.png?size=128"],
+    ["wxWidgets", "wxwidgets", "2F87CB", "https://avatars.githubusercontent.com/u/791023?s=128&v=4"],
     ["Ember", "emberdotjs", "E04E3D", "emberdotjs/emberdotjs-original.svg"],
   ],
   Backend: [
@@ -97,7 +97,7 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
     ["Solr", "apachesolr", "DC5B22"],
     ["RabbitMQ", "rabbitmq", "FF6600", "rabbitmq/rabbitmq-original.svg"],
     ["Hadoop", "hadoop", "FFC72D", "hadoop/hadoop-original.svg"],
-    ["OpenResty", "openresty", "F75024", "https://github.com/openresty.png?size=128"],
+    ["OpenResty", "openresty", "F75024", "https://avatars.githubusercontent.com/u/7390180?s=128&v=4"],
   ],
   "AI / ML": [
     ["PyTorch", "pytorch", "EE4C2C", "pytorch/pytorch-original.svg"],
