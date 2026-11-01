@@ -79,7 +79,7 @@ function Index() {
       {/* Hero background image with theme-aware fade */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[1100px] bg-cover bg-center bg-no-repeat opacity-90 [.light_&]:opacity-25"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[1100px] bg-cover bg-center bg-no-repeat opacity-100 [.light_&]:opacity-25"
         style={{ backgroundImage: `url(${heroBg.url})` }}
       />
       <div
@@ -87,7 +87,7 @@ function Index() {
         className="pointer-events-none absolute inset-x-0 top-0 h-[1100px]"
         style={{
           background:
-            "linear-gradient(to bottom, color-mix(in oklab, var(--background) 25%, transparent) 0%, color-mix(in oklab, var(--background) 10%, transparent) 50%, var(--background) 100%)",
+            "linear-gradient(to bottom, color-mix(in oklab, var(--background) 0%, transparent) 0%, transparent 60%, var(--background) 100%)",
         }}
       />
 
