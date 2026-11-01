@@ -1,12 +1,14 @@
 # GitProfile Studio
 
-GitHub Profile README Generator — create beautiful GitHub profile READMEs with customizable templates, badges, stats cards, and developer widgets.
+GitHub Profile README Generator is a web-based tool that allows developers to create structured and personalized GitHub profile READMEs with ease. It provides customizable templates, tech badges, GitHub stats cards, social links, and developer widgets, along with a live preview to visualize the README in real time. Users can customize their profile content and generate Markdown that can be copied directly to their GitHub profile.
 
 ## Overview
 
 GitProfile Studio is a front-end application for building polished GitHub profile README files with a visual workflow. It helps developers create a profile that communicates skills, projects, social links, and personal branding without writing raw Markdown from scratch.
 
 The project is designed to be lightweight, responsive, and easy to use. It focuses on a clean generation workflow, live previewing, and static deployment support.
+
+<img width="1892" height="1005" alt="image" src="https://github.com/user-attachments/assets/9f926158-5ca2-482e-b87d-0e84cbac87e7" />
 
 ## Built with
 
