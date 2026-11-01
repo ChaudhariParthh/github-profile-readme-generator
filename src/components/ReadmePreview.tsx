@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { BookOpen, Github } from "lucide-react";
-import { toMarkdown, SKILL_INDEX, skillDeviconUrl, type Profile } from "@/lib/profile";
+import { statsFallbackUrl, toMarkdown, SKILL_INDEX, skillDeviconUrl, type Profile } from "@/lib/profile";
 import { generateStatsCardDataUri, generateLangsCardDataUri } from "@/lib/appearance";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { Button } from "@/components/ui/button";
@@ -108,6 +108,10 @@ export function ReadmePreview({
         return;
       }
     }
+
+    // Stats fallback mirror for external services
+    const fallback = img.dataset['fellBack'] ? "" : statsFallbackUrl(img.src);
+    if (fallback) { img.dataset['fellBack'] = "1"; img.src = fallback; return; }
 
     img.dataset["failed"] = "1";
     const span = document.createElement("span");

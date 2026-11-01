@@ -1,15 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  parseConfig,
-  safeUrl,
-  seedProfile,
-  toMarkdown,
-  statsCardUrl,
-  langsCardUrl,
-  streakCardUrl,
-  graphCardUrl,
-} from "@/lib/profile";
-import { generateLangsCardSvg } from "@/lib/appearance";
+import { bmcUrl, parseConfig, PRESETS, safeUrl, seedProfile, statsFallbackUrl, toMarkdown, statsCardUrl, langsCardUrl, streakCardUrl, graphCardUrl } from "@/lib/profile";
+import { applyAppearance, applyStatsLayout, BACKGROUND_THEMES, STATS_LAYOUTS, generateLangsCardSvg } from "@/lib/appearance";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { moveItem } from "@/lib/reorder";
 import { createZipBlob } from "@/lib/zip";
@@ -122,6 +113,14 @@ describe("sanitizeHtml", () => {
     expect(html).not.toContain("onerror");
     expect(html).not.toContain("javascript:");
     expect(html).toContain('src="https://example.com/a"');
+  });
+  it("applies a background theme without resetting profile content", () => {
+    const next = applyAppearance({ ...seedProfile, name: "Ada", skills: ["Rust"] }, "neon-cyber");
+    expect(next.name).toBe("Ada");
+    expect(next.skills).toEqual(["Rust"]);
+    expect(next.appearanceId).toBe("neon-cyber");
+    expect(next.bannerUrl).toBe(BACKGROUND_THEMES.find((t) => t.id === "neon-cyber")?.bannerUrl);
+    expect(toMarkdown({ ...next, showBanner: true })).toContain(next.bannerUrl);
   });
 });
 
@@ -341,5 +340,32 @@ describe("GitHub Stats Cards URL generators", () => {
     const blob = createZipBlob([{ name: "README.md", data: "# Readme" }]);
     expect(blob.type).toBe("application/zip");
     expect(blob.size).toBeGreaterThan(100);
+  });
+});
+
+describe("phase 1 correctness", () => {
+  it("banner is off by default", () => {
+    expect(seedProfile.showBanner).toBe(false);
+    expect(toMarkdown(seedProfile)).not.toContain('alt="banner"');
+  });
+  it("banner toggle updates Markdown", () => {
+    expect(toMarkdown({ ...seedProfile, showBanner: true })).toContain('alt="banner"');
+  });
+  it("each preset resolves by name for ?preset=", () => {
+    expect(Object.keys(PRESETS)).toEqual(["Minimal", "Professional", "Animated Developer", "AI Engineer", "Cybersecurity", "Student Portfolio"]);
+    expect(PRESETS["Cybersecurity"]!.title).toBe("Security Engineer");
+  });
+  it("stats widget has a fallback mirror", () => {
+    expect(statsFallbackUrl("https://github-readme-stats.vercel.app/api?username=a")).toBe("https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api?username=a");
+    expect(statsFallbackUrl("https://example.com/x")).toBe("");
+  });
+  it("preserves a valid Buy Me a Coffee URL and rejects other hosts", () => {
+    expect(bmcUrl("https://www.buymeacoffee.com/parth")).toBe("https://www.buymeacoffee.com/parth");
+    expect(toMarkdown({ ...seedProfile, sections: [{ id: "support", hidden: false }], support: { ...seedProfile.support, bmc: "https://www.buymeacoffee.com/parth" } })).toContain('href="https://www.buymeacoffee.com/parth"');
+    expect(bmcUrl("https://evil.com/parth")).toBe("");
+    expect(bmcUrl("parth")).toBe("https://buymeacoffee.com/parth");
+  });
+  it("ships no Unsplash banners", () => {
+    expect(BACKGROUND_THEMES.some((t) => t.bannerUrl.includes("unsplash"))).toBe(false);
   });
 });

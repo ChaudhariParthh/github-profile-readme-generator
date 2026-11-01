@@ -1,9 +1,14 @@
 import {
   DEFAULT_ACCENT,
+  DEFAULT_APPEARANCE_ID,
+  DEFAULT_STATS_LAYOUT_ID,
   DEFAULT_STATS_THEME_ID,
   resolvedAccent,
+  resolvedBanner,
+  statsLayoutById,
   statsThemeById,
   trophyCardUrl,
+  appearanceById,
   statsCardUrl,
   langsCardUrl,
   streakCardUrl,
@@ -525,7 +530,11 @@ export type Profile = {
   title: string;
   location: string;
   bio: string;
-  avatarUrl: string;
+  bannerUrl: string; // static image or GIF
+  showBanner: boolean; // banner is opt-in
+  avatarUrl: string; // optional; empty uses GitHub avatar
+  customBanner: boolean;
+  statsLayout: string;
   appearanceId: string;
   accentColor: string;
   statsTheme: string;
@@ -581,8 +590,12 @@ export const seedProfile: Profile = {
   title: "",
   location: "",
   bio: "",
+  bannerUrl: appearanceById(DEFAULT_APPEARANCE_ID).bannerUrl,
+  showBanner: false,
+  customBanner: false,
   avatarUrl: "",
   appearanceId: "",
+  statsLayout: DEFAULT_STATS_LAYOUT_ID,
   accentColor: DEFAULT_ACCENT,
   statsTheme: DEFAULT_STATS_THEME_ID,
   statsCard: { ...defaultStatsCardConfig },
@@ -618,6 +631,79 @@ export const seedProfile: Profile = {
   support: { bmc: "", kofi: "", chai: "", sponsors: false },
   sections: ALL_SECTIONS(["trophies", "graph", "blog", "support", "projects"]),
   custom: {},
+};
+
+export const PRESETS: Record<string, Profile> = {
+  Minimal: {
+    ...seedProfile,
+    name: "",
+    username: "",
+    title: "",
+    bio: "",
+    bannerUrl: "",
+    showBanner: false,
+    avatarUrl: "",
+    appearanceId: DEFAULT_APPEARANCE_ID,
+    accentColor: appearanceById(DEFAULT_APPEARANCE_ID).accent,
+    statsTheme: DEFAULT_STATS_THEME_ID,
+    techDisplay: "badges",
+    badgeStyle: "for-the-badge",
+    socials: {},
+    skills: [],
+    sections: ALL_SECTIONS(["trophies", "graph", "blog", "support", "projects"]),
+    support: { bmc: "", kofi: "", chai: "", sponsors: false },
+  },
+  Professional: {
+    ...seedProfile,
+    techDisplay: "badges",
+    badgeStyle: "flat",
+    statsTheme: "github_dark",
+    sections: ALL_SECTIONS(["typing", "trophies", "graph", "blog", "support"]),
+  },
+  "Animated Developer": {
+    ...seedProfile,
+    showBanner: true,
+    bannerUrl: "https://capsule-render.vercel.app/api?type=waving&color=0:8B5CF6,100:22D3EE&height=160&section=header&text=Hello%20World&fontColor=ffffff&animation=fadeIn",
+    typing: { ...seedProfile.typing, font: "Press Start 2P", size: 18, color: "8B5CF6" },
+    techDisplay: "icons",
+    statsTheme: "radical",
+    sections: ALL_SECTIONS(["blog", "support"]),
+  },
+  "AI Engineer": {
+    ...seedProfile,
+    title: "AI / ML Engineer",
+    bio: "Training models, building data pipelines and shipping AI features to production.",
+    typing: { ...seedProfile.typing, lines: "AI / ML Engineer\nLLMs · RAG · MLOps" },
+    work: { ...emptyWork, working: "LLM-powered search", learning: "reinforcement learning", askMe: "PyTorch, RAG, MLOps" },
+    skills: ["Python", "PyTorch", "TensorFlow", "scikit-learn", "Pandas", "NumPy", "Hugging Face", "LangChain", "Jupyter", "Docker"],
+    techDisplay: "icons",
+    statsTheme: "dracula",
+    sections: ALL_SECTIONS(["trophies", "blog", "support"]),
+  },
+  Cybersecurity: {
+    ...seedProfile,
+    title: "Security Engineer",
+    bio: "Pentesting, CTFs and hardening systems. Breaking things so others can't.",
+    typing: { ...seedProfile.typing, lines: "> whoami\nSecurity Engineer\nCTF player · Bug hunter", font: "JetBrains Mono", color: "9FEF00", center: false },
+    work: { ...emptyWork, learning: "malware analysis", askMe: "web app security, OWASP Top 10" },
+    skills: ["Python", "Bash", "Kali Linux", "Wireshark", "Metasploit", "Burp Suite", "OWASP", "Linux", "Docker"],
+    techDisplay: "badges",
+    socials: { GitHub: seedProfile.username, TryHackMe: "", "Hack The Box": "" },
+    statsTheme: "gruvbox",
+    sections: ALL_SECTIONS(["trophies", "blog", "support", "projects"]),
+  },
+  "Student Portfolio": {
+    ...seedProfile,
+    title: "Computer Science Student",
+    bio: "Learning in public. Building projects, contributing to open source and looking for internships.",
+    typing: { ...seedProfile.typing, lines: "CS Student\nOpen to internships\nAlways learning" },
+    work: { ...emptyWork, learning: "Data Structures & Algorithms", collab: "beginner-friendly open source", reach: "hello@parth.dev" },
+    skills: ["C", "C++", "Java", "Python", "JavaScript", "React", "Git", "GitHub"],
+    techDisplay: "icons",
+    socials: { GitHub: seedProfile.username, LinkedIn: "parthchaudhari", LeetCode: "" },
+    projects: [{ name: "My first project", url: "", description: "Describe a project you're proud of" }],
+    sections: ALL_SECTIONS(["trophies", "blog", "support"]),
+  },
 };
 
 // ---------- Safety helpers ----------
@@ -1062,16 +1148,47 @@ const ghRepo = (url: string) => {
   return m ? { owner: m[1]!, repo: m[2]! } : null;
 };
 
+const BMC_HOSTS = new Set(["buymeacoffee.com", "www.buymeacoffee.com"]);
+/** Accepts a Buy Me a Coffee username or full URL; returns the full https URL only for allow-listed hosts. */
+export function bmcUrl(raw: string): string {
+  const v = (raw || "").trim();
+  if (!v) return "";
+  if (/^[\w.-]+$/.test(v)) return `https://buymeacoffee.com/${v}`;
+  const ok = safeUrl(/^https?:\/\//i.test(v) ? v : `https://${v}`);
+  try {
+    const u = new URL(ok);
+    return u.protocol === "https:" && BMC_HOSTS.has(u.hostname.toLowerCase()) && u.pathname.length > 1 ? u.href : "";
+  } catch {
+    return "";
+  }
+}
+
+export const STATS_PRIMARY_HOST = "github-readme-stats.vercel.app";
+export const STATS_FALLBACK_HOST = "github-readme-stats-git-masterrstaa-rickstaa.vercel.app";
+/** Fallback mirror for a stats-widget URL (used by the preview when the primary is down or rate limited). */
+export function statsFallbackUrl(src: string): string {
+  try {
+    const u = new URL(src);
+    if (u.hostname !== STATS_PRIMARY_HOST) return "";
+    u.hostname = STATS_FALLBACK_HOST;
+    return u.href;
+  } catch {
+    return "";
+  }
+}
+
 // ---------- Markdown ----------
 function renderSection(p: Profile, id: string): string[] {
   const w = p.work;
   const out: string[] = [];
   switch (id) {
     case "header": {
+      const banner = p.showBanner ? safeUrl(resolvedBanner(p)) : "";
+      if (banner) out.push(`<p align="center"><img src="${banner}" alt="banner" width="100%" /></p>`, "");
       const avatar = safeUrl(p.avatarUrl);
       if (avatar)
         out.push(
-          `<p align="center"><img src="${avatar}" alt="${esc(p.name || p.username)} avatar" width="112" height="112" /></p>`,
+          `<p align="center"><img src="${avatar}" alt="${esc(p.name || p.username)} avatar" width="110" height="110" /></p>`,
           "",
         );
       out.push(`<h1 align="center">Hi, I'm ${esc(p.name)}</h1>`);
@@ -1183,26 +1300,16 @@ function renderSection(p: Profile, id: string): string[] {
     case "support": {
       const s = p.support;
       const chai = safeChaiUrl(s.chai);
-      if (!(s.bmc || s.kofi || chai || s.sponsors)) break;
+      if (!(bmcUrl(s.bmc) || s.kofi || chai || s.sponsors)) break;
       out.push("## Support", "", `<p align="left">`);
-      const bmc = validHandle(s.bmc);
-      const kofi = validHandle(s.kofi);
-      if (bmc)
-        out.push(
-          `  <a href="https://www.buymeacoffee.com/${enc(bmc)}"><img src="${badge("Buy Me a Coffee", "FFDD00", "buymeacoffee", p.badgeStyle)}" alt="Buy me a coffee" /></a>`,
-        );
-      if (kofi)
-        out.push(
-          `  <a href="https://ko-fi.com/${enc(kofi)}"><img src="${badge("Ko-fi", "FF5E5B", "kofi", p.badgeStyle)}" alt="Ko-fi" /></a>`,
-        );
+      const bmc = bmcUrl(s.bmc);
+      if (bmc) out.push(`  <a href="${bmc}"><img src="${badge("Buy Me a Coffee", "FFDD00", "buymeacoffee", p.badgeStyle)}" alt="Buy me a coffee" /></a>`);
+      if (s.kofi) out.push(`  <a href="https://ko-fi.com/${enc(s.kofi)}"><img src="${badge("Ko-fi", "FF5E5B", "kofi", p.badgeStyle)}" alt="Ko-fi" /></a>`);
       if (chai)
         out.push(
           `  <a href="${chai}"><img src="${badge("Buy Me Chai", "F59E0B", "", p.badgeStyle)}" alt="Buy me chai" /></a>`,
         );
-      if (s.sponsors)
-        out.push(
-          `  <a href="https://github.com/sponsors/${u(p)}"><img src="${badge("Sponsor", "EA4AAA", "githubsponsors", p.badgeStyle)}" alt="GitHub Sponsors" /></a>`,
-        );
+      if (s.sponsors) out.push(`  <a href="https://github.com/sponsors/${u(p)}"><img src="${badge("Sponsor", "EA4AAA", "githubsponsors", p.badgeStyle)}" alt="GitHub Sponsors" /></a>`);
       out.push(`</p>`);
       break;
     }

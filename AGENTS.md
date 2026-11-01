@@ -16,3 +16,6 @@
 - Every user-supplied URL goes through `safeUrl` (http/https/mailto only) and every user string through `esc` inside `toMarkdown`; the preview additionally runs `sanitizeHtml` (allow-list) before rendering.
 - README sections are an ordered `sections` list (built-in ids + `custom-*` ids); add new section types to `BUILTIN_SECTIONS` and `renderSection`, never by hard-coding order.
 - Real profile data comes only from the public GitHub API (`src/lib/github.ts`); never invent stats — widgets are live third-party images.
+- Banner is opt-in (`Profile.showBanner`); theme banners must be GitHub-embeddable image URLs (capsule-render or local SVG), never CSS or stock photos.
+- Landing templates come from `PRESETS` and open `/builder?preset=<name>`; a valid URL preset overrides a saved draft.
+- Stats-widget fallbacks (`statsFallbackUrl`) apply in the preview only; GitHub Markdown has no image fallback and there is no backend proxy.
