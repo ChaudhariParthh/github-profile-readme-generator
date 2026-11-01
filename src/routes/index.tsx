@@ -118,17 +118,6 @@ function Index() {
                 </Button>
               </div>
             </div>
-            <div className="relative hidden lg:block">
-              <div
-                className="absolute inset-0 rounded-3xl border border-border/60 bg-card/40 backdrop-blur-sm shadow-2xl"
-                style={{
-                  backgroundImage: `
-                    radial-gradient(600px circle at 10% 10%, color-mix(in oklab, var(--primary) 12%, transparent), transparent),
-                    radial-gradient(500px circle at 90% 90%, color-mix(in oklab, var(--accent) 12%, transparent), transparent)
-                  `,
-                }}
-              />
-            </div>
           </div>
         </div>
       </section>
