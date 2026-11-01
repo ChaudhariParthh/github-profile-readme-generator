@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 96" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gp-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#0F0D2E"/>
+      <stop offset="45%" stopColor="#1E1B4B"/>
+      <stop offset="100%" stopColor="#0E1A35"/>
+    </linearGradient>
+    <linearGradient id="prism1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#C084FC" stopOpacity="0.8"/>
+      <stop offset="50%" stopColor="#6366F1" stopOpacity="0.5"/>
+      <stop offset="100%" stopColor="#06B6D4" stopOpacity="0.25"/>
+    </linearGradient>
+    <linearGradient id="prism2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.85"/>
+      <stop offset="60%" stopColor="#818CF8" stopOpacity="0.45"/>
+      <stop offset="100%" stopColor="#C084FC" stopOpacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="prism3" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stopColor="#F472B6" stopOpacity="0.7"/>
+      <stop offset="100%" stopColor="#7C3AED" stopOpacity="0.25"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="96" fill="url(#gp-bg)"/>
+
+  <!-- Beams -->
+  <polygon points="180,0 260,0 340,96 160,96" fill="#818CF8" opacity="0.18"/>
+  <polygon points="260,0 340,0 420,96 240,96" fill="#06B6D4" opacity="0.15"/>
+
+  <!-- Rainbow Dispersion -->
+  <line x1="265" y1="80" x2="390" y2="52" stroke="#F43F5E" strokeWidth="2.2" opacity="0.7"/>
+  <line x1="265" y1="80" x2="392" y2="56" stroke="#FB923C" strokeWidth="2.2" opacity="0.7"/>
+  <line x1="265" y1="80" x2="395" y2="60" stroke="#FACC15" strokeWidth="2.2" opacity="0.7"/>
+  <line x1="265" y1="80" x2="397" y2="64" stroke="#4ADE80" strokeWidth="2.2" opacity="0.7"/>
+  <line x1="265" y1="80" x2="399" y2="68" stroke="#22D3EE" strokeWidth="2.2" opacity="0.7"/>
+  <line x1="265" y1="80" x2="400" y2="72" stroke="#A855F7" strokeWidth="2.2" opacity="0.7"/>
+
+  <!-- Central Diamond Prism -->
+  <polygon points="140,88 205,14 270,88 205,96" fill="url(#prism1)" stroke="#E0E7FF" strokeWidth="1.2"/>
+  <polygon points="205,14 270,88 205,96" fill="url(#prism2)" stroke="#C7D2FE" strokeWidth="0.8"/>
+
+  <!-- Left Cyan Prism -->
+  <polygon points="70,88 125,24 180,88" fill="url(#prism2)" stroke="#A5F3FC" strokeWidth="1.2" opacity="0.9"/>
+
+  <!-- Right Magenta Prism -->
+  <polygon points="230,88 295,20 360,88" fill="url(#prism3)" stroke="#FBCFE8" strokeWidth="1.2" opacity="0.9"/>
+
+  <!-- Edge Glints -->
+  <line x1="125" y1="24" x2="205" y2="14" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.9"/>
+  <line x1="205" y1="14" x2="295" y2="20" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.9"/>
+  <circle cx="205" cy="14" r="3" fill="#FFFFFF"/>
+  <circle cx="125" cy="24" r="2" fill="#FFFFFF"/>
+  <circle cx="295" cy="20" r="2" fill="#FFFFFF"/>
+</svg>

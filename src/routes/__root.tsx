@@ -26,7 +26,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Go home
           </Link>
@@ -58,13 +58,13 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Try again
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex items-center justify-center rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Go home
           </a>
@@ -86,6 +86,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Generate a polished GitHub profile README." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      {
+        httpEquiv: "Content-Security-Policy",
+        content:
+          "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://raw.githubusercontent.com https://capsule-render.vercel.app https://github.com https://avatars.githubusercontent.com https://cdn.jsdelivr.net https://cdn.simpleicons.org https://img.shields.io https://github-readme-stats.vercel.app https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app https://streak-stats.demolab.com https://github-readme-streak-stats.herokuapp.com https://ghchart.rshah.org https://github-profile-trophy.vercel.app https://github-readme-activity-graph.vercel.app https://komarev.com https://readme-typing-svg.demolab.com https://api.github.com; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self';",
+      },
     ],
     links: [
       {
@@ -93,8 +98,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" },
-      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      },
+      {
+        rel: "icon",
+        href: `${import.meta.env.BASE_URL}favicon.png?v=2`,
+        type: "image/png",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: `${import.meta.env.BASE_URL}favicon.png?v=2`,
+      },
+      {
+        rel: "shortcut icon",
+        href: `${import.meta.env.BASE_URL}favicon.png?v=2`,
+        type: "image/png",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -107,7 +128,12 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: "try{if(localStorage.getItem('gps-theme')==='light')document.documentElement.classList.add('light')}catch(e){}" }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{const s=localStorage.getItem('gps-theme');if(s==='light'||(s!=='dark'&&window.matchMedia('(prefers-color-scheme: light)').matches))document.documentElement.classList.add('light');else document.documentElement.classList.add('dark');}catch(e){}",
+          }}
+        />
         <HeadContent />
       </head>
       <body>

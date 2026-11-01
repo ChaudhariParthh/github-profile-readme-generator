@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BuilderRouteImport } from './routes/builder'
+import { Route as GitprofileStudioIndexRouteImport } from './routes/gitprofile-studio.index'
+import { Route as GitprofileStudioSplatRouteImport } from './routes/gitprofile-studio.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +24,54 @@ const BuilderRoute = BuilderRouteImport.update({
   path: '/builder',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GitprofileStudioIndexRoute = GitprofileStudioIndexRouteImport.update({
+  id: '/gitprofile-studio/',
+  path: '/gitprofile-studio/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GitprofileStudioSplatRoute = GitprofileStudioSplatRouteImport.update({
+  id: '/gitprofile-studio/$',
+  path: '/gitprofile-studio/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
+  '/gitprofile-studio/$': typeof GitprofileStudioSplatRoute
+  '/gitprofile-studio/': typeof GitprofileStudioIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
+  '/gitprofile-studio/$': typeof GitprofileStudioSplatRoute
+  '/gitprofile-studio': typeof GitprofileStudioIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
+  '/gitprofile-studio/$': typeof GitprofileStudioSplatRoute
+  '/gitprofile-studio/': typeof GitprofileStudioIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/builder'
+  fullPaths: '/' | '/builder' | '/gitprofile-studio/$' | '/gitprofile-studio/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/builder'
-  id: '__root__' | '/' | '/builder'
+  to: '/' | '/builder' | '/gitprofile-studio/$' | '/gitprofile-studio'
+  id:
+    | '__root__'
+    | '/'
+    | '/builder'
+    | '/gitprofile-studio/$'
+    | '/gitprofile-studio/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BuilderRoute: typeof BuilderRoute
+  GitprofileStudioSplatRoute: typeof GitprofileStudioSplatRoute
+  GitprofileStudioIndexRoute: typeof GitprofileStudioIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +90,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gitprofile-studio/': {
+      id: '/gitprofile-studio/'
+      path: '/gitprofile-studio'
+      fullPath: '/gitprofile-studio/'
+      preLoaderRoute: typeof GitprofileStudioIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gitprofile-studio/$': {
+      id: '/gitprofile-studio/$'
+      path: '/gitprofile-studio/$'
+      fullPath: '/gitprofile-studio/$'
+      preLoaderRoute: typeof GitprofileStudioSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BuilderRoute: BuilderRoute,
+  GitprofileStudioSplatRoute: GitprofileStudioSplatRoute,
+  GitprofileStudioIndexRoute: GitprofileStudioIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

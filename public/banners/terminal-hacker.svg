@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 96" width="100%" height="100%">
+  <defs>
+    <radialGradient id="th-glow" cx="68%" cy="50%" r="45%">
+      <stop offset="0%" stopColor="#22C55E" stopOpacity="0.3"/>
+      <stop offset="100%" stopColor="#052E16" stopOpacity="0"/>
+    </radialGradient>
+    <linearGradient id="th-hood" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#14532D"/>
+      <stop offset="40%" stopColor="#052E16"/>
+      <stop offset="100%" stopColor="#020804"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="96" fill="#000000"/>
+  <rect width="400" height="96" fill="#020D02" opacity="0.8"/>
+
+  <!-- Matrix vertical streams -->
+  <g fill="#4ADE80" fontSize="6" fontFamily="monospace">
+    <text x="15" y="10" opacity="0.3" style="writing-mode: vertical-rl;">01101001 0x7F #!/bin/sh 10110 0101</text>
+    <text x="45" y="10" opacity="0.45" style="writing-mode: vertical-rl;">function breach() { return true; } 0x9A</text>
+    <text x="80" y="10" opacity="0.6" style="writing-mode: vertical-rl;">GET /api/v1/auth?token=root 200 OK 010</text>
+    <text x="115" y="10" opacity="0.3" style="writing-mode: vertical-rl;">SSH-2.0-OpenSSH_9.2p1 debian-1_all 11</text>
+    <text x="150" y="10" opacity="0.45" style="writing-mode: vertical-rl;">sys.traceback(0x4F); bypass_sandbox()</text>
+    <text x="185" y="10" opacity="0.6" style="writing-mode: vertical-rl;">10110010 01010110 11001010 00101010</text>
+    <text x="220" y="10" opacity="0.3" style="writing-mode: vertical-rl;">const cipher = crypto.createDecipherIv</text>
+    <text x="255" y="10" opacity="0.45" style="writing-mode: vertical-rl;">0x4A 0x82 0xFF 0x1B 0x00 0xDE 0xAD 0xBE</text>
+    <text x="290" y="10" opacity="0.6" style="writing-mode: vertical-rl;">iptables -A INPUT -p tcp --dport 22 -j</text>
+    <text x="325" y="10" opacity="0.3" style="writing-mode: vertical-rl;">grep -rnw '/var/log/' -e 'SECRET_KEY'</text>
+    <text x="360" y="10" opacity="0.45" style="writing-mode: vertical-rl;">11010010 10101101 01010010 11100010</text>
+    <text x="388" y="10" opacity="0.6" style="writing-mode: vertical-rl;">chmod +x /etc/init.d/daemon &amp;&amp; ./run</text>
+  </g>
+
+  <!-- Monitor glow -->
+  <circle cx="280" cy="50" r="80" fill="url(#th-glow)"/>
+
+  <!-- Left diagnostic window -->
+  <rect x="18" y="22" width="70" height="42" rx="3" fill="#041F0E" stroke="#166534" strokeWidth="0.8" opacity="0.9"/>
+  <rect x="18" y="22" width="70" height="7" fill="#14532D" opacity="0.8"/>
+  <circle cx="23" cy="25.5" r="1.5" fill="#EF4444"/>
+  <circle cx="28" cy="25.5" r="1.5" fill="#EAB308"/>
+  <circle cx="33" cy="25.5" r="1.5" fill="#22C55E"/>
+  <text x="24" y="38" fill="#86EFAC" fontSize="5" fontFamily="monospace">&gt; status: CONNECTED</text>
+  <text x="24" y="46" fill="#4ADE80" fontSize="5" fontFamily="monospace">&gt; ip: 127.0.0.1</text>
+  <text x="24" y="54" fill="#22C55E" fontSize="5" fontFamily="monospace">&gt; payload: active</text>
+
+  <!-- Center Terminal Window -->
+  <rect x="105" y="16" width="92" height="52" rx="3" fill="#03160A" stroke="#22C55E" strokeWidth="1" opacity="0.95"/>
+  <rect x="105" y="16" width="92" height="7" fill="#052E16"/>
+  <text x="112" y="31" fill="#4ADE80" fontSize="5.5" fontFamily="monospace">root@cyber:~# cat /etc/shadow</text>
+  <text x="112" y="39" fill="#86EFAC" fontSize="4.5" fontFamily="monospace">parth:$6$rounds=50000$g7K2m...:19420</text>
+  <text x="112" y="47" fill="#4ADE80" fontSize="4.5" fontFamily="monospace">root:$6$rounds=65536$k9X8z...:19420</text>
+  <text x="112" y="55" fill="#22C55E" fontSize="5" fontFamily="monospace">[SYS_OK] decrypting stream_</text>
+
+  <!-- Hooded Figure -->
+  <g transform="translate(195, 8)">
+    <path d="M 20 88 C 22 55, 38 42, 60 40 C 82 42, 98 55, 100 88 Z" fill="url(#th-hood)" stroke="#22C55E" strokeWidth="0.8" opacity="0.95"/>
+    <path d="M 45 42 C 43 24, 52 14, 60 12 C 68 14, 77 24, 75 42 C 70 45, 60 46, 45 42 Z" fill="#062814" stroke="#4ADE80" strokeWidth="0.9"/>
+    <ellipse cx="60" cy="30" rx="10" ry="11" fill="#010A04"/>
+  </g>
+
+  <!-- Scanlines -->
+  <g stroke="#4ADE80" strokeWidth="0.4" opacity="0.12">
+    <line x1="0" y1="12" x2="400" y2="12"/>
+    <line x1="0" y1="24" x2="400" y2="24"/>
+    <line x1="0" y1="36" x2="400" y2="36"/>
+    <line x1="0" y1="48" x2="400" y2="48"/>
+    <line x1="0" y1="60" x2="400" y2="60"/>
+    <line x1="0" y1="72" x2="400" y2="72"/>
+    <line x1="0" y1="84" x2="400" y2="84"/>
+  </g>
+</svg>

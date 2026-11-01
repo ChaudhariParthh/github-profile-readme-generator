@@ -13,7 +13,13 @@ export function BrandMark({ className = "h-8 w-8" }: { className?: string }) {
         </linearGradient>
       </defs>
       <rect width="64" height="64" rx="15" fill="oklch(0.16 0.02 270)" />
-      <g fill="none" stroke={`url(#${id})`} strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round">
+      <g
+        fill="none"
+        stroke={`url(#${id})`}
+        strokeWidth="6.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M22 21 L12 32 L22 43" />
         <path d="M42 21 L52 32 L42 43" />
         <path d="M36 15 L28 49" />
@@ -30,7 +36,9 @@ export function BrandLogo() {
         <span className="text-[15px] font-bold tracking-tight">
           Git<span className="text-gradient">Profile</span>
         </span>
-        <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.35em] text-muted-foreground">Studio</span>
+        <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.35em] text-muted-foreground">
+          Studio
+        </span>
       </span>
     </span>
   );

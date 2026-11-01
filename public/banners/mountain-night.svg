@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 96" width="100%" height="100%">
+  <defs>
+    <linearGradient id="mn-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#060B18"/>
+      <stop offset="35%" stopColor="#1A1745"/>
+      <stop offset="70%" stopColor="#312E81"/>
+      <stop offset="100%" stopColor="#0B1220"/>
+    </linearGradient>
+    <radialGradient id="mnMoonHalo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#FDE047" stopOpacity="0.45"/>
+      <stop offset="50%" stopColor="#F472B6" stopOpacity="0.2"/>
+      <stop offset="100%" stopColor="#1E1B4B" stopOpacity="0"/>
+    </radialGradient>
+    <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#1E1B4B" stopOpacity="0.7"/>
+      <stop offset="100%" stopColor="#0B1220" stopOpacity="0.95"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="96" fill="url(#mn-bg)"/>
+
+  <!-- Stars -->
+  <g fill="#FFFFFF">
+    <circle cx="25" cy="12" r="0.8" opacity="0.8"/>
+    <circle cx="55" cy="18" r="0.7" opacity="0.6"/>
+    <circle cx="95" cy="8" r="1.0" opacity="0.9"/>
+    <circle cx="130" cy="20" r="0.8" opacity="0.75"/>
+    <circle cx="165" cy="10" r="0.9" opacity="0.85"/>
+    <circle cx="205" cy="16" r="0.7" opacity="0.6"/>
+    <circle cx="240" cy="9" r="1.1" opacity="0.9"/>
+    <circle cx="275" cy="22" r="0.8" opacity="0.7"/>
+    <circle cx="305" cy="12" r="0.9" opacity="0.85"/>
+    <circle cx="375" cy="14" r="1.0" opacity="0.85"/>
+    <circle cx="70" cy="28" r="0.7" opacity="0.6"/>
+    <circle cx="180" cy="26" r="0.8" opacity="0.7"/>
+  </g>
+
+  <!-- Crescent moon -->
+  <circle cx="340" cy="20" r="15" fill="url(#mnMoonHalo)"/>
+  <circle cx="340" cy="20" r="8" fill="#FEF08A"/>
+  <circle cx="343" cy="18" r="6.8" fill="#15173B"/>
+
+  <!-- Far mountains -->
+  <polygon points="0,75 35,46 75,64 125,36 175,58 220,38 270,56 315,40 365,60 400,44 400,75 0,75" fill="#312E81" opacity="0.65"/>
+
+  <!-- Middle mountain peaks -->
+  <polygon points="0,80 40,54 85,74 135,42 165,58 200,32 245,62 290,44 340,68 385,50 400,58 400,82 0,82" fill="#1E1B4B"/>
+  <polygon points="135,42 120,54 135,50" fill="#E0E7FF" opacity="0.65"/>
+  <polygon points="200,32 182,46 200,42" fill="#E0E7FF" opacity="0.7"/>
+  <polygon points="290,44 274,56 290,52" fill="#E0E7FF" opacity="0.6"/>
+
+  <!-- Foreground crags -->
+  <polygon points="0,85 55,62 105,78 150,56 195,72 235,58 280,74 330,58 375,76 400,66 400,86 0,86" fill="#0F172A"/>
+
+  <!-- Lake surface -->
+  <rect x="0" y="82" width="400" height="14" fill="url(#waterGrad)"/>
+  <line x1="180" y1="86" x2="220" y2="86" stroke="#818CF8" strokeWidth="0.8" opacity="0.4"/>
+  <line x1="330" y1="86" x2="350" y2="86" stroke="#FEF08A" strokeWidth="1" opacity="0.5"/>
+  <line x1="325" y1="90" x2="355" y2="90" stroke="#FEF08A" strokeWidth="0.6" opacity="0.3"/>
+
+  <!-- Shore pines -->
+  <g fill="#0B1220">
+    <polygon points="12,74 7,86 17,86"/>
+    <polygon points="35,74 30,86 40,86"/>
+    <polygon points="68,74 63,86 73,86"/>
+    <polygon points="120,74 115,86 125,86"/>
+    <polygon points="245,74 240,86 250,86"/>
+    <polygon points="275,74 270,86 280,86"/>
+    <polygon points="385,74 380,86 390,86"/>
+  </g>
+</svg>

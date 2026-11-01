@@ -1,52 +1,136 @@
 # GitProfile Studio
 
-Build Phase 1 of GitProfile Studio, a modern GitHub Profile README Generator.
+GitHub Profile README Generator — create beautiful GitHub profile READMEs with customizable templates, badges, stats cards, and developer widgets.
 
-Aesthetic & Theme:
+## Overview
 
-- Dark developer aesthetic: Background #0B0D12, Surface #11151D, Accent Violet #8B5CF6, Accent Cyan #22D3EE, Text #F3F4F6, Muted #9CA3AF.
+GitProfile Studio is a front-end application for building polished GitHub profile README files with a visual workflow. It helps developers create a profile that communicates skills, projects, social links, and personal branding without writing raw Markdown from scratch.
 
-- Clean typography with monospace accents for code/markdown and Lucide icons.
+The project is designed to be lightweight, responsive, and easy to use. It focuses on a clean generation workflow, live previewing, and static deployment support.
 
-Key Pages & Layout:
+## Built with
 
-1. Landing Page (`/`):
+This project was developed using a combination of modern AI-assisted and collaborative tools:
 
-   - Header with GitProfile Studio wordmark and "Open Builder" CTA.
+- Antigravity
+- Lovable
+- Bolt.new
+- Replit
 
-   - Hero section with headline, value prop, and an interactive-looking preview card of a styled GitHub profile README.
+The application was deployed and published using Lovable.
 
-   - 3-step workflow: Configure profile → Pick theme & badges → Copy Markdown.
+## Key features
 
-   - 6 theme preset cards (e.g. Minimal, Modern Dev, Neon Dark, Gradient, Contributor, Portfolio).
+- GitHub profile README generation
+- Configurable templates and layouts
+- Custom badges, stat cards, and widgets
+- Social and contact link configuration
+- Real-time Markdown preview
+- Responsive browser-based interface
+- Static deployment support for GitHub Pages
 
-2. Builder Workspace (`/builder`):
+## Technology stack
 
-   - Desktop: Two-column layout with a left customization panel (Profile info, Bio, Tech Stack Badges, Socials, GitHub Stats) and a right live-rendered GitHub README preview. Include a toggle to view raw Markdown and copy buttons.
+| Category | Technology |
+| --- | --- |
+| Frontend | React 19 |
+| Language | TypeScript 5.8 |
+| Build tooling | Vite 8 |
+| Styling | Tailwind CSS 4 |
+| Routing | TanStack Router and TanStack Start |
+| UI | Radix UI and shadcn-style primitives |
+| Testing | Vitest |
+| Quality | ESLint and Prettier |
 
-   - Mobile: Tabbed switch between "Editor" and "Preview".
+## Project structure
 
-   - Seed the initial preview with a polished developer profile (Parth Chaudhari — Full-Stack Developer, TypeScript, React, Node.js, GitHub stats card, and social badges).
+```bash
+github-profile-readme-generator/
+├── .github/
+├── public/
+├── scripts/
+├── src/
+│   ├── components/
+│   ├── hooks/
+│   ├── lib/
+│   ├── routes/
+│   ├── styles/
+│   ├── App.tsx
+│   └── main.tsx
+├── .gitignore
+├── .prettierrc
+├── .prettierignore
+├── AGENTS.md
+├── README.md
+├── LICENSE
+├── components.json
+├── eslint.config.js
+├── package.json
+├── package-lock.json
+├── roadmap.md
+├── tsconfig.json
+├── vite.config.ts
+├── vite.config.github.ts
+├── vitest.config.ts
+├── bun.lock
+├── bunfig.toml
+└── public/
+```
 
-Keep it strictly client-side UI with mock preview state. No backend, auth, or external API keys needed for this phase.
+## Getting started
 
-This project was built with [Lovable](https://lovable.dev).
+Install dependencies:
 
-## Build with Lovable
+```bash
+npm install
+```
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/efc59f6e-8ea1-4078-9759-ba3f1eb8ea20).
+Run the development server:
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+```bash
 npm run dev
 ```
+
+Build the project for production:
+
+```bash
+npm run build
+```
+
+Run tests:
+
+```bash
+npm test
+```
+
+Regenerate template fixtures if needed:
+
+```bash
+npm run templates:render
+```
+
+## Deployment
+
+The project includes a GitHub Pages-friendly build configuration for static hosting.
+
+- Production base path: `/gitprofile-studio/`
+- Live demo: https://chaudhariparthh.github.io/gitprofile-studio/
+- Lovable deployment: https://gitprofilestudio.lovable.app/
+
+The project was deployed using Lovable, with static hosting support for GitHub Pages.
+
+## License
+
+This project is licensed under the Apache License, Version 2.0.
+
+See the [LICENSE](LICENSE) file for the full license text.
+
+## Links
+
+- [Live Demo](https://chaudhariparthh.github.io/gitprofile-studio/)
+- [Lovable App](https://gitprofilestudio.lovable.app/)
+- [GitHub Repository](https://github.com/ChaudhariParthh/gitprofile-studio)
+
+## Notes
+
+This project is a client-side application focused on generating and previewing GitHub profile README content directly in the browser. It does not depend on a backend service for core functionality, which keeps the experience lightweight and easy to deploy.
