@@ -38,7 +38,7 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
     ["Lua", "lua", "2C2D72", "lua/lua-original.svg"],
     ["Bash", "gnubash", "4EAA25", "gnubash/gnubash-original.svg"],
     ["Perl", "perl", "2E457B", "perl/perl-original.svg"],
-    ["Objective-C", "objectivec", "098AC1", "objectivec/objectivec-original.svg"],
+    ["Objective-C", "objectivec", "098AC1", "objectivec/objectivec-plain.svg"],
     ["Clojure", "clojure", "83A13E", "clojure/clojure-original.svg"],
     ["CoffeeScript", "coffeescript", "E58B34", "coffeescript/coffeescript-original.svg"],
     ["Erlang", "erlang", "B83998", "erlang/erlang-original.svg"],
@@ -48,7 +48,7 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
     ["React", "react", "61DAFB", "react/react-original.svg"],
     ["Next.js", "nextdotjs", "000000", "nextdotjs/nextdotjs-original.svg"],
     ["Vue.js", "vuedotjs", "4FC08D", "vuedotjs/vuedotjs-original.svg"],
-    ["Nuxt", "nuxtdotjs", "00DC82", "nuxtdotjs/nuxtdotjs-original.svg"],
+    ["Nuxt", "nuxt", "00DC82", "nuxtjs/nuxtjs-original.svg"],
     ["Svelte", "svelte", "FF3E00", "svelte/svelte-original.svg"],
     ["Angular", "angular", "DD0031", "angular/angular-original.svg"],
     ["Tailwind CSS", "tailwindcss", "06B6D4", "tailwindcss/tailwindcss-plain.svg"],
@@ -66,11 +66,11 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
     ["Pug", "pug", "A86454", "pug/pug-original.svg"],
     ["Gulp", "gulp", "CB3837", "gulp/gulp-original.svg"],
     ["Babel", "babel", "F9DC3E", "babel/babel-original.svg"],
-    ["Materialize", "materializecss", "E2232A", "materializecss/materialize-original.svg"],
+    ["Materialize", "materializecss", "E2232A", "materializecss/materializecss-original.svg"],
     ["Bulma", "bulma", "00D1B2", "bulma/bulma-original.svg"],
     ["GTK", "gtk", "3584E4", "gtk/gtk-original.svg"],
     ["Qt", "qt", "41CD52", "qt/qt-original.svg"],
-    ["wxWidgets", "wxwidgets", "2F87CB", "wxwidgets/wxwidgets-original.svg"],
+    ["wxWidgets", "wxwidgets", "2F87CB", "https://avatars.githubusercontent.com/u/791023?s=128&v=4"],
     ["Ember", "emberdotjs", "E04E3D", "emberdotjs/emberdotjs-original.svg"],
   ],
   Backend: [
@@ -93,11 +93,11 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
     ["CodeIgniter", "codeigniter", "F04E23", "codeigniter/codeigniter-original.svg"],
     ["Quasar", "quasar", "017BE6", "quasar/quasar-original.svg"],
     ["Android", "android", "3DDC84", "android/android-original.svg"],
-    ["Kafka", "kafka", "231F20", "kafka/kafka-original.svg"],
-    ["Solr", "solr", "DC5B22", "solr/solr-original.svg"],
+    ["Kafka", "apachekafka", "231F20", "apachekafka/apachekafka-original.svg"],
+    ["Solr", "apachesolr", "DC5B22"],
     ["RabbitMQ", "rabbitmq", "FF6600", "rabbitmq/rabbitmq-original.svg"],
     ["Hadoop", "hadoop", "FFC72D", "hadoop/hadoop-original.svg"],
-    ["OpenResty", "openresty", "F75024", "openresty/openresty-original.svg"],
+    ["OpenResty", "openresty", "F75024", "https://avatars.githubusercontent.com/u/7390180?s=128&v=4"],
   ],
   "AI / ML": [
     ["PyTorch", "pytorch", "EE4C2C", "pytorch/pytorch-original.svg"],
@@ -111,7 +111,7 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
     ["LangChain", "langchain", "1C3C3C", "langchain/langchain-original.svg"],
     ["Jupyter", "jupyter", "F37626", "jupyter/jupyter-original.svg"],
     ["Keras", "keras", "D00000", "keras/keras-original.svg"],
-    ["OpenAI", "openai", "412991", "openai/openai-original.svg"],
+    ["OpenAI", "openai", "412991", "https://cdn.jsdelivr.net/npm/simple-icons@9/icons/openai.svg"],
   ],
   Cybersecurity: [
     ["Kali Linux", "kalilinux", "557C94"],
@@ -141,7 +141,7 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
     ["Supabase", "supabase", "3FCF8E", "supabase/supabase-original.svg"],
     ["Heroku", "heroku", "430098", "heroku/heroku-original.svg"],
     ["Appwrite", "appwrite", "FD503D", "appwrite/appwrite-original.svg"],
-    ["AWS Amplify", "amplify", "FF9900", "amplify/amplify-original.svg"],
+    ["AWS Amplify", "awsamplify", "FF9900", "https://cdn.jsdelivr.net/npm/simple-icons@9/icons/awsamplify.svg"],
   ],
   Databases: [
     ["PostgreSQL", "postgresql", "4169E1", "postgresql/postgresql-original.svg"],
@@ -151,14 +151,14 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
     ["SQLite", "sqlite", "003B57", "sqlite/sqlite-original.svg"],
     ["MariaDB", "mariadb", "003545", "mariadb/mariadb-original.svg"],
     ["Elasticsearch", "elasticsearch", "005571", "elasticsearch/elasticsearch-original.svg"],
-    ["Oracle", "oracledatabase", "F80000", "oracledatabase/oracledatabase-original.svg"],
+    ["Oracle", "oracle", "F80000", "oracle/oracle-original.svg"],
     ["Cassandra", "cassandra", "2A9AD9", "cassandra/cassandra-original.svg"],
     ["CouchDB", "couchdb", "D44444", "couchdb/couchdb-original.svg"],
     ["Hive", "hive", "FDB515", "hive/hive-original.svg"],
     ["Realm", "realm", "D93A2A", "realm/realm-original.svg"],
-    ["CockroachDB", "cockroachdb", "F18237", "cockroachdb/cockroachdb-original.svg"],
-    ["MSSQL", "mssql", "CC2927", "mssql/mssql-original.svg"],
-    ["DynamoDB", "amazondynamodb", "4053D6", "amazondynamodb/amazondynamodb-original.svg"],
+    ["CockroachDB", "cockroachlabs", "F18237"],
+    ["MSSQL", "microsoftsqlserver", "CC2927", "microsoftsqlserver/microsoftsqlserver-plain.svg"],
+    ["DynamoDB", "amazondynamodb", "4053D6", "dynamodb/dynamodb-original.svg"],
     ["Prisma", "prisma", "2D3748", "prisma/prisma-original.svg"],
   ],
   DevOps: [
@@ -195,15 +195,15 @@ export const SKILL_CATEGORIES: Record<string, SkillDef[]> = {
     ["Notion", "notion", "000000", "notion/notion-original.svg"],
     ["Illustrator", "illustrator", "FA6424", "illustrator/illustrator-original.svg"],
     ["Photoshop", "photoshop", "00A8E1", "photoshop/photoshop-original.svg"],
-    ["Adobe XD", "adobexd", "FF7440", "adobexd/adobexd-original.svg"],
+    ["Adobe XD", "adobexd", "FF7440", "xd/xd-plain.svg"],
     ["Sketch", "sketch", "F7ADE4", "sketch/sketch-original.svg"],
-    ["InVision", "invision", "F82749", "invision/invision-original.svg"],
+    ["InVision", "invision", "F82749", "https://cdn.jsdelivr.net/npm/simple-icons@9/icons/invision.svg"],
     ["Framer", "framer", "0055FF", "framer/framer-original.svg"],
     ["MATLAB", "matlab", "DD11CF", "matlab/matlab-original.svg"],
     ["Lovable", "lovable", "7C3AED"],
     ["Cursor IDE", "cursor", "000000"],
     ["Antigravity IDE", "antigravity", "6366F1"],
-    ["Bolt.new", "bolt", "F59E0B"],
+    ["Bolt.new", "stackblitz", "1269D3"],
     ["Replit", "replit", "00CC66"],
     ["Trae", "trae", "2563EB"],
   ],
@@ -688,6 +688,7 @@ export const skillIconUrl = (t: string): string => {
   if (!s) return "";
   const slug = s[1];
   // Simple Icons: reliable URL pattern https://cdn.simpleicons.org/{slug}
+  if (s[3] && /^https:\/\//.test(s[3])) return s[3];
   const simpleUrl = `https://cdn.simpleicons.org/${slug}`;
   // Devicon: explicit 4th tuple field when present, else the standard slug/slug-original.svg layout.
   const deviconUrl = s[3] ? `${DEV}${s[3]}` : `${DEV}${slug}/${slug}-original.svg`;
@@ -699,6 +700,7 @@ export const skillDeviconUrl = (t: string): string => {
   const s = SKILL_INDEX[t];
   if (!s) return "";
   const slug = s[1];
+  if (s[3] && /^https:\/\//.test(s[3])) return s[3];
   return s[3] ? `${DEV}${s[3]}` : `${DEV}${slug}/${slug}-original.svg`;
 };
 
@@ -706,6 +708,7 @@ export const skillDeviconUrl = (t: string): string => {
 export const skillSimpleIconUrl = (t: string): string => {
   const s = SKILL_INDEX[t];
   if (!s) return "";
+  if (s[3] && /^https:\/\//.test(s[3])) return s[3];
   return `https://cdn.simpleicons.org/${s[1]}`;
 };
 export const socialBadgeUrl = (p: string, style: BadgeStyle = "for-the-badge") => {
